@@ -46,9 +46,7 @@ public static partial class VisualControlTypes
         propertyControls = [];
 
         // Get all the class properties
-        properties = type.GetProperties(flags)
-            .Where(p => !(typeof(Delegate).IsAssignableFrom(p.PropertyType))) // Exclude delegate types
-            .ToArray();
+        properties = [.. type.GetProperties(flags).Where(p => !(typeof(Delegate).IsAssignableFrom(p.PropertyType)))];
 
         FilterByVisualizeAttribute(ref properties);
 
@@ -84,7 +82,7 @@ public static partial class VisualControlTypes
         fieldControls = [];
 
         // Grab all the real property names, and turn each into the expected backing‑field name ("_" + lowercase‑first‑char + rest)
-        string[] propNames = type.GetProperties(flags).Select(p => p.Name).ToArray();
+        string[] propNames = [.. type.GetProperties(flags).Select(p => p.Name)];
 
         HashSet<string> backingFieldNames = new(
             propNames.Select(n =>
@@ -93,15 +91,14 @@ public static partial class VisualControlTypes
         );
 
         // Get all the class fields
-        fields = type
+        fields = [.. type
             .GetFields(flags)
             // Exclude delegate types
             .Where(f => !(typeof(Delegate).IsAssignableFrom(f.FieldType)))
             // Exclude fields created by properties
             .Where(f => !f.Name.StartsWith('<') || !f.Name.EndsWith(">k__BackingField"))
             // Exclude backing fields for properties
-            .Where(f => !backingFieldNames.Contains(f.Name))
-            .ToArray();
+            .Where(f => !backingFieldNames.Contains(f.Name))];
 
         FilterByVisualizeAttribute(ref fields);
 
@@ -134,7 +131,7 @@ public static partial class VisualControlTypes
         // Cannot include private methods or else we will see Godots built in methods
         flags &= ~BindingFlags.NonPublic;
 
-        MethodInfo[] methods = type.GetMethods(flags)
+        MethodInfo[] methods = [.. type.GetMethods(flags)
             // Exclude delegates
             .Where(m => !(typeof(Delegate).IsAssignableFrom(m.ReturnType)))
             // Exclude auto property methods
@@ -142,8 +139,7 @@ public static partial class VisualControlTypes
             // Exclude event add and remove event methods
             .Where(m => !m.Name.StartsWith("add_") && !m.Name.StartsWith("remove_"))
             // Exclude the override string ToString() method
-            .Where(m => m.Name != "ToString")
-            .ToArray();
+            .Where(m => m.Name != "ToString")];
 
         FilterByVisualizeAttribute(ref methods);
 
@@ -179,7 +175,7 @@ public static partial class VisualControlTypes
         // If any properties are marked with [Visualize] then we only visualize those properties.
         if (visualizedMembers.Count != 0)
         {
-            members = visualizedMembers.ToArray();
+            members = [.. visualizedMembers];
         }
     }
 

@@ -36,9 +36,7 @@ public static class VisualizeAttributeHandler
 
     private static List<T> GetVisualMembers<T>(Func<BindingFlags, T[]> getMembers) where T : MemberInfo
     {
-        return getMembers(_flags)
-            .Where(member => member.GetCustomAttributes(typeof(VisualizeAttribute), false).Length != 0)
-            .ToList();
+        return [.. getMembers(_flags).Where(member => member.GetCustomAttributes(typeof(VisualizeAttribute), false).Length != 0)];
     }
 }
 #endif

@@ -165,10 +165,9 @@ public class PacketWriter : IDisposable
     private void WriteStructOrClass<T>(T v, Type t)
     {
         // Serialize public instance fields in metadata order
-        FieldInfo[] fields = t
+        FieldInfo[] fields = [.. t
             .GetFields(BindingFlags.Public | BindingFlags.Instance)
-            .OrderBy(field => field.MetadataToken)
-            .ToArray();
+            .OrderBy(field => field.MetadataToken)];
 
         // Write each field value
         foreach (FieldInfo field in fields)
@@ -177,11 +176,10 @@ public class PacketWriter : IDisposable
         }
 
         // Serialize public instance properties with getters in metadata order
-        PropertyInfo[] properties = t
+        PropertyInfo[] properties = [.. t
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(p => p.CanRead && p.GetCustomAttributes(typeof(NetExcludeAttribute), true).Length == 0)
-            .OrderBy(property => property.MetadataToken)
-            .ToArray();
+            .OrderBy(property => property.MetadataToken)];
 
         // Write each property value
         foreach (PropertyInfo property in properties)

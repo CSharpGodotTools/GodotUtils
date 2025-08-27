@@ -78,10 +78,9 @@ public abstract class GamePacket
         // Properties are cached by type instead of per instance for improved performance
         if (!_netSendPropertyCache.TryGetValue(type, out PropertyInfo[] props))
         {
-            props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            props = [.. type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.CanRead && p.GetCustomAttributes(typeof(NetSendAttribute), true).Length != 0)
-                .OrderBy(p => ((NetSendAttribute)p.GetCustomAttributes(typeof(NetSendAttribute), true).First()).Order)
-                .ToArray();
+                .OrderBy(p => ((NetSendAttribute)p.GetCustomAttributes(typeof(NetSendAttribute), true).First()).Order)];
 
             _netSendPropertyCache[type] = props;
         }

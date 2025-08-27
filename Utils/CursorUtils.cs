@@ -11,22 +11,22 @@ public static class CursorUtils
 {
     public static List<Area2D> GetAreasUnderCursor(Node2D node, int maxResults = 1)
     {
-        return GetPhysicsNodesAtPosition(node, node.GetGlobalMousePosition(), true, false, false, maxResults).Select(x => x as Area2D).ToList();
+        return [.. GetPhysicsNodesAtPosition(node, node.GetGlobalMousePosition(), true, false, false, maxResults).Select(x => x as Area2D)];
     }
     
     public static List<PhysicsBody2D> GetBodiesUnderCursor(Node2D node, int maxResults = 1)
     {
-        return GetPhysicsNodesAtPosition(node, node.GetGlobalMousePosition(), false, true, false, maxResults).Select(x => x as PhysicsBody2D).ToList();
+        return [.. GetPhysicsNodesAtPosition(node, node.GetGlobalMousePosition(), false, true, false, maxResults).Select(x => x as PhysicsBody2D)];
     }
     
     public static List<Area2D> GetAreasUnder(Node2D node, int maxResults = 1)
     {
-        return GetPhysicsNodesAtPosition(node, node.GlobalPosition, true, false, true, maxResults).Select(x => x as Area2D).ToList();
+        return [.. GetPhysicsNodesAtPosition(node, node.GlobalPosition, true, false, true, maxResults).Select(x => x as Area2D)];
     }
     
     public static List<PhysicsBody2D> GetBodiesUnder(Node2D node, int maxResults = 1)
     {
-        return GetPhysicsNodesAtPosition(node, node.GlobalPosition, false, true, true, maxResults).Select(x => x as PhysicsBody2D).ToList();
+        return [.. GetPhysicsNodesAtPosition(node, node.GlobalPosition, false, true, true, maxResults).Select(x => x as PhysicsBody2D)];
     }
     
     private static List<Node> GetPhysicsNodesAtPosition(Node2D node, Vector2 position, bool collideWithAreas, bool collideWithBodies, bool excludeSelf = false, int maxResults = 1)

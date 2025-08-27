@@ -140,7 +140,7 @@ public partial class GameConsole : Node
             return false;
         }
 
-        string[] args = parts.Skip(1).ToArray();
+        string[] args = [.. parts.Skip(1)];
 
         cmdInfo.Code.Invoke(args);
 

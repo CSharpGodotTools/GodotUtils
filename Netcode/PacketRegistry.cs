@@ -27,10 +27,9 @@ public static class PacketRegistry
 
     private static Dictionary<Type, PacketInfo<T>> MapPackets<T>(Type[] cachedTypes)
     {
-        Type[] packetTypes = cachedTypes
+        Type[] packetTypes = [.. cachedTypes
             .Where(x => typeof(T).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
-            .OrderBy(x => x.Name)
-            .ToArray();
+            .OrderBy(x => x.Name)];
 
         Dictionary<Type, PacketInfo<T>> dict = [];
 

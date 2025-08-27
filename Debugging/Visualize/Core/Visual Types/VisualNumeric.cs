@@ -51,7 +51,7 @@ public static partial class VisualControlTypes
         if (exportAttribute == null || exportAttribute.Hint != PropertyHint.Range)
             return false;
 
-        string[] args = exportAttribute.HintString.Split(',').Select(x => x.Trim()).ToArray();
+        string[] args = [.. exportAttribute.HintString.Split(',').Select(x => x.Trim())];
 
         if (args.Length < 2)
             return false;
