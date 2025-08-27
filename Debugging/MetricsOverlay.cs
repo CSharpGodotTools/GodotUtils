@@ -22,7 +22,8 @@ public class MetricsOverlay : IDisposable
     private const string LabelFpsGraph   = "##FPSGraph"; // The ## hides the text
 
     // This was made static to allow tracking variables even before metrics overlay instance gets initialized
-    private static Dictionary<string, Func<object>> _trackingVariables = [];
+    private static Dictionary<string, Func<object>> _processMonitors = [];
+    private static Dictionary<string, Func<object>> _physicsProcessMonitors = [];
     private Dictionary<string, Func<string>> _currentMetrics = [];
 
     private static MetricsOverlay _instance;
@@ -31,7 +32,7 @@ public class MetricsOverlay : IDisposable
     private bool _visible;
     private int _fpsIndex;
 
-    public MetricsOverlay()
+    public MetricsOverlay(Autoloads autoloads)
     {
         if (_instance != null)
             throw new InvalidOperationException($"{nameof(MetricsOverlay)} was initialized already");
@@ -80,7 +81,20 @@ public class MetricsOverlay : IDisposable
 
         if (_visible)
         {
-            RenderPerformanceMetrics(_currentMetrics, _fpsBuffer, ref _fpsIndex, ref _cachedFps);
+            UpdateFpsBuffer(ref _cachedFps, _fpsBuffer, ref _fpsIndex);
+            RenderProcessOverlay(_currentMetrics, _fpsBuffer, ref _fpsIndex);
+        }
+    }
+
+    public void PhysicsUpdate()
+    {
+        if (_visible)
+        {
+            // ImGui can ONLY be called from _Process, NOT _PhysicsProcess
+            foreach (KeyValuePair<string, Func<object>> kvp in _physicsProcessMonitors)
+            {
+                _physicsProcessMonitors[kvp.Key] = kvp.Value;
+            }
         }
     }
 
@@ -89,42 +103,47 @@ public class MetricsOverlay : IDisposable
         _instance = null;
     }
 
-    public static void StartTracking(string key, Func<object> function)
+    public static void StartMonitoringProcess(string key, Func<object> function)
     {
-        _trackingVariables.Add(key, function);
+        _processMonitors.Add(key, function);
     }
 
-    public static void StopTracking(string key)
+    public static void StopMonitoringProcess(string key)
     {
-        _trackingVariables.Remove(key);
+        _processMonitors.Remove(key);
     }
 
-    private static void RenderPerformanceMetrics(Dictionary<string, Func<string>> metrics, float[] fpsBuffer, ref int fpsIndex, ref float cachedFps)
+    public static void StartMonitoringPhysicsProcess(string key, Func<object> function)
     {
-        UpdateFpsBuffer(ref cachedFps, fpsBuffer, ref fpsIndex);
+        _physicsProcessMonitors.Add(key, function);
+    }
 
-        SetupImGuiWindow();
+    public static void StopMonitoringPhysicsProcess(string key)
+    {
+        _physicsProcessMonitors.Remove(key);
+    }
+
+    private static void RenderProcessOverlay(Dictionary<string, Func<string>> metrics, float[] fpsBuffer, ref int fpsIndex)
+    {
+        Vector2 topRight = new(ImGui.GetIO().DisplaySize.X - WindowWidth, 0);
+        BeginOverlayWindow(topRight);
 
         RenderMetrics(metrics, fpsBuffer, fpsIndex);
-        RenderUserDefinedVariables();
 
-        ImGui.End();
+        RenderProcessMonitors();
+
+        EndOverlayWindow();
     }
 
-    private static void SetupImGuiWindow()
+    private static void BeginOverlayWindow(Vector2 position)
     {
-        // Print the window scale
-        Godot.Vector2 size = DisplayServer.WindowGetSize();
-        Vector2 screenSize = new(size.X, size.Y);
-        Vector2 windowSize = new(WindowWidth, 0);
-        Vector2 topRight = new Vector2(screenSize.X, 0) - new Vector2(windowSize.X, -ImGui.GetFrameHeight());
+        ImGui.SetNextWindowPos(position, ImGuiCond.Always);
+        ImGui.Begin(ImGuiWindowName, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoTitleBar);
+    }
 
-        ImGui.SetNextWindowPos(topRight, ImGuiCond.Always);
-        ImGui.SetNextWindowSize(windowSize, ImGuiCond.Always);
-
-        ImGuiWindowFlags flags = ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoTitleBar;
-
-        ImGui.Begin(ImGuiWindowName, flags);
+    private static void EndOverlayWindow()
+    {
+        ImGui.End();
     }
 
     private static void RenderMetrics(Dictionary<string, Func<string>> metrics, float[] fpsBuffer, int fpsIndex)
@@ -143,17 +162,25 @@ public class MetricsOverlay : IDisposable
         }
     }
 
-    private static void RenderUserDefinedVariables()
+    private static void RenderProcessMonitors()
     {
-        if (_trackingVariables.Count == 0 || !ImGui.CollapsingHeader(LabelVariables, ImGuiTreeNodeFlags.DefaultOpen))
+        if (!ImGui.CollapsingHeader(LabelVariables, ImGuiTreeNodeFlags.DefaultOpen))
             return;
 
-        foreach (KeyValuePair<string, Func<object>> kvp in _trackingVariables)
+        if (_processMonitors.Count > 0)
         {
-            string name = kvp.Key;
-            string value = kvp.Value().ToString();
+            foreach (KeyValuePair<string, Func<object>> kvp in _processMonitors)
+            {
+                ImGui.Text($"{kvp.Key}: {kvp.Value()}");
+            }
+        }
 
-            ImGui.Text($"{name}: {value}");
+        if (_physicsProcessMonitors.Count > 0)
+        {
+            foreach (KeyValuePair<string, Func<object>> kvp in _physicsProcessMonitors)
+            {
+                ImGui.Text($"{kvp.Key}: {kvp.Value()}");
+            }
         }
     }
 
