@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://cj4fbh1a1lpq4"]
+
+[ext_resource type="Script" uid="uid://cdt2k6s3xm13g" path="res://Framework/GodotUtils/Autoloads/Autoloads.cs" id="1_k43os"]
+[ext_resource type="Resource" uid="uid://vvs0u1pmps52" path="res://Framework/Scenes.tres" id="2_xajao"]
+[ext_resource type="Script" uid="uid://ct4og8hi8urvd" path="res://Framework/GodotUtils/Components/ComponentManager.cs" id="3_sycog"]
+[ext_resource type="PackedScene" uid="uid://jrjqky6ag6gg" path="res://Framework/GodotUtils/Autoloads/Console/GameConsole.tscn" id="4_8po21"]
+
+[node name="Autoloads" type="Node"]
+process_mode = 3
+script = ExtResource("1_k43os")
+_scenes = ExtResource("2_xajao")
+
+[node name="ComponentManager" type="Node" parent="."]
+script = ExtResource("3_sycog")
+
+[node name="Debug" type="CanvasLayer" parent="."]
+layer = 128
+
+[node name="Console" parent="Debug" instance=ExtResource("4_8po21")]
+unique_name_in_owner = true
