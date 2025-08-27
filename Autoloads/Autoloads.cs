@@ -71,7 +71,6 @@ public partial class Autoloads : Node
     public override void _Process(double delta)
     {
         OptionsManager.Update();
-        MetricsOverlay.Update();
 
 #if DEBUG
         _visualizeAutoload.Update();
@@ -80,11 +79,6 @@ public partial class Autoloads : Node
 #if NETCODE_ENABLED
         _logger.Update();
 #endif
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        MetricsOverlay.PhysicsUpdate();
     }
 
     public override async void _Notification(int what)

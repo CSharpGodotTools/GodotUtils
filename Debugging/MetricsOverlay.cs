@@ -7,7 +7,7 @@ using Vector2 = System.Numerics.Vector2;
 
 namespace GodotUtils.Debugging;
 
-public class MetricsOverlay : IDisposable
+public class MetricsOverlay : Component
 {
     private const int BytesInMegabyte     = 1048576;
     private const int BytesInKilobyte     = 1024;
@@ -32,7 +32,7 @@ public class MetricsOverlay : IDisposable
     private bool _visible;
     private int _fpsIndex;
 
-    public MetricsOverlay(Autoloads autoloads)
+    public MetricsOverlay(Autoloads autoloads) : base(autoloads)
     {
         if (_instance != null)
             throw new InvalidOperationException($"{nameof(MetricsOverlay)} was initialized already");
@@ -72,7 +72,13 @@ public class MetricsOverlay : IDisposable
 #pragma warning restore IDE0008 // Use explicit type
     }
 
-    public void Update()
+    public override void Ready()
+    {
+        SetProcess(true);
+        SetPhysicsProcess(true);
+    }
+
+    public override void Process(double delta)
     {
         if (Input.IsActionJustPressed(InputActions.DebugOverlay))
         {
@@ -86,7 +92,7 @@ public class MetricsOverlay : IDisposable
         }
     }
 
-    public void PhysicsUpdate()
+    public override void PhysicsProcess(double delta)
     {
         if (_visible)
         {
@@ -98,7 +104,7 @@ public class MetricsOverlay : IDisposable
         }
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
         _instance = null;
     }
@@ -164,10 +170,16 @@ public class MetricsOverlay : IDisposable
 
     private static void RenderProcessMonitors()
     {
+        int processMonitors = _processMonitors.Count;
+        int physicsProcessMonitors = _physicsProcessMonitors.Count;
+
+        if (processMonitors == 0 && physicsProcessMonitors == 0)
+            return;
+
         if (!ImGui.CollapsingHeader(LabelVariables, ImGuiTreeNodeFlags.DefaultOpen))
             return;
 
-        if (_processMonitors.Count > 0)
+        if (processMonitors > 0)
         {
             foreach (KeyValuePair<string, Func<object>> kvp in _processMonitors)
             {
@@ -175,7 +187,7 @@ public class MetricsOverlay : IDisposable
             }
         }
 
-        if (_physicsProcessMonitors.Count > 0)
+        if (physicsProcessMonitors > 0)
         {
             foreach (KeyValuePair<string, Func<object>> kvp in _physicsProcessMonitors)
             {
