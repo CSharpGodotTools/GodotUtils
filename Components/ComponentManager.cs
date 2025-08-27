@@ -18,8 +18,8 @@ public partial class ComponentManager : Node
     // Disable overrides on startup for performance
     public override void _EnterTree()
     {
-        SetProcess(false);
-        SetPhysicsProcess(false);
+        //SetProcess(false); // Assume there will always be at least one process
+        //SetPhysicsProcess(false); // Assume there will always be at least one physics process
         SetProcessInput(false);
         SetProcessUnhandledInput(false);
     }
@@ -60,46 +60,56 @@ public partial class ComponentManager : Node
     // Exposed register functions
     public void RegisterProcess(Component component)
     {
+#if DEBUG
         if (_process.Contains(component))
             throw new InvalidOperationException("Component is registered for Process already.");
+#endif
 
         _process.Add(component);
 
-        if (_process.Count == 1)
-            SetProcess(true);
+        // Assume there will always be at least one process
+        //if (_process.Count == 1)
+        //    SetProcess(true);
     }
 
     public void UnregisterProcess(Component component)
     {
         _process.Remove(component);
 
-        if (_process.Count == 0)
-            SetProcess(false);
+        // Assume there will always be at least one process
+        //if (_process.Count == 0)
+        //    SetProcess(false);
     }
 
     public void RegisterPhysicsProcess(Component component)
     {
+#if DEBUG
         if (_physicsProcess.Contains(component))
             throw new InvalidOperationException("Component is registered for PhysicsProcess already.");
+#endif
 
         _physicsProcess.Add(component);
 
-        if (_physicsProcess.Count == 1)
-            SetPhysicsProcess(true);
+        // Assume there will always be at least one physics process
+        //if (_physicsProcess.Count == 1)
+        //    SetPhysicsProcess(true);
     }
 
     public void UnregisterPhysicsProcess(Component component)
     {
         _physicsProcess.Remove(component);
 
-        if (_physicsProcess.Count == 0)
-            SetPhysicsProcess(false);
+        // Assume there will always be at least one physics process
+        //if (_physicsProcess.Count == 0)
+        //    SetPhysicsProcess(false);
     }
 
     public void RegisterInput(Component component)
     {
+#if DEBUG
         if (_input.Contains(component))
             throw new InvalidOperationException("Component is registered for Input already.");
+#endif
 
         _input.Add(component);
 
@@ -117,8 +127,10 @@ public partial class ComponentManager : Node
 
     public void RegisterUnhandledInput(Component component)
     {
+#if DEBUG
         if (_unhandledInput.Contains(component))
             throw new InvalidOperationException("Component is registered for UnhandledInput already.");
+#endif
 
         _unhandledInput.Add(component);
 
