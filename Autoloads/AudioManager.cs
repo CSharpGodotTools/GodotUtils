@@ -18,7 +18,7 @@ public class AudioManager : IDisposable
     private Node                _sfxPlayersParent;
     private float               _lastPitch;
 
-    public AudioManager(Node autoloads)
+    public AudioManager(Autoloads autoloads)
     {
         if (_instance != null)
             throw new InvalidOperationException($"{nameof(AudioManager)} was initialized already");
