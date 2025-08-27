@@ -30,14 +30,6 @@ public partial class Autoloads : Node
     public SceneManager     SceneManager     { get; private set; }
     public GameConsole      GameConsole      { get; private set; }
 
-#if DEBUG
-    private VisualizeAutoload _visualizeAutoload;
-#endif
-
-#if NETCODE_ENABLED
-    private Logger _logger;
-#endif
-
     public override void _EnterTree()
     {
         if (Instance != null)
@@ -47,10 +39,10 @@ public partial class Autoloads : Node
         ComponentManager = GetNode<ComponentManager>("ComponentManager");
         GameConsole = GetNode<GameConsole>("%Console");
         SceneManager = new SceneManager(this, _scenes);
-        Services = new Services(SceneManager);
+        Services = new Services(this);
 
 #if NETCODE_ENABLED
-        _logger = new Logger(GameConsole);
+        _ = new Logger(GameConsole);
 #endif
     }
 
@@ -64,18 +56,7 @@ public partial class Autoloads : Node
         MetricsOverlay = new MetricsOverlay(this);
 
 #if DEBUG
-        _visualizeAutoload = new VisualizeAutoload();
-#endif
-    }
-
-    public override void _Process(double delta)
-    {
-#if DEBUG
-        _visualizeAutoload.Update();
-#endif
-
-#if NETCODE_ENABLED
-        _logger.Update();
+        _ = new VisualizeAutoload(this);
 #endif
     }
 
@@ -89,19 +70,7 @@ public partial class Autoloads : Node
 
     public override void _ExitTree()
     {
-        AudioManager.Dispose();
-        OptionsManager.Dispose();
-        Services.Dispose();
-        MetricsOverlay.Dispose();
         SceneManager.Dispose();
-
-#if DEBUG
-        _visualizeAutoload.Dispose();
-#endif
-
-#if NETCODE_ENABLED
-        _logger.Dispose();
-#endif
 
         Profiler.Dispose();
 
@@ -109,6 +78,7 @@ public partial class Autoloads : Node
         PreQuit = null;
     }
 
+    // Using deferred is always complicated...
     public void DeferredSwitchSceneProxy(string rawName, Variant transTypeVariant)
     {
         if (SceneManager.Instance == null)

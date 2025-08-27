@@ -4,7 +4,7 @@ using System;
 
 namespace GodotUtils;
 
-public class AudioManager : IDisposable
+public class AudioManager : Component
 {
     private const float MinRandomPitch        = 0.8f;
     private const float MaxRandomPitch        = 1.2f;
@@ -18,7 +18,7 @@ public class AudioManager : IDisposable
     private Node                _sfxPlayersParent;
     private float               _lastPitch;
 
-    public AudioManager(Autoloads autoloads)
+    public AudioManager(Autoloads autoloads) : base(autoloads)
     {
         if (_instance != null)
             throw new InvalidOperationException($"{nameof(AudioManager)} was initialized already");
@@ -33,7 +33,7 @@ public class AudioManager : IDisposable
         autoloads.AddChild(_sfxPlayersParent);
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
         _musicPlayer.QueueFree();
         _sfxPlayersParent.QueueFree();

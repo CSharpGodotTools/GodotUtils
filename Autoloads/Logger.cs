@@ -14,7 +14,7 @@ namespace GodotUtils;
  * Remember to put Logger.Update() in _PhysicsProcess(double delta) otherwise you will be wondering why 
  * Logger.Log(...) is printing nothing to the console.
  */
-public class Logger : IDisposable
+public class Logger : Component
 {
     public event Action<string> MessageLogged;
 
@@ -22,12 +22,28 @@ public class Logger : IDisposable
     private ConcurrentQueue<LogInfo> _messages = [];
     private GameConsole _console;
 
-    public Logger(GameConsole console)
+    public Logger(GameConsole console) : base(console)
     {
         _instance = this;
         _console = console;
 
         MessageLogged += _console.AddMessage;
+    }
+
+    public override void Ready()
+    {
+        SetProcess(true);
+    }
+
+    public override void Process(double delta)
+    {
+        DequeueMessages();
+    }
+
+    public override void Dispose()
+    {
+        MessageLogged -= _console.AddMessage;
+        _instance = null;
     }
 
     /// <summary>
@@ -121,24 +137,12 @@ public class Logger : IDisposable
         Log($"Took {watch.ElapsedMilliseconds} ms");
     }
 
-    public void Update()
-    {
-        DequeueMessages();
-    }
-
     /// <summary>
     /// Checks to see if there are any messages left in the queue
     /// </summary>
     public static bool StillWorking()
     {
         return !_instance._messages.IsEmpty;
-    }
-
-    public void Dispose()
-    {
-        MessageLogged -= _console.AddMessage;
-
-        _instance = null;
     }
 
     /// <summary>

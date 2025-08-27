@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace GodotUtils.Debugging.Visualize;
 
-public class VisualizeAutoload : IDisposable
+public class VisualizeAutoload : Component
 {
     public Dictionary<Node, VBoxContainer> VisualNodes { get; set; }
 
@@ -14,7 +14,7 @@ public class VisualizeAutoload : IDisposable
 
     private Visualize _visualize;
 
-    public VisualizeAutoload()
+    public VisualizeAutoload(Autoloads autoloads) : base(autoloads)
     {
         if (Instance != null)
             throw new InvalidOperationException($"{nameof(VisualizeAutoload)} was initialized already");
@@ -23,12 +23,12 @@ public class VisualizeAutoload : IDisposable
         Instance = this;
     }
 
-    public void Update()
+    public override void Process(double delta)
     {
         _visualize.Update();
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
         _visualize.Dispose();
         Instance = null;
