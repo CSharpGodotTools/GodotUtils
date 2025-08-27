@@ -7,6 +7,19 @@ namespace GodotUtils;
 
 public static class ExtensionsNode
 {
+    /// <summary>
+    /// Retrieves an autoload from the scene tree using the given name.
+    /// <code>Global global = someNode.GetAutoload&lt;Global&gt;("Global");</code>
+    /// </summary>
+    /// <typeparam name="T">Type of the autoload node, must inherit from Node.</typeparam>
+    /// <param name="node">Any node in the scene tree to call this extension on.</param>
+    /// <param name="autoload">The name of the autoload as registered in Project Settings -> AutoLoad.</param>
+    /// <returns>The autoload instance of type T.</returns>
+    public static T GetAutoload<T>(this Node node, string autoload) where T : Node
+    {
+        return node.GetNode<T>($"/root/{autoload}");
+    }
+
     public static void AddToCurrentSceneDeferred(this Node node, Node child)
     {
         GetCurrentScene(node).CallDeferred(Node.MethodName.AddChild, child);
