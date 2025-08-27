@@ -11,6 +11,7 @@ script = ExtResource("1_k43os")
 _scenes = ExtResource("2_xajao")
 
 [node name="ComponentManager" type="Node" parent="."]
+process_mode = 1
 script = ExtResource("3_sycog")
 
 [node name="Debug" type="CanvasLayer" parent="."]
