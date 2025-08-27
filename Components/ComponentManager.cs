@@ -1,4 +1,6 @@
 using Godot;
+using GodotUtils.Debugging;
+using System;
 using System.Collections.Generic;
 
 namespace GodotUtils;
@@ -7,14 +9,12 @@ namespace GodotUtils;
 /// Using any kind of Godot functions from C# is expensive, so we try to minimize this with centralized logic.
 /// See <see href="https://www.reddit.com/r/godot/comments/1me7669/a_follow_up_to_my_first_c_stress_test/">stress test results</see>.
 /// </summary>
-[GlobalClass]
 public partial class ComponentManager : Node
 {
-    private List<Component> _ready          = [];
-    private List<Component> _process        = [];
+    private List<Component> _process = [];
     private List<Component> _physicsProcess = [];
     private List<Component> _unhandledInput = [];
-    private List<Component> _input          = [];
+    private List<Component> _input = [];
 
     // Disable overrides on startup for performance
     public override void _EnterTree()
@@ -26,14 +26,6 @@ public partial class ComponentManager : Node
     }
 
     // Handle Godot overrides
-    public override void _Ready()
-    {
-        foreach (Component component in _ready)
-        {
-            component.Ready();
-        }
-    }
-
     public override void _Process(double delta)
     {
         foreach (Component component in _process)
@@ -67,13 +59,11 @@ public partial class ComponentManager : Node
     }
 
     // Exposed register functions
-    public void RegisterReady(Component component)
-    {
-        _ready.Add(component);
-    }
-
     public void RegisterProcess(Component component)
     {
+        if (_process.Contains(component))
+            throw new InvalidOperationException("Component is registered for Process already.");
+
         _process.Add(component);
 
         if (_process.Count == 1)
@@ -90,6 +80,9 @@ public partial class ComponentManager : Node
 
     public void RegisterPhysicsProcess(Component component)
     {
+        if (_physicsProcess.Contains(component))
+            throw new InvalidOperationException("Component is registered for PhysicsProcess already.");
+
         _physicsProcess.Add(component);
 
         if (_physicsProcess.Count == 1)
@@ -106,6 +99,9 @@ public partial class ComponentManager : Node
 
     public void RegisterInput(Component component)
     {
+        if (_input.Contains(component))
+            throw new InvalidOperationException("Component is registered for Input already.");
+
         _input.Add(component);
 
         if (_input.Count == 1)
@@ -122,6 +118,9 @@ public partial class ComponentManager : Node
 
     public void RegisterUnhandledInput(Component component)
     {
+        if (_unhandledInput.Contains(component))
+            throw new InvalidOperationException("Component is registered for UnhandledInput already.");
+
         _unhandledInput.Add(component);
 
         if (_unhandledInput.Count == 1)
@@ -134,5 +133,13 @@ public partial class ComponentManager : Node
 
         if (_unhandledInput.Count == 0)
             SetProcessUnhandledInput(false);
+    }
+
+    public void UnregisterAll(Component component)
+    {
+        UnregisterProcess(component);
+        UnregisterPhysicsProcess(component);
+        UnregisterInput(component);
+        UnregisterUnhandledInput(component);
     }
 }

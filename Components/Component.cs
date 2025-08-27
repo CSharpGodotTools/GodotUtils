@@ -3,46 +3,68 @@ using System;
 
 namespace GodotUtils;
 
-public partial class Component : Node
+public class Component : IDisposable
 {
+    protected Node Owner;
     private ComponentManager _componentManager;
 
-    public override void _EnterTree()
+    public Component(Node owner)
     {
-        _componentManager = GetComponentManager();
-        _componentManager.RegisterReady(this);
+        Owner = owner;
+        Owner.Ready += RunCodeOnReady;
+        Owner.TreeExited += UnsubscribeOnTreeExit;
     }
 
     public virtual void Ready() { }
     public virtual void Process(double delta) { }
     public virtual void PhysicsProcess(double delta) { }
-    public virtual void ProcessInput(InputEvent @event) { } // Named ProcessInput because conflicts with Input.(...)
+    public virtual void ProcessInput(InputEvent @event) { }
     public virtual void UnhandledInput(InputEvent @event) { }
+    public virtual void Dispose() { }
 
-    public void RegisterReady()            => _componentManager.RegisterReady(this);
-    public void RegisterProcess()          => _componentManager.RegisterProcess(this);
-    public void RegisterPhysicsProcess()   => _componentManager.RegisterPhysicsProcess(this);
-    public void RegisterInput()            => _componentManager.RegisterInput(this);
-    public void RegisterUnhandledInput()   => _componentManager.RegisterUnhandledInput(this);
-    public void UnregisterProcess()        => _componentManager.UnregisterProcess(this);
-    public void UnregisterPhysicsProcess() => _componentManager.UnregisterPhysicsProcess(this);
-    public void UnregisterInput()          => _componentManager.UnregisterInput(this);
-    public void UnregisterUnhandledInput() => _componentManager.UnregisterUnhandledInput(this);
-
-    private ComponentManager GetComponentManager()
+    protected void SetProcess(bool enabled)
     {
-        Node current = GetParent();
+        if (enabled)
+            _componentManager.RegisterProcess(this);
+        else
+            _componentManager.UnregisterProcess(this);
+    }
 
-        while (current != null)
-        {
-            if (current is ComponentManager manager)
-            {
-                return manager;
-            }
+    protected void SetPhysicsProcess(bool enabled)
+    {
+        if (enabled)
+            _componentManager.RegisterPhysicsProcess(this);
+        else
+            _componentManager.UnregisterPhysicsProcess(this);
+    }
 
-            current = current.GetParent();
-        }
+    protected void SetInput(bool enabled)
+    {
+        if (enabled)
+            _componentManager.RegisterInput(this);
+        else
+            _componentManager.UnregisterInput(this);
+    }
 
-        throw new InvalidOperationException($"ComponentManager not found for {Name}.");
+    protected void SetUnhandledInput(bool enabled)
+    {
+        if (enabled)
+            _componentManager.RegisterUnhandledInput(this);
+        else
+            _componentManager.UnregisterUnhandledInput(this);
+    }
+
+    private void RunCodeOnReady()
+    {
+        _componentManager = Owner.GetAutoload<Autoloads>(nameof(Autoloads)).ComponentManager;
+        Ready();
+    }
+
+    private void UnsubscribeOnTreeExit()
+    {
+        Dispose();
+        _componentManager.UnregisterAll(this);
+        Owner.Ready -= RunCodeOnReady;
+        Owner.TreeExited -= UnsubscribeOnTreeExit;
     }
 }
