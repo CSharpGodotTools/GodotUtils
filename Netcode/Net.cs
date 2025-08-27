@@ -35,7 +35,7 @@ public class Net
             _enetInitialized = false;
         }
 
-        Global.Instance.PreQuit += StopThreads;
+        Autoloads.Instance.PreQuit += StopThreads;
         Services.Get<UI.PopupMenu>().MainMenuBtnPressed += async () => await StopThreads();
 
         _clientFactory = clientFactory;

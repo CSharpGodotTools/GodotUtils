@@ -12,21 +12,23 @@ using System.Threading.Tasks;
 namespace GodotUtils;
 
 // Autoload
-public partial class Global : Node
+// Access this with GetNode<Autoloads>("/root/Autoloads")
+public partial class Autoloads : Node
 {
     [Export] private Scenes _scenes;
 
     public event Func<Task> PreQuit;
 
-    public static Global Instance { get; private set; }
+    public static Autoloads Instance { get; private set; }
 
     // Game developers should be able to access each individual manager
-    public AudioManager   AudioManager   { get; private set; }
-    public OptionsManager OptionsManager { get; private set; }
-    public Services       Services       { get; private set; }
-    public MetricsOverlay MetricsOverlay { get; private set; }
-    public SceneManager   SceneManager   { get; private set; }
-    public GameConsole    GameConsole    { get; private set; }
+    public ComponentManager ComponentManager { get; private set; }
+    public AudioManager     AudioManager     { get; private set; }
+    public OptionsManager   OptionsManager   { get; private set; }
+    public Services         Services         { get; private set; }
+    public MetricsOverlay   MetricsOverlay   { get; private set; }
+    public SceneManager     SceneManager     { get; private set; }
+    public GameConsole      GameConsole      { get; private set; }
 
 #if DEBUG
     private VisualizeAutoload _visualizeAutoload;
@@ -42,6 +44,7 @@ public partial class Global : Node
             throw new InvalidOperationException("Global has been initialized already");
 
         Instance = this;
+        ComponentManager = GetNode<ComponentManager>("ComponentManager");
         GameConsole = GetNode<GameConsole>("%Console");
         SceneManager = new SceneManager(this, _scenes);
         Services = new Services(SceneManager);
@@ -58,7 +61,7 @@ public partial class Global : Node
 
         OptionsManager = new OptionsManager(this);
         AudioManager = new AudioManager(this);
-        MetricsOverlay = new MetricsOverlay();
+        MetricsOverlay = new MetricsOverlay(this);
 
 #if DEBUG
         _visualizeAutoload = new VisualizeAutoload();
@@ -77,6 +80,11 @@ public partial class Global : Node
 #if NETCODE_ENABLED
         _logger.Update();
 #endif
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        MetricsOverlay.PhysicsUpdate();
     }
 
     public override async void _Notification(int what)
