@@ -70,8 +70,6 @@ public partial class Autoloads : Node
 
     public override void _Process(double delta)
     {
-        OptionsManager.Update();
-
 #if DEBUG
         _visualizeAutoload.Update();
 #endif
