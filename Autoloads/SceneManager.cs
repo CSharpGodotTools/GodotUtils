@@ -15,19 +15,19 @@ public class SceneManager : IDisposable
     public static SceneManager Instance { get; private set; }
 
     private SceneTree _tree;
-    private Autoloads _global;
+    private Autoloads _autoloads;
     private Scenes _scenes;
     private Node _currentScene;
 
-    public SceneManager(Autoloads global, Scenes scenes)
+    public SceneManager(Autoloads autoloads, Scenes scenes)
     {
         if (Instance != null)
             throw new InvalidOperationException($"{nameof(SceneManager)} was initialized already");
 
         Instance = this;
-        _global = global;
+        _autoloads = autoloads;
         _scenes = scenes;
-        _tree = global.GetTree();
+        _tree = autoloads.GetTree();
 
         Window root = _tree.Root;
 
@@ -88,13 +88,13 @@ public class SceneManager : IDisposable
         PreSceneChanged?.Invoke(sceneName);
 
         // Wait for engine to be ready before switching scenes
-        _global.CallDeferred(nameof(Autoloads.DeferredSwitchSceneProxy), sceneFilePath, Variant.From(TransType.None));
+        _autoloads.CallDeferred(nameof(Autoloads.DeferredSwitchSceneProxy), sceneFilePath, Variant.From(TransType.None));
     }
 
     private void ChangeScene(string scenePath, TransType transType)
     {
         // Wait for engine to be ready before switching scenes
-        _global.CallDeferred(nameof(Autoloads.DeferredSwitchSceneProxy), scenePath, Variant.From(transType));
+        _autoloads.CallDeferred(nameof(Autoloads.DeferredSwitchSceneProxy), scenePath, Variant.From(transType));
     }
 
     public void DeferredSwitchScene(string rawName, Variant transTypeVariant)
