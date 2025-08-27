@@ -11,8 +11,8 @@ public class Component : IDisposable
     public Component(Node owner)
     {
         Owner = owner;
-        Owner.Ready += RunCodeOnReady;
-        Owner.TreeExited += UnsubscribeOnTreeExit;
+        Owner.Ready += InitializeComponent;
+        Owner.TreeExited += CleanupOnTreeExit;
     }
 
     public virtual void Ready() { }
@@ -54,17 +54,17 @@ public class Component : IDisposable
             _componentManager.UnregisterUnhandledInput(this);
     }
 
-    private void RunCodeOnReady()
+    private void InitializeComponent()
     {
         _componentManager = Owner.GetAutoload<Autoloads>(nameof(Autoloads)).ComponentManager;
         Ready();
     }
 
-    private void UnsubscribeOnTreeExit()
+    private void CleanupOnTreeExit()
     {
         Dispose();
         _componentManager.UnregisterAll(this);
-        Owner.Ready -= RunCodeOnReady;
-        Owner.TreeExited -= UnsubscribeOnTreeExit;
+        Owner.Ready -= InitializeComponent;
+        Owner.TreeExited -= CleanupOnTreeExit;
     }
 }
