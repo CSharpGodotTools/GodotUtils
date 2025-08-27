@@ -1,19 +1,14 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 
 namespace GodotUtils.Debugging;
 
-/// <summary>
-/// A static class providing simple profiling utilities for measuring elapsed time of code blocks.
-/// </summary>
 public static class Profiler
 {
     private static Dictionary<string, ProfilerEntry> _entries = [];
+    private const int DefaultAccuracy = 2;
 
-    /// <summary>
-    /// Starts a one-shot profiling measurement for the given key.
-    /// This is intended for profiling a single code block execution.
-    /// </summary>
     public static void Start(string key)
     {
         if (!_entries.TryGetValue(key, out ProfilerEntry entry))
@@ -25,79 +20,53 @@ public static class Profiler
         entry.Start();
     }
 
-    /// <summary>
-    /// Stops a one-shot profiling measurement for the given key.
-    /// Calculates and prints the elapsed time in milliseconds to the console.
-    /// </summary>
-    public static void Stop(string key)
+    public static void Stop(string key, int accuracy = DefaultAccuracy)
     {
         ProfilerEntry entry = _entries[key];
 
-        // Measure in microseconds, convert to milliseconds
         ulong elapsedUsec = Time.GetTicksUsec() - entry.StartTimeUsec;
         ulong elapsedMs = elapsedUsec / 1000UL;
 
-        GD.Print($"{key} {elapsedMs} ms");
+        GD.Print($"{key} {elapsedMs.ToString($"F{accuracy}")} ms");
         entry.Reset();
     }
 
-    /// <summary>
-    /// Starts a frame-based profiling measurement for the given key.
-    /// This is intended for continuously tracking time across multiple frames.
-    /// The key is displayed in the MetricsOverlay.
-    /// </summary>
-    public static void StartFrame(string key)
+    public static void StartProcess(string key, int accuracy = DefaultAccuracy)
+    {
+        StartMonitor(key, accuracy, MetricsOverlay.StartMonitoringProcess);
+    }
+
+    public static void StopProcess(string key)
+    {
+        _entries[key].Stop();
+    }
+
+    public static void StartPhysicsProcess(string key, int accuracy = DefaultAccuracy)
+    {
+        StartMonitor(key, accuracy, MetricsOverlay.StartMonitoringPhysicsProcess);
+    }
+
+    public static void StopPhysicsProcess(string key)
+    {
+        _entries[key].Stop();
+    }
+
+    private static void StartMonitor(string key, int accuracy, Action<string, Func<object>> registerAction)
     {
         if (!_entries.TryGetValue(key, out ProfilerEntry entry))
         {
             entry = new ProfilerEntry();
             _entries[key] = entry;
 
-            MetricsOverlay.StartTracking(key, () => $"{_entries[key].GetAverageMs():F2} ms");
+            // Register the metric with the appropriate overlay
+            registerAction(key, () => _entries[key].GetAverageMs(accuracy) + " ms");
         }
 
         entry.Start();
     }
 
-    /// <summary>
-    /// Stops a frame-based profiling measurement for the given key.
-    /// </summary>
-    public static void StopFrame(string key)
-    {
-        _entries[key].Stop();
-    }
-
     public static void Dispose()
     {
         _entries = null;
-    }
-}
-
-public class ProfilerEntry
-{
-    public ulong StartTimeUsec { get; private set; }
-    public ulong AccumulatedTimeUsec { get; private set; }
-    public int FrameCount { get; private set; }
-
-    public void Start()
-    {
-        StartTimeUsec = Time.GetTicksUsec();
-    }
-
-    public void Stop()
-    {
-        AccumulatedTimeUsec += Time.GetTicksUsec() - StartTimeUsec;
-        FrameCount++;
-    }
-
-    public void Reset()
-    {
-        AccumulatedTimeUsec = 0UL;
-        FrameCount = 0;
-    }
-
-    public double GetAverageMs()
-    {
-        return (double)AccumulatedTimeUsec / FrameCount / 1000.0;
     }
 }
