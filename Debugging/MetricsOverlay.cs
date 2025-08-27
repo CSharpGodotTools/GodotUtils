@@ -144,7 +144,7 @@ public class MetricsOverlay : Component
     private static void BeginOverlayWindow(Vector2 position)
     {
         ImGui.SetNextWindowPos(position, ImGuiCond.Always);
-        ImGui.Begin(ImGuiWindowName, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoTitleBar);
+        ImGui.Begin(ImGuiWindowName, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoTitleBar);
     }
 
     private static void EndOverlayWindow()
