@@ -111,6 +111,7 @@ public class MetricsOverlay : Component
 
     public static void StartMonitoringProcess(string key, Func<object> function)
     {
+        _instance._visible = true;
         _processMonitors.Add(key, function);
     }
 
@@ -121,6 +122,7 @@ public class MetricsOverlay : Component
 
     public static void StartMonitoringPhysicsProcess(string key, Func<object> function)
     {
+        _instance._visible = true;
         _physicsProcessMonitors.Add(key, function);
     }
 
