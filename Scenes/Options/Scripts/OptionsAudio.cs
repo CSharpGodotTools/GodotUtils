@@ -1,8 +1,6 @@
 using Godot;
-using GodotUtils;
-using GodotUtils.UI;
 
-namespace __TEMPLATE__.UI;
+namespace GodotUtils.UI;
 
 public partial class OptionsAudio : Control
 {

@@ -1,10 +1,7 @@
 using Godot;
-using GodotSharp.SourceGenerators;
-using GodotUtils;
 
-namespace __TEMPLATE__.UI;
+namespace GodotUtils.UI;
 
-[SceneTree]
 public partial class Options : PanelContainer
 {
     [OnInstantiate]

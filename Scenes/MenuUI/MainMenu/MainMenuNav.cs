@@ -1,7 +1,6 @@
 using Godot;
-using GodotUtils;
 
-namespace __TEMPLATE__.UI;
+namespace GodotUtils.UI;
 
 public partial class MainMenuNav : Node
 {

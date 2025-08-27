@@ -1,12 +1,9 @@
 using Godot;
-using GodotUtils;
-using GodotUtils.UI;
 using System;
 
 using static Godot.DisplayServer;
-using WindowMode = GodotUtils.WindowMode;
 
-namespace __TEMPLATE__.UI;
+namespace GodotUtils.UI;
 
 public partial class OptionsDisplay : Control
 {

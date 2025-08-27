@@ -1,11 +1,9 @@
 using Godot;
-using GodotUtils;
+using Godot.Collections;
 using System;
 using System.Linq;
-using Godot.Collections;
-using GodotUtils.UI;
 
-namespace __TEMPLATE__.UI;
+namespace GodotUtils.UI;
 
 public partial class OptionsInput : Control
 {
@@ -163,7 +161,7 @@ public partial class OptionsInput : Control
         // Create a readable label for the input (e.g. "A" or "Mouse 1").
         string readable = GetReadableForInput(inputEvent);
 
-        var btn = new HotkeyButton()
+        HotkeyButton btn = new()
         {
             Text = readable
         };

@@ -1,5 +1,5 @@
-using __TEMPLATE__.UI;
-using QualityP = __TEMPLATE__.UI.QualityPreset;
+using GodotUtils.UI;
+using QualityP = GodotUtils.UI.QualityPreset;
 using VSyncMode = Godot.DisplayServer.VSyncMode;
 
 // This was intentionally set to GodotUtils instead of __TEMPLATE__ as GodotUtils relies on MainMenuBtnPressed

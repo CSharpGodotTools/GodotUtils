@@ -1,10 +1,8 @@
 using Godot;
-using GodotUtils;
 using System;
 
-namespace __TEMPLATE__.UI;
+namespace GodotUtils.UI;
 
-[SceneTree]
 public partial class Credits : Node
 {
     private const float STARTING_SPEED = 0.75f;
@@ -18,8 +16,8 @@ public partial class Credits : Node
 
     public override void _Ready()
     {
-        _btnPause = Pause;
-        _btnSpeed = Speed;
+        _btnPause = GetNode<Button>("%Pause");
+        _btnSpeed = GetNode<Button>("%Speed");
 
         _vbox = new VBoxContainer
         {
