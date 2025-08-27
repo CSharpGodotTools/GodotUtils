@@ -6,7 +6,6 @@ using System;
 // and GodotUtils should NOT have any trace of using __TEMPLATE__.
 namespace GodotUtils.UI; 
 
-[SceneTree]
 public partial class PopupMenu : Control
 {
     public event Action Opened;
@@ -21,8 +20,8 @@ public partial class PopupMenu : Control
 
     public override void _Ready()
     {
-        _menu = Menu;
-        _vbox = Navigation;
+        _menu = GetNode<PanelContainer>("%Menu");
+        _vbox = GetNode<VBoxContainer>("%Navigation");
 
         WorldEnvironment = TryFindWorldEnvironment(GetTree().Root);
 

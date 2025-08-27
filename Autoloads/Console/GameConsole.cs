@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace GodotUtils.UI.Console;
 
-[SceneTree]
 public partial class GameConsole : Node
 {
     private const int MaxTextFeed = 1000;
@@ -29,13 +28,13 @@ public partial class GameConsole : Node
 
         Instance = this;
 
-        _feed          = Output;
-        _input         = CmdsInput;
-        _settingsBtn   = Settings;
-        _mainContainer = MainContainer;
-        _settingsPopup = PopupPanel;
+        _feed          = GetNode<TextEdit>("%Output");
+        _input         = GetNode<LineEdit>("%CmdsInput");
+        _settingsBtn   = GetNode<Button>("%Settings");
+        _mainContainer = GetNode<PanelContainer>("%MainContainer");
+        _settingsPopup = GetNode<PopupPanel>("%PopupPanel");
 
-        _settingsAutoScroll = PopupAutoScroll;
+        _settingsAutoScroll = GetNode<CheckBox>("%PopupAutoScroll");
         _settingsAutoScroll.ButtonPressed = _autoScroll;
 
         _input.TextSubmitted += OnConsoleInputEntered;

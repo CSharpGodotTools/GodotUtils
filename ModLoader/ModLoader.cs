@@ -4,7 +4,6 @@ using System.Diagnostics;
 
 namespace GodotUtils.UI;
 
-[SceneTree]
 public partial class ModLoader : Node
 {
     private Label _uiName;
@@ -17,15 +16,15 @@ public partial class ModLoader : Node
 
     public override void _Ready()
     {
-        Node uiMods = VBoxMods;
+        Node uiMods = GetNode<VBoxContainer>("%VBoxMods");
         
-        _uiName = ModName;
-        _uiModVersion = ModVersion;
-        _uiGameVersion = GameVersion;
-        _uiDependencies = Dependencies;
-        _uiDescription = Description;
-        _uiAuthors = Authors;
-        _uiIncompatibilities = Incompatibilities;
+        _uiName = GetNode<Label>("%ModName");
+        _uiModVersion = GetNode<Label>("%ModVersion");
+        _uiGameVersion = GetNode<Label>("%GameVersion");
+        _uiDependencies = GetNode<Label>("%Dependencies");
+        _uiDescription = GetNode<Label>("%Description");
+        _uiAuthors = GetNode<Label>("%Authors");
+        _uiIncompatibilities = GetNode<Label>("%Incompatibilities");
 
         ModLoaderUI modLoaderUi = new();
         Dictionary<string, ModInfo> mods = modLoaderUi.GetMods();
