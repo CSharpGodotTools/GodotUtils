@@ -6,8 +6,6 @@ namespace GodotUtils.UI;
 
 public partial class ModLoader : Node
 {
-    [Export] private MenuScenes _menuScenes;
-
     private Label _uiName;
     private Label _uiModVersion;
     private Label _uiGameVersion;
@@ -61,7 +59,7 @@ public partial class ModLoader : Node
     {
         if (Input.IsActionJustPressed(InputActions.UICancel))
         {
-            SceneManager.SwitchScene(_menuScenes.MainMenu);
+            SceneManager.SwitchScene(SceneManager.Instance.MenuScenes.MainMenu);
         }
     }
 

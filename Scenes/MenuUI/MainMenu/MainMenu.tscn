@@ -1,6 +1,5 @@
-[gd_scene load_steps=3 format=3 uid="uid://d4a5xfmaulku1"]
+[gd_scene load_steps=2 format=3 uid="uid://d4a5xfmaulku1"]
 
-[ext_resource type="PackedScene" uid="uid://djhd6uw7l1ok" path="res://Level.tscn" id="3_xo0to"]
 [ext_resource type="Script" uid="uid://bi551lrt82awu" path="res://Framework/MainMenuNav.cs" id="5_sc4as"]
 
 [node name="Main Menu" type="PanelContainer"]
@@ -17,7 +16,6 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 alignment = 1
 script = ExtResource("5_sc4as")
-_gameScene = ExtResource("3_xo0to")
 
 [node name="Play" type="Button" parent="Nav"]
 custom_minimum_size = Vector2(175, 60)

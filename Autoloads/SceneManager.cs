@@ -14,10 +14,10 @@ public class SceneManager : IDisposable
     public event Action<string> PreSceneChanged;
 
     public static SceneManager Instance { get; private set; }
+    public MenuScenes MenuScenes { get; private set; }
 
     private SceneTree _tree;
     private Autoloads _autoloads;
-    private MenuScenes _scenes;
     private Node _currentScene;
 
     public SceneManager(Autoloads autoloads, MenuScenes scenes)
@@ -27,7 +27,7 @@ public class SceneManager : IDisposable
 
         Instance = this;
         _autoloads = autoloads;
-        _scenes = scenes;
+        MenuScenes = scenes;
         _tree = autoloads.GetTree();
 
         Window root = _tree.Root;
