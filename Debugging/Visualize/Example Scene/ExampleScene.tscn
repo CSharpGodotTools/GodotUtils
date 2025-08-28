@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://dpt16oa8hjtej"]
+[gd_scene load_steps=5 format=3 uid="uid://dpt16oa8hjtej"]
 
 [ext_resource type="Script" uid="uid://osw45l54xmwh" path="res://Framework/GodotUtils/Debugging/Visualize/Example Scene/ExampleScene.cs" id="1_4e0k5"]
-[ext_resource type="Texture2D" uid="uid://b23bhiuc3hpkp" path="res://Framework/Icon.svg" id="2_fedb0"]
+[ext_resource type="PackedScene" uid="uid://dnawp2ojmq7fy" path="res://Framework/GodotUtils/Debugging/Visualize/Example Scene/VisualizeExampleSprite.tscn" id="2_6hp5q"]
+[ext_resource type="Texture2D" uid="uid://baepo3ev0qpm1" path="res://Framework/Icon.svg" id="2_fedb0"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_pwxkx"]
 light_mode = 1
@@ -14,6 +15,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4e0k5")
+_spriteExampleScene = ExtResource("2_6hp5q")
 metadata/_edit_lock_ = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

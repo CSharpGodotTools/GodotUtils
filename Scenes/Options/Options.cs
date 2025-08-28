@@ -12,11 +12,6 @@ public partial class Options : PanelContainer
     private OptionsAudio _optionsAudio;
     private OptionsInput _optionsInput;
 
-    [OnInstantiate]
-    private void Init() 
-    {
-    }
-
     public override void _EnterTree()
     {
         _optionsNav = new OptionsNav(this);

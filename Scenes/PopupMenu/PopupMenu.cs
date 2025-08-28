@@ -8,6 +8,8 @@ namespace GodotUtils.UI;
 
 public partial class PopupMenu : Control
 {
+    [Export] private PackedScene _optionsPrefab;
+
     public event Action Opened;
     public event Action Closed;
     public event Action MainMenuBtnPressed;
@@ -79,7 +81,7 @@ public partial class PopupMenu : Control
 
     private void CreateOptions()
     {
-        _options = Options.Instantiate();
+        _options = _optionsPrefab.Instantiate<Options>();
         AddChild(_options);
     }
 

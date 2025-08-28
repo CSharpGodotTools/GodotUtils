@@ -6,13 +6,10 @@ namespace GodotUtils.Debugging.Visualize;
 
 public partial class VisualizeExampleSprite : Sprite2D
 {
-    [Visualize] private float    _rotation;
-    [Visualize] private Color    _color = Colors.White;
-    [Visualize] private float    _skew;
-    [Visualize] private Vector2  _offset;
-
-    [OnInstantiate]
-    private void Init() { }
+    [Visualize] private float   _rotation;
+    [Visualize] private Color   _color = Colors.White;
+    [Visualize] private float   _skew;
+    [Visualize] private Vector2 _offset;
 
     public override void _EnterTree()
     {
