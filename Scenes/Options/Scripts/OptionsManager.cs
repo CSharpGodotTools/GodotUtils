@@ -243,7 +243,7 @@ public partial class OptionsManager : IDisposable
 
         File.WriteAllText(userGlobalPath, updatedContent);
 
-        GD.Print($"Script path in {Path.GetFileName(userGlobalPath)} in was invalid and has been readjusted to the proper path: {localResPath}");
+        GD.Print($"Script path in {Path.GetFileName(userGlobalPath)} was invalid and has been readjusted to the proper path: {localResPath}");
     }
 
     private static bool ActionsAreEqual(Dictionary<StringName, Array<InputEvent>> dict1, Dictionary<StringName, Array<InputEvent>> dict2)
