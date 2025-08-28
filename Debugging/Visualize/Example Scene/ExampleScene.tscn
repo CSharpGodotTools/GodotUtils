@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://osw45l54xmwh" path="res://Framework/GodotUtils/Debugging/Visualize/Example Scene/ExampleScene.cs" id="1_4e0k5"]
 [ext_resource type="Texture2D" uid="uid://b23bhiuc3hpkp" path="res://Framework/Icon.svg" id="2_fedb0"]
 
-
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_pwxkx"]
 light_mode = 1
 

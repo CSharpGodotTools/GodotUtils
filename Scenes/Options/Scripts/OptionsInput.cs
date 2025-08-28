@@ -7,6 +7,8 @@ namespace GodotUtils.UI;
 
 public partial class OptionsInput : Control
 {
+    [Export] private MenuScenes _menuScenes;
+
     private const string RemoveHotkeyAction = "remove_hotkey";
     private const string FullscreenAction = "fullscreen";
     private const string OptionsSceneName = "Options";
@@ -99,7 +101,7 @@ public partial class OptionsInput : Control
         if (SceneManager.GetCurrentScene().Name != OptionsSceneName)
             return;
 
-        SceneManager.SwitchScene(Scene.MainMenu);
+        SceneManager.SwitchScene(_menuScenes.MainMenu);
     }
 
     private void ProcessCapturedInput(InputEvent @event)

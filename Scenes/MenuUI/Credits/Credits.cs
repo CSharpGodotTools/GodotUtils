@@ -5,6 +5,8 @@ namespace GodotUtils.UI;
 
 public partial class Credits : Node
 {
+    [Export] private MenuScenes _menuScenes;
+
     private const float STARTING_SPEED = 0.75f;
 
     private VBoxContainer _vbox;
@@ -108,7 +110,7 @@ public partial class Credits : Node
         // Go back to the main menu when the credits are finished
         if (pos.Y <= -_vbox.Size.Y)
         {
-            SceneManager.SwitchScene(Scene.MainMenu);
+            SceneManager.SwitchScene(_menuScenes.MainMenu);
         }
     }
 
@@ -116,7 +118,7 @@ public partial class Credits : Node
     {
         if (Input.IsActionJustPressed(InputActions.UICancel))
         {
-            SceneManager.SwitchScene(Scene.MainMenu);
+            SceneManager.SwitchScene(_menuScenes.MainMenu);
         }
     }
 

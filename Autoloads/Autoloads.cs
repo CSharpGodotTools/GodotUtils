@@ -15,7 +15,7 @@ namespace GodotUtils;
 // Access this with GetNode<Autoloads>("/root/Autoloads")
 public partial class Autoloads : Node
 {
-    [Export] private Scenes _scenes;
+    [Export] private MenuScenes _scenes;
 
     public event Func<Task> PreQuit;
 

@@ -8,6 +8,8 @@ namespace GodotUtils.UI;
 
 public partial class PopupMenu : Control
 {
+    [Export] private MenuScenes _menuScenes;
+
     public event Action Opened;
     public event Action Closed;
     public event Action MainMenuBtnPressed;
@@ -69,7 +71,7 @@ public partial class PopupMenu : Control
     {
         MainMenuBtnPressed?.Invoke();
         GetTree().Paused = false;
-        SceneManager.SwitchScene(Scene.MainMenu);
+        SceneManager.SwitchScene(_menuScenes.MainMenu);
     }
 
     private async void _OnQuitPressed()

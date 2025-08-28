@@ -1,5 +1,6 @@
 using __TEMPLATE__.UI;
 using Godot;
+using GodotUtils.UI;
 using System;
 
 namespace GodotUtils;
@@ -16,10 +17,10 @@ public class SceneManager : IDisposable
 
     private SceneTree _tree;
     private Autoloads _autoloads;
-    private Scenes _scenes;
+    private MenuScenes _scenes;
     private Node _currentScene;
 
-    public SceneManager(Autoloads autoloads, Scenes scenes)
+    public SceneManager(Autoloads autoloads, MenuScenes scenes)
     {
         if (Instance != null)
             throw new InvalidOperationException($"{nameof(SceneManager)} was initialized already");
@@ -50,30 +51,23 @@ public class SceneManager : IDisposable
         return Instance._currentScene;
     }
 
-    public static void SwitchScene(Scene scene, TransType transType = TransType.None)
+    public static void SwitchScene(PackedScene scene, TransType transType = TransType.None)
     {
-        string scenePath = scene switch
-        {
-            Scene.MainMenu => Instance._scenes.MainMenu.ResourcePath,
-            Scene.ModLoader => Instance._scenes.ModLoader.ResourcePath,
-            Scene.Options => Instance._scenes.Options.ResourcePath,
-            Scene.Credits => Instance._scenes.Credits.ResourcePath,
-            Scene.Game => Instance._scenes.Game.ResourcePath,
-            _ => throw new ArgumentOutOfRangeException(nameof(scene), scene, "Tried to switch to unknown scene")
-        };
-
-        Instance.PreSceneChanged?.Invoke(scenePath);
+        ArgumentNullException.ThrowIfNull(scene);
+        string path = scene.ResourcePath;
+        Instance.PreSceneChanged?.Invoke(path);
 
         switch (transType)
         {
             case TransType.None:
-                Instance.ChangeScene(scenePath, transType);
+                Instance.ChangeScene(path, transType);
                 break;
             case TransType.Fade:
-                Instance.FadeTo(TransColor.Black, 2, () => Instance.ChangeScene(scenePath, transType));
+                Instance.FadeTo(TransColor.Black, 2, () => Instance.ChangeScene(path, transType));
                 break;
         }
     }
+
 
     /// <summary>
     /// Resets the currently active scene.
@@ -168,13 +162,4 @@ public class SceneManager : IDisposable
         Black,
         Transparent
     }
-}
-
-public enum Scene
-{
-    MainMenu,
-    ModLoader,
-    Options,
-    Credits,
-    Game
 }
