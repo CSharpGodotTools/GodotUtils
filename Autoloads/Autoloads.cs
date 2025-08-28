@@ -7,7 +7,6 @@ using GodotUtils.Debugging.Visualize;
 #endif
 using System;
 using System.Threading.Tasks;
-using __TEMPLATE__.UI;
 
 namespace GodotUtils;
 
