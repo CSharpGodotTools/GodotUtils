@@ -7,7 +7,7 @@ using Vector2 = System.Numerics.Vector2;
 
 namespace GodotUtils.Debugging;
 
-public class MetricsOverlay : Component
+public class MetricsOverlay : IDisposable
 {
     private const int BytesInMegabyte     = 1048576;
     private const int BytesInKilobyte     = 1024;
@@ -32,7 +32,7 @@ public class MetricsOverlay : Component
     private bool _visible;
     private int _fpsIndex;
 
-    public MetricsOverlay(Autoloads autoloads) : base(autoloads)
+    public MetricsOverlay()
     {
         if (_instance != null)
             throw new InvalidOperationException($"{nameof(MetricsOverlay)} was initialized already");
@@ -72,13 +72,7 @@ public class MetricsOverlay : Component
 #pragma warning restore IDE0008 // Use explicit type
     }
 
-    public override void Ready()
-    {
-        SetProcess(true);
-        SetPhysicsProcess(true);
-    }
-
-    public override void Process(double delta)
+    public void Update()
     {
         if (Input.IsActionJustPressed(InputActions.DebugOverlay))
         {
@@ -92,7 +86,7 @@ public class MetricsOverlay : Component
         }
     }
 
-    public override void PhysicsProcess(double delta)
+    public void UpdatePhysics()
     {
         if (_visible)
         {
@@ -104,7 +98,7 @@ public class MetricsOverlay : Component
         }
     }
 
-    public override void Dispose()
+    public void Dispose()
     {
         _instance = null;
     }

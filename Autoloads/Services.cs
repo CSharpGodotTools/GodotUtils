@@ -8,7 +8,7 @@ namespace GodotUtils;
 /// Services have a scene lifetime meaning they will be destroyed when the scene changes. Services
 /// aid as an alternative to using the static keyword everywhere.
 /// </summary>
-public partial class Services : Component
+public partial class Services : IDisposable
 {
     /// <summary>
     /// Dictionary to store registered services, keyed by their type.
@@ -17,7 +17,7 @@ public partial class Services : Component
     private Dictionary<Type, Service> _services = [];
     private SceneManager _sceneManager;
 
-    public Services(Autoloads autoloads) : base(autoloads)
+    public Services(Autoloads autoloads)
     {
         if (_instance != null)
             throw new InvalidOperationException($"{nameof(Services)} was initialized already");
@@ -26,7 +26,7 @@ public partial class Services : Component
         _sceneManager = autoloads.SceneManager;
     }
 
-    public override void Dispose()
+    public void Dispose()
     {
         _instance = null;
     }

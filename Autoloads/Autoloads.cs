@@ -30,6 +30,14 @@ public partial class Autoloads : Node
     public SceneManager     SceneManager     { get; private set; }
     public GameConsole      GameConsole      { get; private set; }
 
+#if NETCODE_ENABLED
+    private Logger _logger;
+#endif
+
+#if DEBUG
+    private VisualizeAutoload _visualizeAutoload;
+#endif
+
     public override void _EnterTree()
     {
         if (Instance != null)
@@ -42,7 +50,7 @@ public partial class Autoloads : Node
         Services = new Services(this);
 
 #if NETCODE_ENABLED
-        _ = new Logger(GameConsole);
+        _logger = new Logger(GameConsole);
 #endif
     }
 
@@ -53,11 +61,30 @@ public partial class Autoloads : Node
 
         OptionsManager = new OptionsManager(this);
         AudioManager = new AudioManager(this);
-        MetricsOverlay = new MetricsOverlay(this);
+        MetricsOverlay = new MetricsOverlay();
 
 #if DEBUG
-        _ = new VisualizeAutoload(this);
+        _visualizeAutoload = new VisualizeAutoload();
 #endif
+    }
+
+    public override void _Process(double delta)
+    {
+        OptionsManager.Update();
+        MetricsOverlay.Update();
+
+#if DEBUG
+        _visualizeAutoload.Update();
+#endif
+
+#if NETCODE_ENABLED
+        _logger.Update();
+#endif
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        MetricsOverlay.UpdatePhysics();
     }
 
     public override async void _Notification(int what)
@@ -70,7 +97,19 @@ public partial class Autoloads : Node
 
     public override void _ExitTree()
     {
+        AudioManager.Dispose();
+        OptionsManager.Dispose();
         SceneManager.Dispose();
+        Services.Dispose();
+        MetricsOverlay.Dispose();
+
+#if DEBUG
+        _visualizeAutoload.Dispose();
+#endif
+
+#if NETCODE_ENABLED
+        _logger.Dispose();
+#endif
 
         Profiler.Dispose();
 

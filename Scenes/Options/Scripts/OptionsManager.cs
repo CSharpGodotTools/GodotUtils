@@ -12,7 +12,7 @@ using FileAccess = Godot.FileAccess;
 namespace GodotUtils.UI;
 
 // Autoload
-public partial class OptionsManager : Component
+public partial class OptionsManager : IDisposable
 {
     public event Action<WindowMode> WindowModeChanged;
 
@@ -28,7 +28,7 @@ public partial class OptionsManager : Component
     private string _currentOptionsTab = "General";
     private Autoloads _autoloads;
 
-    public OptionsManager(Autoloads autoloads) : base(autoloads)
+    public OptionsManager(Autoloads autoloads)
     {
         if (Instance != null)
             throw new InvalidOperationException($"{nameof(OptionsManager)} was initialized already");
@@ -50,12 +50,7 @@ public partial class OptionsManager : Component
         SetAntialiasing();
     }
 
-    public override void Ready()
-    {
-        SetProcess(true);
-    }
-
-    public override void Process(double delta)
+    public void Update()
     {
         if (Input.IsActionJustPressed(InputActions.Fullscreen))
         {
@@ -63,7 +58,7 @@ public partial class OptionsManager : Component
         }
     }
 
-    public override void Dispose()
+    public void Dispose()
     {
         _autoloads.PreQuit -= SaveSettingsOnQuit;
 
