@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://cj4fbh1a1lpq4"]
 
-[ext_resource type="Script" uid="uid://bs607r5xa8vl8" path="res://Framework/GameAutoloads.cs" id="1_00yjk"]
+[ext_resource type="Script" uid="uid://cdt2k6s3xm13g" path="res://Framework/GodotUtils/Autoloads/Autoloads.cs" id="1_00yjk"]
 [ext_resource type="PackedScene" uid="uid://rbcqvr4snrvn" path="res://Framework/GodotUtils/Scenes/MenuUI/Credits/Credits.tscn" id="2_xdmsn"]
 [ext_resource type="PackedScene" uid="uid://d4a5xfmaulku1" path="res://Framework/GodotUtils/Scenes/MenuUI/MainMenu/MainMenu.tscn" id="3_sv5ok"]
 [ext_resource type="Script" uid="uid://ct4og8hi8urvd" path="res://Framework/GodotUtils/Components/ComponentManager.cs" id="3_sycog"]
