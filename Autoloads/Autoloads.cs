@@ -7,6 +7,7 @@ using GodotUtils.Debugging.Visualize;
 #endif
 using System;
 using System.Threading.Tasks;
+using __TEMPLATE__.UI;
 
 namespace GodotUtils;
 
@@ -55,7 +56,8 @@ public partial class Autoloads : Node
 
     public override void _Ready()
     {
-        CommandLineArgs.Init();
+        CommandLineArgs.Initialize();
+        Commands.RegisterAll();
 
         OptionsManager = new OptionsManager(this);
         AudioManager = new AudioManager(this);

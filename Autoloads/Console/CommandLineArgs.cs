@@ -8,7 +8,7 @@ namespace GodotUtils.UI.Console;
 /// </summary>
 public class CommandLineArgs
 {
-    public static void Init()
+    public static void Initialize()
     {
         // Get command-line arguments
         string[] args = OS.GetCmdlineArgs();
