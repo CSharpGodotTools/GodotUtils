@@ -1,4 +1,3 @@
-using __TEMPLATE__.UI;
 using Godot;
 using GodotUtils.UI;
 using GodotUtils.UI.Console;
@@ -57,7 +56,6 @@ public partial class Autoloads : Node
     public override void _Ready()
     {
         CommandLineArgs.Init();
-        Commands.RegisterAll();
 
         OptionsManager = new OptionsManager(this);
         AudioManager = new AudioManager(this);

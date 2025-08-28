@@ -1,4 +1,3 @@
-using __TEMPLATE__.UI;
 using Godot;
 using GodotUtils.UI;
 using System;
