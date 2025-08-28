@@ -177,7 +177,7 @@ public partial class OptionsInput(Options options)
             Action = action,
             HBox = hbox,
             Btn = btn,
-            InputEvent = inputEvent,
+            InputEvent = (InputEvent)inputEvent.Duplicate(),
             Plus = false
         };
 
