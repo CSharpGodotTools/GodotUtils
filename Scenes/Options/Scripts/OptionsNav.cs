@@ -3,21 +3,21 @@ using System.Collections.Generic;
 
 namespace GodotUtils.UI;
 
-public partial class OptionsNav : Control
+public class OptionsNav(Options options)
 {
     private readonly Dictionary<string, Control> _tabs = [];
     private readonly Dictionary<string, Button> _buttons = [];
 
-    public override void _Ready()
+    public void Initialize()
     {
-        Node content = GetParent().GetNode("Content");
+        Node content = options.GetNode("%Content");
 
         foreach (Control child in content.GetChildren())
         {
             _tabs.Add(child.Name, child);
         }
 
-        foreach (Button button in GetChildren())
+        foreach (Button button in options.GetNode("%Nav").GetChildren())
         {
             button.FocusEntered += () => ShowTab(button.Name);
             button.Pressed += () => ShowTab(button.Name);

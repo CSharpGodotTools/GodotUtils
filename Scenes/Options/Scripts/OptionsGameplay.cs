@@ -3,38 +3,35 @@ using System;
 
 namespace GodotUtils.UI;
 
-public partial class OptionsGameplay : Control
+public class OptionsGameplay(Options options)
 {
     public event Action<float> OnMouseSensitivityChanged;
 
     private ResourceOptions _options;
 
-    public override void _Ready()
+    public void Initialize()
     {
         _options = OptionsManager.GetOptions();
-        SetupDifficulty();
-        SetupMouseSensitivity();
+
+        OptionButton difficultyBtn = options.GetNode<OptionButton>("%Difficulty");
+        difficultyBtn.Select((int)_options.Difficulty);
+        difficultyBtn.ItemSelected += OnDifficultyItemSelected;
+
+        HSlider sensitivity = options.GetNode<HSlider>("%Sensitivity");
+        sensitivity.Value = _options.MouseSensitivity;
+        sensitivity.ValueChanged += OnSensitivityValueChanged;
     }
 
-    private void _OnDifficultyItemSelected(int index)
+    private void OnDifficultyItemSelected(long index)
     {
         _options.Difficulty = (Difficulty)index;
     }
 
-    private void _OnSensitivityValueChanged(float value)
+    private void OnSensitivityValueChanged(double v)
     {
+        float value = (float)v;
         _options.MouseSensitivity = value;
         OnMouseSensitivityChanged?.Invoke(value);
-    }
-
-    private void SetupDifficulty()
-    {
-        GetNode<OptionButton>("%Difficulty").Select((int)_options.Difficulty);
-    }
-
-    private void SetupMouseSensitivity()
-    {
-        GetNode<HSlider>("%Sensitivity").Value = _options.MouseSensitivity;
     }
 }
 

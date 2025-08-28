@@ -5,7 +5,7 @@ using static Godot.DisplayServer;
 
 namespace GodotUtils.UI;
 
-public partial class OptionsDisplay : Control
+public class OptionsDisplay(Options options)
 {
     public event Action<int> OnResolutionChanged;
 
@@ -20,7 +20,7 @@ public partial class OptionsDisplay : Control
     private int _prevNumX, _prevNumY;
     private int _minResolution = 36;
 
-    public override void _Ready()
+    public void Initialize()
     {
         _options = OptionsManager.GetOptions();
 
@@ -31,7 +31,88 @@ public partial class OptionsDisplay : Control
         SetupVSyncMode();
     }
 
-    private void _OnWindowModeItemSelected(int index)
+    private void SetupMaxFps()
+    {
+        HSlider maxFps = options.GetNode<HSlider>("%MaxFPS");
+        maxFps.ValueChanged += OnMaxFpsValueChanged;
+        maxFps.DragEnded += OnMaxFpsDragEnded;
+
+        _labelMaxFpsFeedback = options.GetNode<Label>("%MaxFPSFeedback");
+        _labelMaxFpsFeedback.Text = _options.MaxFPS == 0 ? "UNLIMITED" : _options.MaxFPS + "";
+
+        maxFps.Value = _options.MaxFPS;
+        maxFps.Editable = _options.VSyncMode == VSyncMode.Disabled;
+
+        _sliderMaxFps = maxFps;
+    }
+
+    private void SetupWindowSize()
+    {
+        _resX = options.GetNode<LineEdit>("%WindowWidth");
+        _resY = options.GetNode<LineEdit>("%WindowHeight");
+
+        _resX.TextChanged += OnWindowWidthTextChanged;
+        _resX.TextSubmitted += OnWindowWidthTextSubmitted;
+
+        _resY.TextChanged += OnWindowHeightTextChanged;
+        _resY.TextSubmitted += OnWindowHeightTextSubmitted;
+
+        Vector2I winSize = DisplayServer.WindowGetSize();
+
+        _prevNumX = winSize.X;
+        _prevNumY = winSize.Y;
+
+        _resX.Text = winSize.X + "";
+        _resY.Text = winSize.Y + "";
+
+        options.GetNode<Button>("%WindowSizeApply").Pressed += OnWindowSizeApplyPressed;
+    }
+
+    private void SetupWindowMode()
+    {
+        OptionButton windowModeBtn = options.GetNode<OptionButton>("%WindowMode");
+        windowModeBtn.ItemSelected += OnWindowModeItemSelected;
+        windowModeBtn.Select((int)_options.WindowMode);
+
+        OptionsManager.Instance.WindowModeChanged += windowMode =>
+        {
+            if (!GodotObject.IsInstanceValid(windowModeBtn))
+                return;
+
+            // Window mode select button could be null. If there was no null check
+            // here then we would be assuming that the user can only change fullscreen
+            // when in the options screen but this is not the case.
+            windowModeBtn.Select((int)windowMode);
+        };
+    }
+
+    private void SetupResolution()
+    {
+        HSlider resolutionSlider = options.GetNode<HSlider>("%Resolution");
+        resolutionSlider.Value = 1 + _minResolution - _options.Resolution;
+        resolutionSlider.ValueChanged += OnResolutionValueChanged;
+    }
+
+    private void SetupVSyncMode()
+    {
+        OptionButton vsyncMode = options.GetNode<OptionButton>("%VSyncMode");
+        vsyncMode.Select((int)_options.VSyncMode);
+        vsyncMode.ItemSelected += OnVSyncModeItemSelected;
+    }
+
+    private void ApplyWindowSize()
+    {
+        DisplayServer.WindowSetSize(new Vector2I(_prevNumX, _prevNumY));
+
+        // Center window
+        Vector2I winSize = DisplayServer.WindowGetSize();
+        DisplayServer.WindowSetPosition(DisplayServer.ScreenGetSize() / 2 - winSize / 2);
+
+        _options.WindowWidth = winSize.X;
+        _options.WindowHeight = winSize.Y;
+    }
+
+    private void OnWindowModeItemSelected(long index)
     {
         switch ((WindowMode)index)
         {
@@ -61,27 +142,27 @@ public partial class OptionsDisplay : Control
         _options.WindowHeight = winSize.Y;
     }
 
-    private void _OnWindowWidthTextChanged(string text)
+    private void OnWindowWidthTextChanged(string text)
     {
         text.ValidateNumber(_resX, 0, ScreenGetSize().X, ref _prevNumX);
     }
 
-    private void _OnWindowHeightTextChanged(string text)
+    private void OnWindowHeightTextChanged(string text)
     {
         text.ValidateNumber(_resY, 0, ScreenGetSize().Y, ref _prevNumY);
     }
 
-    private void _OnWindowWidthTextSubmitted(string text) => ApplyWindowSize();
-    private void _OnWindowHeightTextSubmitted(string text) => ApplyWindowSize();
-    private void _OnWindowSizeApplyPressed() => ApplyWindowSize();
+    private void OnWindowWidthTextSubmitted(string text) => ApplyWindowSize();
+    private void OnWindowHeightTextSubmitted(string text) => ApplyWindowSize();
+    private void OnWindowSizeApplyPressed() => ApplyWindowSize();
 
-    private void _OnResolutionValueChanged(float value)
+    private void OnResolutionValueChanged(double value)
     {
         _options.Resolution = _minResolution - (int)value + 1;
         OnResolutionChanged?.Invoke(_options.Resolution);
     }
 
-    private void _OnVSyncModeItemSelected(int index)
+    private void OnVSyncModeItemSelected(long index)
     {
         VSyncMode vsyncMode = (VSyncMode)index;
         WindowSetVsyncMode(vsyncMode);
@@ -89,80 +170,17 @@ public partial class OptionsDisplay : Control
         _sliderMaxFps.Editable = _options.VSyncMode == VSyncMode.Disabled;
     }
 
-    private void _OnMaxFpsValueChanged(float value)
+    private void OnMaxFpsValueChanged(double value)
     {
         _labelMaxFpsFeedback.Text = value == 0 ? "UNLIMITED" : value + "";
         _options.MaxFPS = (int)value;
     }
 
-    private void _OnMaxFpsDragEnded(bool valueChanged)
+    private void OnMaxFpsDragEnded(bool valueChanged)
     {
         if (!valueChanged)
             return;
 
         Engine.MaxFps = _options.MaxFPS;
-    }
-
-    private void SetupMaxFps()
-    {
-        _labelMaxFpsFeedback = GetNode<Label>("%MaxFPSFeedback");
-        _labelMaxFpsFeedback.Text = _options.MaxFPS == 0 ? "UNLIMITED" : _options.MaxFPS + "";
-
-        _sliderMaxFps = GetNode<HSlider>("%MaxFPS");
-        _sliderMaxFps.Value = _options.MaxFPS;
-        _sliderMaxFps.Editable = _options.VSyncMode == VSyncMode.Disabled;
-    }
-
-    private void SetupWindowSize()
-    {
-        _resX = GetNode<LineEdit>("%WindowWidth");
-        _resY = GetNode<LineEdit>("%WindowHeight");
-
-        Vector2I winSize = DisplayServer.WindowGetSize();
-
-        _prevNumX = winSize.X;
-        _prevNumY = winSize.Y;
-
-        _resX.Text = winSize.X + "";
-        _resY.Text = winSize.Y + "";
-    }
-
-    private void SetupWindowMode()
-    {
-        OptionButton optionBtnWindowMode = GetNode<OptionButton>("%WindowMode");
-        optionBtnWindowMode.Select((int)_options.WindowMode);
-
-        OptionsManager.Instance.WindowModeChanged += windowMode =>
-        {
-            if (!IsInstanceValid(optionBtnWindowMode))
-                return;
-
-            // Window mode select button could be null. If there was no null check
-            // here then we would be assuming that the user can only change fullscreen
-            // when in the options screen but this is not the case.
-            optionBtnWindowMode.Select((int)windowMode);
-        };
-    }
-
-    private void SetupResolution()
-    {
-        GetNode<HSlider>("%Resolution").Value = 1 + _minResolution - _options.Resolution;
-    }
-
-    private void SetupVSyncMode()
-    {
-        GetNode<OptionButton>("%VSyncMode").Select((int)_options.VSyncMode);
-    }
-
-    private void ApplyWindowSize()
-    {
-        DisplayServer.WindowSetSize(new Vector2I(_prevNumX, _prevNumY));
-
-        // Center window
-        Vector2I winSize = DisplayServer.WindowGetSize();
-        DisplayServer.WindowSetPosition(DisplayServer.ScreenGetSize() / 2 - winSize / 2);
-
-        _options.WindowWidth = winSize.X;
-        _options.WindowHeight = winSize.Y;
     }
 }

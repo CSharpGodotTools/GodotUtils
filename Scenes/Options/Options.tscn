@@ -1,13 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://7tfets4irkba"]
+[gd_scene load_steps=3 format=3 uid="uid://7tfets4irkba"]
 
 [ext_resource type="Script" uid="uid://b88ck7eam4e70" path="res://Framework/GodotUtils/Scenes/Options/Options.cs" id="1_xjg3i"]
-[ext_resource type="Script" uid="uid://pdomcsu3uajx" path="res://Framework/GodotUtils/Scenes/Options/Scripts/OptionsNav.cs" id="2_w30yg"]
-[ext_resource type="Script" uid="uid://byg8c8jdptylv" path="res://Framework/GodotUtils/Scenes/Options/Scripts/OptionsGeneral.cs" id="3_vefex"]
-[ext_resource type="Script" uid="uid://duywpdpydv488" path="res://Framework/GodotUtils/Scenes/Options/Scripts/OptionsDisplay.cs" id="4_o6e7i"]
-[ext_resource type="Script" uid="uid://bnb0qpdygtgve" path="res://Framework/GodotUtils/Scenes/Options/Scripts/OptionsGameplay.cs" id="5_eyimv"]
-[ext_resource type="Script" uid="uid://nots3syd4eur" path="res://Framework/GodotUtils/Scenes/Options/Scripts/OptionsAudio.cs" id="5_hbpj8"]
-[ext_resource type="Script" uid="uid://bpcd5ahs73ga4" path="res://Framework/GodotUtils/Scenes/Options/Scripts/OptionsInput.cs" id="6_n2qcv"]
-[ext_resource type="Script" uid="uid://bkctgqs1uogu8" path="res://Framework/GodotUtils/Scenes/Options/Scripts/OptionsGraphics.cs" id="6_wctgl"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ijcjj"]
 content_margin_left = 120.0
@@ -33,10 +26,10 @@ theme_override_constants/margin_bottom = 50
 layout_mode = 2
 
 [node name="Nav" type="VBoxContainer" parent="Margin/HBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 0
 alignment = 1
-script = ExtResource("2_w30yg")
 
 [node name="General" type="Button" parent="Margin/HBox/Nav"]
 custom_minimum_size = Vector2(150, 60)
@@ -75,6 +68,7 @@ size_flags_vertical = 3
 text = "INPUT"
 
 [node name="Content" type="PanelContainer" parent="Margin/HBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ijcjj")
@@ -82,7 +76,6 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_ijcjj")
 [node name="General" type="VBoxContainer" parent="Margin/HBox/Content"]
 visible = false
 layout_mode = 2
-script = ExtResource("3_vefex")
 
 [node name="Language" type="HBoxContainer" parent="Margin/HBox/Content/General"]
 layout_mode = 2
@@ -108,7 +101,6 @@ popup/item_2/id = 2
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-script = ExtResource("5_eyimv")
 
 [node name="Difficulty" type="HBoxContainer" parent="Margin/HBox/Content/Gameplay"]
 layout_mode = 2
@@ -148,9 +140,9 @@ value = 25.0
 
 [node name="Display" type="VBoxContainer" parent="Margin/HBox/Content"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 10
-script = ExtResource("4_o6e7i")
 
 [node name="WindowMode" type="HBoxContainer" parent="Margin/HBox/Content/Display"]
 layout_mode = 2
@@ -205,6 +197,7 @@ text = "1440"
 alignment = 1
 
 [node name="WindowSizeApply" type="Button" parent="Margin/HBox/Content/Display/WindowSize/HBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 text = "APPLY"
@@ -288,7 +281,6 @@ vertical_alignment = 1
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-script = ExtResource("6_wctgl")
 
 [node name="QualityMode" type="HBoxContainer" parent="Margin/HBox/Content/Graphics"]
 layout_mode = 2
@@ -336,7 +328,6 @@ popup/item_3/id = 3
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 20
-script = ExtResource("5_hbpj8")
 
 [node name="Music" type="HBoxContainer" parent="Margin/HBox/Content/Audio"]
 layout_mode = 2
@@ -369,38 +360,19 @@ size_flags_vertical = 4
 value = 75.0
 
 [node name="Input" type="VBoxContainer" parent="Margin/HBox/Content"]
-visible = false
 layout_mode = 2
-script = ExtResource("6_n2qcv")
 
 [node name="Scroll" type="ScrollContainer" parent="Margin/HBox/Content/Input"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBox" type="VBoxContainer" parent="Margin/HBox/Content/Input/Scroll"]
+[node name="InputContent" type="VBoxContainer" parent="Margin/HBox/Content/Input/Scroll"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ResetToDefaults" type="Button" parent="Margin/HBox/Content/Input"]
+[node name="ResetInputToDefaults" type="Button" parent="Margin/HBox/Content/Input"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "RESET_TO_DEFAULTS"
-
-[connection signal="item_selected" from="Margin/HBox/Content/General/Language/LanguageButton" to="Margin/HBox/Content/General" method="_OnLanguageItemSelected"]
-[connection signal="item_selected" from="Margin/HBox/Content/Gameplay/Difficulty/Difficulty" to="Margin/HBox/Content/Gameplay" method="_OnDifficultyItemSelected"]
-[connection signal="value_changed" from="Margin/HBox/Content/Gameplay/Sensitivity/Sensitivity" to="Margin/HBox/Content/Gameplay" method="_OnSensitivityValueChanged"]
-[connection signal="item_selected" from="Margin/HBox/Content/Display/WindowMode/WindowMode" to="Margin/HBox/Content/Display" method="_OnWindowModeItemSelected"]
-[connection signal="text_changed" from="Margin/HBox/Content/Display/WindowSize/HBox/WindowWidth" to="Margin/HBox/Content/Display" method="_OnWindowWidthTextChanged"]
-[connection signal="text_submitted" from="Margin/HBox/Content/Display/WindowSize/HBox/WindowWidth" to="Margin/HBox/Content/Display" method="_OnWindowWidthTextSubmitted"]
-[connection signal="text_changed" from="Margin/HBox/Content/Display/WindowSize/HBox/WindowHeight" to="Margin/HBox/Content/Display" method="_OnWindowHeightTextChanged"]
-[connection signal="text_submitted" from="Margin/HBox/Content/Display/WindowSize/HBox/WindowHeight" to="Margin/HBox/Content/Display" method="_OnWindowHeightTextSubmitted"]
-[connection signal="pressed" from="Margin/HBox/Content/Display/WindowSize/HBox/WindowSizeApply" to="Margin/HBox/Content/Display" method="_OnWindowSizeApplyPressed"]
-[connection signal="value_changed" from="Margin/HBox/Content/Display/Resolution/Resolution" to="Margin/HBox/Content/Display" method="_OnResolutionValueChanged"]
-[connection signal="item_selected" from="Margin/HBox/Content/Display/VSyncMode/VSyncMode" to="Margin/HBox/Content/Display" method="_OnVSyncModeItemSelected"]
-[connection signal="drag_ended" from="Margin/HBox/Content/Display/MaxFPS/HBox/MaxFPS" to="Margin/HBox/Content/Display" method="_OnMaxFpsDragEnded"]
-[connection signal="value_changed" from="Margin/HBox/Content/Display/MaxFPS/HBox/MaxFPS" to="Margin/HBox/Content/Display" method="_OnMaxFpsValueChanged"]
-[connection signal="item_selected" from="Margin/HBox/Content/Graphics/QualityMode/QualityMode" to="Margin/HBox/Content/Graphics" method="_OnQualityModeItemSelected"]
-[connection signal="item_selected" from="Margin/HBox/Content/Graphics/Anti-Aliasing/Antialiasing" to="Margin/HBox/Content/Graphics" method="_OnAntialiasingItemSelected"]
-[connection signal="value_changed" from="Margin/HBox/Content/Audio/Music/Music" to="Margin/HBox/Content/Audio" method="_OnMusicValueChanged"]
-[connection signal="value_changed" from="Margin/HBox/Content/Audio/Sounds/Sounds" to="Margin/HBox/Content/Audio" method="_OnSoundsValueChanged"]
-[connection signal="pressed" from="Margin/HBox/Content/Input/ResetToDefaults" to="Margin/HBox/Content/Input" method="_OnResetToDefaultsPressed"]

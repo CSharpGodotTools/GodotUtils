@@ -2,29 +2,27 @@ using Godot;
 
 namespace GodotUtils.UI;
 
-public partial class OptionsGeneral : Control
+public class OptionsGeneral(Options options)
 {
     private ResourceOptions _options;
 
-    public override void _Ready()
+    public void Initialize()
     {
         _options = OptionsManager.GetOptions();
-        SetupLanguage();
+
+        OptionButton languageBtn = options.GetNode<OptionButton>("%LanguageButton");
+
+        languageBtn.ItemSelected += OnLanguageItemSelected;
+        languageBtn.Select((int)_options.Language);
     }
 
-    private void _OnLanguageItemSelected(int index)
+    private void OnLanguageItemSelected(long index)
     {
         string locale = ((Language)index).ToString().Substring(0, 2).ToLower();
 
         TranslationServer.SetLocale(locale);
 
         _options.Language = (Language)index;
-    }
-
-    private void SetupLanguage()
-    {
-        OptionButton optionButtonLanguage = GetNode<OptionButton>("%LanguageButton");
-        optionButtonLanguage.Select((int)_options.Language);
     }
 }
 

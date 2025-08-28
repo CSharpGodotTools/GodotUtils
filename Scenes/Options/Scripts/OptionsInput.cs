@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GodotUtils.UI;
 
-public partial class OptionsInput : Control
+public partial class OptionsInput(Options options)
 {
     private const string RemoveHotkeyAction = "remove_hotkey";
     private const string FullscreenAction = "fullscreen";
@@ -13,20 +13,21 @@ public partial class OptionsInput : Control
     private const string UiPrefix = "ui";
     private const string Ellipsis = "...";
 
-    private Dictionary<StringName, Array<InputEvent>> _defaultActions;
     private VBoxContainer _content;
     private BtnInfo _btnNewInput; // The button currently waiting for new input
 
-    public override void _Ready()
+    public void Initialize()
     {
         // Cache the content container used for dynamically adding rows.
-        _content = GetNode<VBoxContainer>("Scroll/VBox");
+        _content = options.GetNode<VBoxContainer>("%InputContent");
 
         // Build the UI for all hotkeys from saved options.
         CreateHotkeys();
+
+        options.GetNode<Button>("%ResetInputToDefaults").Pressed += OnResetToDefaultsPressed;
     }
 
-    public override void _Input(InputEvent @event)
+    public void HandleInput(InputEvent @event)
     {
         // If we are currently listening for a replacement binding, handle those inputs first.
         if (_btnNewInput != null)
@@ -315,7 +316,15 @@ public partial class OptionsInput : Control
         }
     }
 
-    private void _OnResetToDefaultsPressed()
+    private void ClearContentChildren()
+    {
+        for (int i = 0; i < _content.GetChildren().Count; i++)
+        {
+            _content.GetChild(i).QueueFree();
+        }
+    }
+
+    private void OnResetToDefaultsPressed()
     {
         // Clear the currently generated UI rows.
         ClearContentChildren();
@@ -325,14 +334,6 @@ public partial class OptionsInput : Control
         // Reset saved hotkeys to defaults and rebuild the UI.
         OptionsManager.ResetHotkeys();
         CreateHotkeys();
-    }
-
-    private void ClearContentChildren()
-    {
-        for (int i = 0; i < _content.GetChildren().Count; i++)
-        {
-            _content.GetChild(i).QueueFree();
-        }
     }
 
     private partial class HotkeyButton : Button

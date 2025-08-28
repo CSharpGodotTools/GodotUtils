@@ -1,17 +1,16 @@
 using Godot;
 using System;
-using Environment = Godot.Environment;
 
 namespace GodotUtils.UI;
 
-public partial class OptionsGraphics : Control
+public class OptionsGraphics(Options options)
 {
     public event Action<int> AntialiasingChanged;
 
     private ResourceOptions _options;
     private OptionButton _antialiasing;
 
-    public override void _Ready()
+    public void Initialize()
     {
         _options = OptionsManager.GetOptions();
 
@@ -19,36 +18,29 @@ public partial class OptionsGraphics : Control
         SetupAntialiasing();
     }
 
-    private void _OnQualityModeItemSelected(int index)
-    {
-        _options.QualityPreset = (QualityPreset)index;
-    }
-
-    private void _OnAntialiasingItemSelected(int index)
-    {
-        _options.Antialiasing = index;
-        AntialiasingChanged?.Invoke(index);
-    }
-
     private void SetupQualityPreset()
     {
-        OptionButton optionBtnQualityPreset = GetNode<OptionButton>("%QualityMode");
+        OptionButton optionBtnQualityPreset = options.GetNode<OptionButton>("%QualityMode");
         optionBtnQualityPreset.Select((int)_options.QualityPreset);
+        optionBtnQualityPreset.ItemSelected += OnQualityModeItemSelected;
     }
 
     private void SetupAntialiasing()
     {
-        _antialiasing = GetNode<OptionButton>("%Antialiasing");
+        _antialiasing = options.GetNode<OptionButton>("%Antialiasing");
         _antialiasing.Select(_options.Antialiasing);
+        _antialiasing.ItemSelected += OnAntialiasingItemSelected;
     }
 
-    private static Label CreateLabel(string text)
+    private void OnQualityModeItemSelected(long index)
     {
-        return new Label
-        {
-            Text = text,
-            CustomMinimumSize = new Vector2(200, 0)
-        };
+        _options.QualityPreset = (QualityPreset)index;
+    }
+
+    private void OnAntialiasingItemSelected(long index)
+    {
+        _options.Antialiasing = (int)index;
+        AntialiasingChanged?.Invoke((int)index);
     }
 }
 

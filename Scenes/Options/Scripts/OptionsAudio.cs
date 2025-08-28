@@ -2,11 +2,11 @@ using Godot;
 
 namespace GodotUtils.UI;
 
-public partial class OptionsAudio : Control
+public partial class OptionsAudio(Options options)
 {
     private ResourceOptions _options;
 
-    public override void _Ready()
+    public void Initialize()
     {
         _options = OptionsManager.GetOptions();
 
@@ -14,25 +14,27 @@ public partial class OptionsAudio : Control
         SetupSounds();
     }
 
-    private void _OnMusicValueChanged(float v)
-    {
-        AudioManager.SetMusicVolume(v);
-    }
-
-    private void _OnSoundsValueChanged(float v)
-    {
-        AudioManager.SetSFXVolume(v);
-    }
-
     private void SetupMusic()
     {
-        HSlider slider = GetNode<HSlider>("%Music");
+        HSlider slider = options.GetNode<HSlider>("%Music");
         slider.Value = _options.MusicVolume;
+        slider.ValueChanged += OnMusicValueChanged;
     }
 
     private void SetupSounds()
     {
-        HSlider slider = GetNode<HSlider>("%Sounds");
+        HSlider slider = options.GetNode<HSlider>("%Sounds");
         slider.Value = _options.SFXVolume;
+        slider.ValueChanged += OnSoundsValueChanged;
+    }
+
+    private void OnMusicValueChanged(double v)
+    {
+        AudioManager.SetMusicVolume((float)v);
+    }
+
+    private void OnSoundsValueChanged(double v)
+    {
+        AudioManager.SetSFXVolume((float)v);
     }
 }
