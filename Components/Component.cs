@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Threading.Tasks;
 
 namespace GodotUtils;
 
@@ -16,6 +17,7 @@ public class Component : IDisposable
     }
 
     public virtual void Ready() { }
+    public virtual void Deferred() { }
     public virtual void Process(double delta) { }
     public virtual void PhysicsProcess(double delta) { }
     public virtual void ProcessInput(InputEvent @event) { }
@@ -54,10 +56,17 @@ public class Component : IDisposable
             _componentManager.UnregisterUnhandledInput(this);
     }
 
+    private async Task CallNextFrame(Action action)
+    {
+        await Owner.WaitOneFrame();
+        action();
+    }
+
     private void InitializeComponent()
     {
         _componentManager = Owner.GetAutoload<Autoloads>(nameof(Autoloads)).ComponentManager;
         Ready();
+        CallNextFrame(Deferred).FireAndForget();
     }
 
     private void CleanupOnTreeExit()
