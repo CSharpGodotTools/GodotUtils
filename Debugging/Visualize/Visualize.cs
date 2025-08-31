@@ -210,7 +210,7 @@ public class Visualize : IDisposable
             vbox.RemoveChild(vbox.GetChild(vbox.GetChildCount() - 1));
         }
 
-        _ = new GTween(label)
+        _ = new GodotTween(label)
             .SetAnimatingProp(CanvasItem.PropertyName.Modulate)
             .AnimateProp(Colors.Transparent, fadeTime)
             .Callback(label.QueueFree);

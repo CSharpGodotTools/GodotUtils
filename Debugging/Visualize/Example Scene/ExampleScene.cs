@@ -17,7 +17,7 @@ public partial class ExampleScene : Node
         VisualizeExampleSprite sprite = _spriteExampleScene.Instantiate<VisualizeExampleSprite>();
 
         // As you can see the visualize info is created at the moment of node creation
-        _ = new GTween(this)
+        _ = new GodotTween(this)
             .Delay(1)
             .Callback(() =>
             {

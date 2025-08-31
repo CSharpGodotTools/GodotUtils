@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace GodotUtils;
 
-public class GTween
+public class GodotTween
 {
     protected PropertyTweener _tweener;
     protected Tween _tween;
     private Node _node;
     private string _animatingProperty;
 
-    public GTween(Node node)
+    public GodotTween(Node node)
     {
         _node = node;
 
@@ -27,9 +27,9 @@ public class GTween
     /// <summary>
     /// A delay in <paramref name="seconds"/> followed by a <paramref name="callback"/>
     /// </summary>
-    public static GTween Delay(Node node, double seconds, Action callback)
+    public static GodotTween Delay(Node node, double seconds, Action callback)
     {
-        GTween tween = new(node);
+        GodotTween tween = new(node);
 
         tween.Delay(seconds)
             .Callback(callback);
@@ -45,7 +45,7 @@ public class GTween
     /// tween.AnimateProp(Colors.Transparent, 0.5);
     /// </code>
     /// </summary>
-    public GTween AnimateProp(Variant finalValue, double duration)
+    public GodotTween AnimateProp(Variant finalValue, double duration)
     {
         if (string.IsNullOrWhiteSpace(_animatingProperty))
         {
@@ -63,7 +63,7 @@ public class GTween
     /// tween.Animate(ColorRect.PropertyName.Color, Colors.Transparent, 0.5);
     /// </code>
     /// </summary>
-    public GTween Animate(string property, Variant finalValue, double duration)
+    public GodotTween Animate(string property, Variant finalValue, double duration)
     {
         _tweener = _tween
             .TweenProperty(_node, property, finalValue, duration)
@@ -80,13 +80,13 @@ public class GTween
     /// tween.AnimateProp(Colors.Transparent, 0.5);
     /// </code>
     /// </summary>
-    public GTween SetAnimatingProp(string property)
+    public GodotTween SetAnimatingProp(string property)
     {
         _animatingProperty = property;
         return this;
     }
 
-    public GTween SetProcessMode(TweenProcessMode mode)
+    public GodotTween SetProcessMode(TweenProcessMode mode)
     {
         _tween = _tween.SetProcessMode(mode);
         return this;
@@ -95,7 +95,7 @@ public class GTween
     /// <summary>
     /// Sets the animation to repeat
     /// </summary>
-    public GTween Loop(int loops = 0)
+    public GodotTween Loop(int loops = 0)
     {
         _tween = _tween.SetLoops(loops);
         return this;
@@ -118,7 +118,7 @@ public class GTween
     /// <para>All <see cref="Tweener"/>s in the example will run at the same time.</para>
     /// <para>You can make the <see cref="Tween"/> parallel by default by using <see cref="Tween.SetParallel(bool)"/>.</para>
     /// </summary>
-    public GTween Parallel()
+    public GodotTween Parallel()
     {
         _tween = _tween.Parallel();
         return this;
@@ -132,19 +132,19 @@ public class GTween
     /// tween.Animate(...)
     /// </code></para>
     /// </summary>
-    public GTween SetParallel(bool parallel = true)
+    public GodotTween SetParallel(bool parallel = true)
     {
         _tween = _tween.SetParallel(parallel);
         return this;
     }
 
-    public GTween Callback(Action callback)
+    public GodotTween Callback(Action callback)
     {
         _tween.TweenCallback(Callable.From(callback));
         return this;
     }
 
-    public GTween Delay(double seconds)
+    public GodotTween Delay(double seconds)
     {
         _tween.TweenCallback(Callable.From(() => { /* Empty Action */ })).SetDelay(seconds);
         return this;
@@ -153,7 +153,7 @@ public class GTween
     /// <summary>
     /// A <paramref name="callback"/> is executed when the tween has finished
     /// </summary>
-    public GTween Finished(Action callback)
+    public GodotTween Finished(Action callback)
     {
         _tween.Finished += callback;
         return this;
@@ -162,7 +162,7 @@ public class GTween
     /// <summary>
     /// If the tween is looping, this can be used to stop it
     /// </summary>
-    public GTween Stop()
+    public GodotTween Stop()
     {
         _tween.Stop();
         return this;
@@ -171,7 +171,7 @@ public class GTween
     /// <summary>
     /// Pause the tween
     /// </summary>
-    public GTween Pause()
+    public GodotTween Pause()
     {
         _tween.Pause();
         return this;
@@ -180,7 +180,7 @@ public class GTween
     /// <summary>
     /// If the tween was paused with Pause(), resume it with Resume()
     /// </summary>
-    public GTween Resume()
+    public GodotTween Resume()
     {
         _tween.Play();
         return this;
@@ -189,39 +189,39 @@ public class GTween
     /// <summary>
     /// Kill the tween
     /// </summary>
-    public GTween Kill()
+    public GodotTween Kill()
     {
         _tween?.Kill();
         return this;
     }
 
-    public GTween SetTrans(TransitionType transType)
+    public GodotTween SetTrans(TransitionType transType)
     {
         return UpdateTweener(nameof(SetTrans), () => _tweener.SetTrans(transType));
     }
 
-    public GTween SetEase(EaseType easeType)
+    public GodotTween SetEase(EaseType easeType)
     {
         return UpdateTweener(nameof(SetEase), () => _tweener.SetEase(easeType));
     }
 
-    public GTween TransLinear() => SetTrans(TransitionType.Linear);
-    public GTween TransBack() => SetTrans(TransitionType.Back);
-    public GTween TransSine() => SetTrans(TransitionType.Sine);
-    public GTween TransBounce() => SetTrans(TransitionType.Bounce);
-    public GTween TransCirc() => SetTrans(TransitionType.Circ);
-    public GTween TransCubic() => SetTrans(TransitionType.Cubic);
-    public GTween TransElastic() => SetTrans(TransitionType.Elastic);
-    public GTween TransExpo() => SetTrans(TransitionType.Expo);
-    public GTween TransQuad() => SetTrans(TransitionType.Quad);
-    public GTween TransQuart() => SetTrans(TransitionType.Quart);
-    public GTween TransQuint() => SetTrans(TransitionType.Quint);
-    public GTween TransSpring() => SetTrans(TransitionType.Spring);
+    public GodotTween TransLinear() => SetTrans(TransitionType.Linear);
+    public GodotTween TransBack() => SetTrans(TransitionType.Back);
+    public GodotTween TransSine() => SetTrans(TransitionType.Sine);
+    public GodotTween TransBounce() => SetTrans(TransitionType.Bounce);
+    public GodotTween TransCirc() => SetTrans(TransitionType.Circ);
+    public GodotTween TransCubic() => SetTrans(TransitionType.Cubic);
+    public GodotTween TransElastic() => SetTrans(TransitionType.Elastic);
+    public GodotTween TransExpo() => SetTrans(TransitionType.Expo);
+    public GodotTween TransQuad() => SetTrans(TransitionType.Quad);
+    public GodotTween TransQuart() => SetTrans(TransitionType.Quart);
+    public GodotTween TransQuint() => SetTrans(TransitionType.Quint);
+    public GodotTween TransSpring() => SetTrans(TransitionType.Spring);
 
-    public GTween EaseIn() => SetEase(EaseType.In);
-    public GTween EaseOut() => SetEase(EaseType.Out);
-    public GTween EaseInOut() => SetEase(EaseType.InOut);
-    public GTween EaseOutIn() => SetEase(EaseType.OutIn);
+    public GodotTween EaseIn() => SetEase(EaseType.In);
+    public GodotTween EaseOut() => SetEase(EaseType.Out);
+    public GodotTween EaseInOut() => SetEase(EaseType.InOut);
+    public GodotTween EaseOutIn() => SetEase(EaseType.OutIn);
 
     /// <summary>
     /// Checks if the tween is still playing
@@ -231,7 +231,7 @@ public class GTween
         return _tween.IsRunning();
     }
 
-    private GTween UpdateTweener(string methodName, Action action)
+    private GodotTween UpdateTweener(string methodName, Action action)
     {
         if (_tweener == null)
         {

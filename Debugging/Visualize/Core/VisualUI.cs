@@ -131,7 +131,7 @@ public static class VisualUI
         {
             baseButton.Pressed += () =>
             {
-                _ = new GTween(baseButton)
+                _ = new GodotTween(baseButton)
                     .Delay(ReleaseFocusOnPressDelay)
                     .Callback(() => baseButton.ReleaseFocus());
             };

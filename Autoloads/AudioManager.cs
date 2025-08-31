@@ -74,7 +74,7 @@ public class AudioManager : IDisposable
     {
         foreach (AudioStreamPlayer audioPlayer in _instance._sfxPlayersParent.GetChildren<AudioStreamPlayer>())
         {
-            new GTween(audioPlayer).Animate(AudioStreamPlayer.PropertyName.VolumeDb, MutedVolume, fadeTime);
+            new GodotTween(audioPlayer).Animate(AudioStreamPlayer.PropertyName.VolumeDb, MutedVolume, fadeTime);
         }
     }
 
@@ -105,7 +105,7 @@ public class AudioManager : IDisposable
 
     private static void PlayAudioCrossfade(AudioStreamPlayer player, AudioStream song, float volume, double fadeOut, double fadeIn)
     {
-        new GTween(player)
+        new GodotTween(player)
             .SetAnimatingProp(AudioStreamPlayer.PropertyName.VolumeDb)
             .AnimateProp(MutedVolume, fadeOut).EaseIn()
             .Callback(() => PlayAudio(player, song, volume))

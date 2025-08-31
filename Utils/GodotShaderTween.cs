@@ -4,11 +4,11 @@ using System;
 
 namespace GodotUtils;
 
-public class GShaderTween : GTween
+public class GodotShaderTween : GodotTween
 {
     private ShaderMaterial _animatingShaderMaterial;
 
-    public GShaderTween(Node2D node) : base(node)
+    public GodotShaderTween(Node2D node) : base(node)
     {
         _animatingShaderMaterial = node.Material as ShaderMaterial;
 
@@ -25,7 +25,7 @@ public class GShaderTween : GTween
     /// tween.AnimateShader("blend_intensity", 1.0f, 2.0);
     /// </code>
     /// </summary>
-    public GShaderTween AnimateShader(string shaderParam, Variant finalValue, double duration)
+    public GodotShaderTween AnimateShader(string shaderParam, Variant finalValue, double duration)
     {
         _tweener = _tween
             .TweenProperty(_animatingShaderMaterial, $"shader_parameter/{shaderParam}", finalValue, duration)

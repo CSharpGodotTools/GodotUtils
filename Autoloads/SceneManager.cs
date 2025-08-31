@@ -141,7 +141,7 @@ public class SceneManager : IDisposable
         canvasLayer.AddChild(colorRect);
 
         // Animate color rect
-        new GTween(colorRect)
+        new GodotTween(colorRect)
             .Animate(ColorRect.PropertyName.Color, new Color(0, 0, 0, transColor == TransColor.Black ? 1 : 0), duration)
             .Callback(() =>
             {
