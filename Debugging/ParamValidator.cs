@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace GodotUtils.Debugging;
 
-public static class Debug
+public static class ParamValidator
 {
     public static void ThrowIfNull(Node node, object obj, [CallerArgumentExpression(nameof(obj))] string paramName = "")
     {
