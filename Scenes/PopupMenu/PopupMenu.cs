@@ -9,6 +9,11 @@ namespace GodotUtils.UI;
 public partial class PopupMenu : Control
 {
     [Export] private PackedScene _optionsPrefab;
+    [Export] private Button _resumeBtn;
+    [Export] private Button _restartBtn;
+    [Export] private Button _optionsBtn;
+    [Export] private Button _mainMenuBtn;
+    [Export] private Button _quitBtn;
 
     public event Action Opened;
     public event Action Closed;
@@ -17,13 +22,19 @@ public partial class PopupMenu : Control
     public WorldEnvironment WorldEnvironment { get; private set; }
 
     private PanelContainer _menu;
-    private VBoxContainer _vbox;
+    private VBoxContainer _nav;
     private Options _options;
 
     public override void _Ready()
     {
         _menu = GetNode<PanelContainer>("%Menu");
-        _vbox = GetNode<VBoxContainer>("%Navigation");
+        _nav = GetNode<VBoxContainer>("%Navigation");
+
+        _resumeBtn.Pressed += OnResumePressed;
+        _restartBtn.Pressed += OnRestartPressed;
+        _optionsBtn.Pressed += OnOptionsPressed;
+        _mainMenuBtn.Pressed += OnMainMenuPressed;
+        _quitBtn.Pressed += OnQuitPressed;
 
         WorldEnvironment = TryFindWorldEnvironment(GetTree().Root);
 
@@ -55,28 +66,34 @@ public partial class PopupMenu : Control
         }
     }
 
-    private void _OnResumePressed()
+    private void OnResumePressed()
     {
         Hide();
         GetTree().Paused = false;
     }
 
-    private void _OnOptionsPressed()
+    private void OnRestartPressed()
+    {
+        GetTree().Paused = false;
+        SceneManager.Instance.ResetCurrentScene();
+    }
+
+    private void OnOptionsPressed()
     {
         ShowOptions();
         HidePopupMenu();
     }
 
-    private void _OnMainMenuPressed()
+    private void OnMainMenuPressed()
     {
         MainMenuBtnPressed?.Invoke();
         GetTree().Paused = false;
         SceneManager.SwitchScene(SceneManager.Instance.MenuScenes.MainMenu);
     }
 
-    private async void _OnQuitPressed()
+    private void OnQuitPressed()
     {
-        await Autoloads.Instance.QuitAndCleanup();
+        Autoloads.Instance.QuitAndCleanup().FireAndForget();
     }
 
     private void CreateOptions()

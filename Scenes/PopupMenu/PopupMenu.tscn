@@ -39,7 +39,7 @@ Button/styles/hover = SubResource("StyleBoxFlat_c4p5d")
 Button/styles/normal = SubResource("StyleBoxFlat_3lyh8")
 Button/styles/pressed = SubResource("StyleBoxEmpty_ymm5v")
 
-[node name="PopupMenu" type="PanelContainer"]
+[node name="PopupMenu" type="PanelContainer" node_paths=PackedStringArray("_resumeBtn", "_restartBtn", "_optionsBtn", "_mainMenuBtn", "_quitBtn")]
 process_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -50,6 +50,11 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_j3vts")
 script = ExtResource("2_g08n2")
 _optionsPrefab = ExtResource("2_p67ws")
+_resumeBtn = NodePath("Center/Menu/Margin/Navigation/Resume")
+_restartBtn = NodePath("Center/Menu/Margin/Navigation/Restart")
+_optionsBtn = NodePath("Center/Menu/Margin/Navigation/Options")
+_mainMenuBtn = NodePath("Center/Menu/Margin/Navigation/Main Menu")
+_quitBtn = NodePath("Center/Menu/Margin/Navigation/Quit")
 metadata/_edit_lock_ = true
 
 [node name="Center" type="CenterContainer" parent="."]
@@ -77,6 +82,10 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "RESUME"
 
+[node name="Restart" type="Button" parent="Center/Menu/Margin/Navigation"]
+layout_mode = 2
+text = "RESTART"
+
 [node name="Options" type="Button" parent="Center/Menu/Margin/Navigation"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
@@ -91,8 +100,3 @@ text = "MAIN MENU"
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "QUIT"
-
-[connection signal="pressed" from="Center/Menu/Margin/Navigation/Resume" to="." method="_OnResumePressed"]
-[connection signal="pressed" from="Center/Menu/Margin/Navigation/Options" to="." method="_OnOptionsPressed"]
-[connection signal="pressed" from="Center/Menu/Margin/Navigation/Main Menu" to="." method="_OnMainMenuPressed"]
-[connection signal="pressed" from="Center/Menu/Margin/Navigation/Quit" to="." method="_OnQuitPressed"]
