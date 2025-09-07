@@ -1,6 +1,8 @@
 using Godot;
 using GodotUtils.UI;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GodotUtils;
 
@@ -15,8 +17,10 @@ public class AudioManager : IDisposable
     private static AudioManager _instance;
     private AudioStreamPlayer   _musicPlayer;
     private ResourceOptions     _options;
-    private Node                _sfxPlayersParent;
+    private Autoloads           _autoloads;
     private float               _lastPitch;
+
+    private List<AudioStreamPlayer2D> _activeSfxPlayers = [];
 
     public AudioManager(Autoloads autoloads)
     {
@@ -24,19 +28,17 @@ public class AudioManager : IDisposable
             throw new InvalidOperationException($"{nameof(AudioManager)} was initialized already");
 
         _instance = this;
+        _autoloads = autoloads;
         _options = OptionsManager.GetOptions();
 
         _musicPlayer = new AudioStreamPlayer();
         autoloads.AddChild(_musicPlayer);
-
-        _sfxPlayersParent = new Node();
-        autoloads.AddChild(_sfxPlayersParent);
     }
 
     public void Dispose()
     {
         _musicPlayer.QueueFree();
-        _sfxPlayersParent.QueueFree();
+        _activeSfxPlayers.Clear();
 
         _instance = null;
     }
@@ -55,26 +57,38 @@ public class AudioManager : IDisposable
         }
     }
 
-    public static void PlaySFX(AudioStream sound)
+    /// <summary>
+    /// Plays a <paramref name="sound"/> at <paramref name="position"/>.
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="sound"></param>
+    public static void PlaySFX(AudioStream sound, Vector2 position)
     {
-        AudioStreamPlayer sfxPlayer = new()
+        AudioStreamPlayer2D sfxPlayer = new()
         {
             Stream = sound,
             VolumeDb = NormalizeConfigVolume(_instance._options.SFXVolume),
             PitchScale = GetRandomPitch()
         };
 
-        sfxPlayer.Finished += sfxPlayer.QueueFree;
+        sfxPlayer.Finished += () =>
+        {
+            sfxPlayer.QueueFree();
+            _instance._activeSfxPlayers.Remove(sfxPlayer);
+        };
+        
+        _instance._autoloads.AddChild(sfxPlayer);
+        _instance._activeSfxPlayers.Add(sfxPlayer);
 
-        _instance._sfxPlayersParent.AddChild(sfxPlayer);
+        sfxPlayer.GlobalPosition = position;
         sfxPlayer.Play();
     }
 
     public static void FadeOutSFX(double fadeTime = 1)
     {
-        foreach (AudioStreamPlayer audioPlayer in _instance._sfxPlayersParent.GetChildren<AudioStreamPlayer>())
+        foreach (AudioStreamPlayer2D sfxPlayer in _instance._activeSfxPlayers)
         {
-            new GodotTween(audioPlayer).Animate(AudioStreamPlayer.PropertyName.VolumeDb, MutedVolume, fadeTime);
+            new GodotTween(sfxPlayer).Animate(AudioStreamPlayer.PropertyName.VolumeDb, MutedVolume, fadeTime);
         }
     }
 
@@ -90,9 +104,9 @@ public class AudioManager : IDisposable
 
         float mappedVolume = NormalizeConfigVolume(volume);
 
-        foreach (AudioStreamPlayer audioPlayer in _instance._sfxPlayersParent.GetChildren())
+        foreach (AudioStreamPlayer2D sfxPlayer in _instance._activeSfxPlayers)
         {
-            audioPlayer.VolumeDb = mappedVolume;
+            sfxPlayer.VolumeDb = mappedVolume;
         }
     }
 
