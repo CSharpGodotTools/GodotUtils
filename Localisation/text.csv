@@ -51,10 +51,10 @@ GAMEPLAY,Gameplay,Jouabilité,ゲームプレイ
 DIFFICULTY,Difficulty,Difficulté,困難
 ANTIALIASING,Antialiasing,Anchieiriashingu,アンチエイリアシング
 MODS,Mods,Mods,Mods
-RESOLUTION,Resolution,Resolution,Resolution
-MOUSE_SENSITIVITY,Mouse Sensitivity,Mouse Sensitivity,Mouse Sensitivity
-GLOW,Glow,Glow,Glow
-AMBIENT_OCCLUSION,Ambient Occlusion,Ambient Occlusion,Ambient Occlusion
-INDIRECT_LIGHTING,Indirect Lighting,Indirect Lighting,Indirect Lighting
-REFLECTIONS,Reflections,Reflections,Reflections
+RESOLUTION,Resolution,Résolution,解像度
+MOUSE\_SENSITIVITY,Mouse Sensitivity,Sensibilité de la souris,マウス感度
+GLOW,Glow,Lueur,グロー
+AMBIENT\_OCCLUSION,Ambient Occlusion,Oclusion ambiante,アンビエントオクルージョン
+INDIRECT\_LIGHTING,Indirect Lighting,Éclairage indirect,間接照明
+REFLECTIONS,Reflections,Reflets,反射
 RESTART,Restart,Redémarrer,再起動
