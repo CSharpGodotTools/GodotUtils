@@ -1,8 +1,8 @@
 keys,en,fr,ja
 PLAY,Play,Jouer,遊ぶ
 OPTIONS,Options,Choix,オプション
-QUIT,Quit,Arrêter,やめる
-RESUME,Resume,Continuer,履歴書
+QUIT,Quit,Quitter,やめる
+RESUME,Resume,Continuer,再開
 MAIN MENU,Main Menu,Menu Principal,メインメニュー
 CREDITS,Credits,Crédits,クレジット
 GENERAL,General,Général,全般的
@@ -35,9 +35,9 @@ MOVE_LEFT,Move Left,Se déplacer à gauche,左に移動
 MOVE_RIGHT,Move Right,Déplacer vers la droite,右に動く
 MOVE_UP,Move Up,Déplacer vers le haut,上に移動
 MOVE_DOWN,Move Down,Descendre,下に移動
-GRAPHICS,Graphics,,グラフィック
+GRAPHICS,Graphics,Graphiques,グラフィック
 QUALITY_PRESET,Quality Preset,Graphique,品質プリセット
-VERY_LOW,Very Low,Très lent,とても低い
+VERY_LOW,Very Low,Très faible,とても低い
 LOW,Low,Faible,低い
 MEDIUM,Medium,Moyen,中くらい
 HIGH,High,Haut,高い
@@ -45,11 +45,11 @@ VERY_HIGH,Very High,Très haut,すごく高い
 ULTRA,Ultra,Ultra,ウルトラ
 EASY,Easy,Facile,簡単
 NORMAL,Normal,Normale,普通
-HARD,Hard,Dure,難しい
+HARD,Hard,Difficile,難しい
 HARDCORE,Hardcore,Hardcore,ハードコア
 GAMEPLAY,Gameplay,Jouabilité,ゲームプレイ
 DIFFICULTY,Difficulty,Difficulté,困難
-ANTIALIASING,Antialiasing,Anchieiriashingu,アンチエイリアシング
+ANTIALIASING,Antialiasing,Anticrénelage,アンチエイリアシング
 MODS,Mods,Mods,Mods
 RESOLUTION,Resolution,Résolution,解像度
 MOUSE\_SENSITIVITY,Mouse Sensitivity,Sensibilité de la souris,マウス感度
