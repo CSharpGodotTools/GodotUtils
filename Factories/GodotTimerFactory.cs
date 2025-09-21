@@ -42,20 +42,17 @@ public class GodotTimerFactory
             OneShot = oneShot,
         };
 
-        if (oneShot)
+        timer.Timeout += () =>
         {
-            timer.Timeout += () =>
-            {
-                timeout();
+            timeout();
+
+            if (oneShot)
                 timer.QueueFree();
-            };
-        }
-        else
-        {
-            timer.Timeout += timeout;
-        }
+        };
 
         node.AddChild(timer);
+
+        timer.Start();
 
         return timer;
     }
