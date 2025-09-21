@@ -8,8 +8,8 @@ namespace GodotUtils;
 
 public class AudioManager : IDisposable
 {
-    private const float MinRandomPitch        = 0.8f;
-    private const float MaxRandomPitch        = 1.2f;
+    private const float MinDefaultRandomPitch        = 0.8f;
+    private const float MaxDefaultRandomPitch        = 1.2f;
     private const float RandomPitchThreshold  = 0.1f;
     private const int   MutedVolume           = -80;
     private const int   MutedVolumeNormalized = -40;
@@ -62,13 +62,13 @@ public class AudioManager : IDisposable
     /// </summary>
     /// <param name="parent"></param>
     /// <param name="sound"></param>
-    public static void PlaySFX(AudioStream sound, Vector2 position)
+    public static void PlaySFX(AudioStream sound, Vector2 position, float minPitch = MinDefaultRandomPitch, float maxPitch = MaxDefaultRandomPitch)
     {
         AudioStreamPlayer2D sfxPlayer = new()
         {
             Stream = sound,
             VolumeDb = NormalizeConfigVolume(_instance._options.SFXVolume),
-            PitchScale = GetRandomPitch()
+            PitchScale = GetRandomPitch(minPitch, maxPitch)
         };
 
         sfxPlayer.Finished += () =>
@@ -131,17 +131,17 @@ public class AudioManager : IDisposable
         return volume == 0 ? MutedVolume : volume.Remap(0, 100, MutedVolumeNormalized, 0);
     }
 
-    private static float GetRandomPitch()
+    private static float GetRandomPitch(float min, float max)
     {
         RandomNumberGenerator rng = new();
         rng.Randomize();
 
-        float pitch = rng.RandfRange(MinRandomPitch, MaxRandomPitch);
+        float pitch = rng.RandfRange(min, max);
 
         while (Mathf.Abs(pitch - _instance._lastPitch) < RandomPitchThreshold)
         {
             rng.Randomize();
-            pitch = rng.RandfRange(MinRandomPitch, MaxRandomPitch);
+            pitch = rng.RandfRange(min, max);
         }
 
         _instance._lastPitch = pitch;
