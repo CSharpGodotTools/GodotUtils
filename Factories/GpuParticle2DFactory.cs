@@ -12,4 +12,12 @@ public static class GpuParticle2DFactory
         parent.AddChild(particles);
         return particles;
     }
+
+    public static GpuParticles2D Looping(Node parent, PackedScene particleScene)
+    {
+        GpuParticles2D particles = particleScene.Instantiate<GpuParticles2D>();
+        particles.OneShot = false;
+        parent.AddChild(particles);
+        return particles;
+    }
 }
