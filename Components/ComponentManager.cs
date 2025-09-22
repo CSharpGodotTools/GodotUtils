@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 
 namespace GodotUtils;
@@ -60,10 +59,8 @@ public partial class ComponentManager : Node
     // Exposed register functions
     public void RegisterProcess(Component component)
     {
-#if DEBUG
         if (_process.Contains(component))
-            throw new InvalidOperationException("Component is registered for Process already.");
-#endif
+            return;
 
         _process.Add(component);
 
@@ -83,10 +80,8 @@ public partial class ComponentManager : Node
 
     public void RegisterPhysicsProcess(Component component)
     {
-#if DEBUG
         if (_physicsProcess.Contains(component))
-            throw new InvalidOperationException("Component is registered for PhysicsProcess already.");
-#endif
+            return;
 
         _physicsProcess.Add(component);
 
@@ -106,10 +101,8 @@ public partial class ComponentManager : Node
 
     public void RegisterInput(Component component)
     {
-#if DEBUG
         if (_input.Contains(component))
-            throw new InvalidOperationException("Component is registered for Input already.");
-#endif
+            return;
 
         _input.Add(component);
 
@@ -127,10 +120,8 @@ public partial class ComponentManager : Node
 
     public void RegisterUnhandledInput(Component component)
     {
-#if DEBUG
         if (_unhandledInput.Contains(component))
-            throw new InvalidOperationException("Component is registered for UnhandledInput already.");
-#endif
+            return;
 
         _unhandledInput.Add(component);
 
