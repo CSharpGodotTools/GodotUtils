@@ -76,7 +76,7 @@ public static class MathUtils
 
     public static float GetAngle(Vector2 to, Vector2 from)
     {
-        return (to - from).Normalized().Angle();
+        return (to - from).Angle();
     }
 
     public static float GetAngleDiff(float to, float from)
