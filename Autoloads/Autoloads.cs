@@ -47,6 +47,7 @@ public partial class Autoloads : Node
         GameConsole = GetNode<GameConsole>("%Console");
         SceneManager = new SceneManager(this, _scenes);
         Services = new Services(this);
+        MetricsOverlay = new MetricsOverlay();
 
 #if NETCODE_ENABLED
         _logger = new Logger(GameConsole);
@@ -60,7 +61,6 @@ public partial class Autoloads : Node
 
         OptionsManager = new OptionsManager(this);
         AudioManager = new AudioManager(this);
-        MetricsOverlay = new MetricsOverlay();
 
 #if DEBUG
         _visualizeAutoload = new VisualizeAutoload();
