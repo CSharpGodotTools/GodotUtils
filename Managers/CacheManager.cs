@@ -14,7 +14,7 @@ public class CacheManager<TKey, TValue>
     /// <summary>
     /// Retrieves the cached object associated with the specified key, or creates and caches it if not present.
     /// </summary>
-    public TValue GetOrCreate(TKey key, Func<TValue> createFunc)
+    public TValue Get(TKey key, Func<TValue> createFunc)
     {
         if (_cache.TryGetValue(key, out TValue value))
             return value;
