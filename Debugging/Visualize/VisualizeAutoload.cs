@@ -3,7 +3,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-namespace GodotUtils.Debugging.Visualize;
+namespace GodotUtils.Debugging;
 
 public class VisualizeAutoload : IDisposable
 {

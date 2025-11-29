@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using static Godot.Control;
 
-namespace GodotUtils.Debugging.Visualize;
+namespace GodotUtils.Debugging;
 
 /// <summary>
 /// Methods that can be executed manually by pressing a button in-game. Parameters are supported.

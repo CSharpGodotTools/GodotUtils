@@ -3,7 +3,7 @@ using Godot;
 using System;
 using static Godot.Control;
 
-namespace GodotUtils.Debugging.Visualize;
+namespace GodotUtils.Debugging;
 
 public static partial class VisualControlTypes
 {

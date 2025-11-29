@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GodotUtils.Debugging.Visualize;
+namespace GodotUtils.Debugging;
 
 public class VisualNodeManager
 {

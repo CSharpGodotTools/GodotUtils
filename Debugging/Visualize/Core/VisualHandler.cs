@@ -3,7 +3,7 @@ using Godot;
 using System;
 using System.Reflection;
 
-namespace GodotUtils.Debugging.Visualize;
+namespace GodotUtils.Debugging;
 
 /// <summary>
 /// A set of utility methods for handling the VisualizeAttribute

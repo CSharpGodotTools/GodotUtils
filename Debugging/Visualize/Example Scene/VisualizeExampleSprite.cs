@@ -2,7 +2,7 @@
 using Godot;
 using System.Collections.Generic;
 
-namespace GodotUtils.Debugging.Visualize;
+namespace GodotUtils.Debugging;
 
 public partial class VisualizeExampleSprite : Sprite2D
 {

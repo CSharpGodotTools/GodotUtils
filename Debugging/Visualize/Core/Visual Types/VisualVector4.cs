@@ -1,7 +1,7 @@
 #if DEBUG
 using Godot;
 
-namespace GodotUtils.Debugging.Visualize;
+namespace GodotUtils.Debugging;
 
 public static partial class VisualControlTypes
 {

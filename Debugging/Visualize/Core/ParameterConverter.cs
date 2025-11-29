@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace GodotUtils.Debugging.Visualize;
+namespace GodotUtils.Debugging;
 
 /// <summary>
 /// Utility class for converting provided values to method parameters
