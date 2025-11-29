@@ -17,7 +17,7 @@ public static class VisualUI
 {
     public const float VisualUiScaleFactor = 0.6f;
 
-    private const string PathIcons = "res://Framework/GodotUtils/Visualize/Icons";
+    private const string PathIcons = "res://Framework/GodotUtils/Debugging/Visualize/Icons/";
     private const double ReleaseFocusOnPressDelay = 0.1;
     private const float PanelScaleFactor = 0.9f;
     private const int MinScrollViewDistance = 350;
