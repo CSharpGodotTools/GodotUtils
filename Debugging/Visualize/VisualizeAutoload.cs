@@ -30,7 +30,6 @@ public class VisualizeAutoload : IDisposable
 
     public void Dispose()
     {
-        _visualize.Dispose();
         Instance = null;
     }
 }
