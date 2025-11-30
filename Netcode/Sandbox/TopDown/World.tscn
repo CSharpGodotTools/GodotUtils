@@ -1,7 +1,8 @@
 [gd_scene load_steps=3 format=3 uid="uid://btwdcgmbvwyid"]
 
 [ext_resource type="Script" uid="uid://bvuoljdc6j7td" path="res://Framework/GodotUtils/Netcode/Sandbox/TopDown/NetControlPanel.cs" id="1_8p5wx"]
-[ext_resource type="PackedScene" uid="uid://c6pism2kgjr5c" path="res://Framework/GodotUtils/Scenes/PopupMenu/PopupMenu.tscn" id="2_pk5r8"]
+[ext_resource type="PackedScene" uid="uid://c6pism2kgjr5c" path="res://Framework/Scenes/PopupMenu/PopupMenu.tscn" id="2_pk5r8"]
+
 
 
 [node name="World" type="Node2D"]
