@@ -31,9 +31,6 @@ public static class ExtensionsCollection
             return false;
         }
 
-        Logger.LogWarning($"'{caller}' tried to add duplicate key '{key}' to dictionary\n" +
-            $"   at {path} line:{lineNumber}");
-
         return true;
     }
 
@@ -49,9 +46,6 @@ public static class ExtensionsCollection
         {
             return false;
         }
-
-        Logger.LogWarning($"'{caller}' tried to access non-existent key '{key}' from dictionary\n" +
-            $"   at {path} line:{lineNumber}");
 
         return true;
     }
