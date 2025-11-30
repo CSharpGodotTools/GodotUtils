@@ -112,7 +112,6 @@ public partial class Autoloads : Node
         Profiler.Dispose();
 
         Instance = null;
-        PreQuit = null;
     }
 
     // Using deferred is always complicated...
