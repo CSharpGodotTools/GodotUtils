@@ -130,7 +130,15 @@ public partial class Autoloads : Node
 
         // Wait for cleanup
         if (PreQuit != null)
-            await PreQuit?.Invoke();
+        {
+            // Since the PreQuit event contains a Task only the first subscriber will be invoked
+            // with await PreQuit?.Invoke(); so need to ensure all subs are invoked.
+            Delegate[] invocationList = PreQuit.GetInvocationList();
+            foreach (Func<Task> subscriber in invocationList)
+            {
+                await subscriber();
+            }
+        }
 
         GetTree().Quit();
     }
