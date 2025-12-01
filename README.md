@@ -2,15 +2,13 @@
 An ever expanding utils library for Godot C#. This is the library I am using across all my games, now open source for everyone else to enjoy as well.
 
 ## Install
-Add this as a submodule to your GitHub repo
-```
-git submodule add https://github.com/CSharpGodotTools/GodotUtils GodotUtils
-```
+Open up the project with `project.godot` and build the game.
 
-Add the following to your `.csproj`
+Copy `root/bin/GodotUtils.dll` and place it in `res://addons` in your project and add the following to your `.csproj`.
 ```xml
 <ItemGroup>
-    <PackageReference Include="ENet-CSharp" Version="2.4.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  <Reference Include="GodotUtils">
+    <HintPath>addons/GodotUtils.dll</HintPath>
+  </Reference>
 </ItemGroup>
 ```
