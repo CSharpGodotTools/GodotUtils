@@ -1,10 +1,5 @@
-# Godot Ignores
-*.import
-
-# Visual Studio Ignores
-bin/*
-obj/*
-.vs/*
-
-# Include these files
-!**/*.gdignore
+# Godot 4+ specific ignores
+.godot/
+/android/
+bin/
+.vs/

@@ -1,28 +1,26 @@
-<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <LangVersion>latest</LangVersion>
-        <ImplicitUsings>disable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <ImplicitUsings>false</ImplicitUsings>
-        <!-- Prevent use of the global usings feature -->
-        <RootNamespace>GodotUtils</RootNamespace>
-    </PropertyGroup>
+﻿<Project Sdk="Godot.NET.Sdk/4.5.1">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<RootNamespace>GodotUtils</RootNamespace>
+		<OutputPath>$(SolutionDir)bin\</OutputPath>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <!-- Condition="!Exists('ENet-CSharp.dll')" is required for other platforms -->
-        <PackageReference Include="ENet-CSharp" Version="2.4.8" Condition="!Exists('ENet-CSharp.dll')" />
-        <PackageReference Include="GodotSharp" Version="4.3.0" />
-        <PackageReference Include="Godot.SourceGenerators" Version="4.3.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <!-- This is used because net472 does not have System.Text.Json -->
-    </ItemGroup>
+	<ItemGroup>
+		<!-- Conditional ENet package -->
+		<PackageReference Include="ENet-CSharp" Version="2.4.8" Condition="!Exists('ENet-CSharp.dll')" />
+		<!-- Godot source generators -->
+		<PackageReference Include="GodotSharp.SourceGenerators" Version="2.6.0" />
+		<!-- JSON support -->
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
 
-    <!-- Local Packages -->
-    <!-- This is required for other platforms where the ENet NuGet package is not enough -->
-    <ItemGroup>
-        <Reference Include="ENet-CSharp" Condition="Exists('ENet-CSharp.dll')">
-            <HintPath>ENet-CSharp.dll</HintPath>
-        </Reference>
-    </ItemGroup>
+	<!-- Local ENet DLL -->
+	<ItemGroup>
+		<Reference Include="ENet-CSharp" Condition="Exists('ENet-CSharp.dll')">
+			<HintPath>ENet-CSharp.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 </Project>
