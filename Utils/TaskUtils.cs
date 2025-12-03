@@ -8,9 +8,12 @@ public static class TaskUtils
 {
     public static void FireAndForget(this Task task)
     {
-        task.ContinueWith(t =>
+        _ = task.ContinueWith(t =>
         {
-            GD.PrintErr($"Error: {t.Exception}");
+            foreach (Exception ex in t.Exception.Flatten().InnerExceptions)
+            {
+                GD.PrintErr($"FireAndForget task exception: {ex}");
+            }
         }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
