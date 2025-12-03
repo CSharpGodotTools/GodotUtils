@@ -6,6 +6,7 @@
 		<Nullable>disable</Nullable>
 		<RootNamespace>GodotUtils</RootNamespace>
 		<OutputPath>$(SolutionDir)bin\</OutputPath>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
