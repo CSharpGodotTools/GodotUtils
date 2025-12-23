@@ -25,4 +25,7 @@
 			<HintPath>ENet-CSharp.dll</HintPath>
 		</Reference>
 	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="copy /Y &quot;$(TargetDir)GodotUtils.dll&quot; &quot;C:\Users\Valk\Documents\_Godot Projects\Template\addons\GodotUtils.dll&quot;&#xA;copy /Y &quot;$(TargetDir)GodotUtils.xml&quot; &quot;C:\Users\Valk\Documents\_Godot Projects\Template\addons\GodotUtils.xml&quot;&#xA;" />
+	</Target>
 </Project>
