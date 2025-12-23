@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace GodotUtils;
 
+/// <summary>
+/// GodotTween's are useful when you know the final value of what you are animating.
+/// </summary>
 public class GodotTween
 {
     protected PropertyTweener _tweener;
@@ -12,6 +15,10 @@ public class GodotTween
     private readonly Node _node;
     private string _animatingProperty;
 
+    /// <summary>
+    /// Creates a new instance of a GodotTween bound to a node.
+    /// </summary>
+    /// <param name="node">The node bound to this tween.</param>
     public GodotTween(Node node)
     {
         _node = node;
