@@ -6,7 +6,7 @@ namespace GodotUtils;
 
 public class GodotShaderTween : GodotTween
 {
-    private ShaderMaterial _animatingShaderMaterial;
+    private readonly ShaderMaterial _animatingShaderMaterial;
 
     public GodotShaderTween(Node2D node) : base(node)
     {

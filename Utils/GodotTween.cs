@@ -9,7 +9,7 @@ public class GodotTween
 {
     protected PropertyTweener _tweener;
     protected Tween _tween;
-    private Node _node;
+    private readonly Node _node;
     private string _animatingProperty;
 
     public GodotTween(Node node)
