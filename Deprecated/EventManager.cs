@@ -4,34 +4,32 @@ using System;
 
 namespace GodotUtils.Deprecated;
 
-/// <summary>
-/// This class was created to attempt to simplify the process of creating C# events for gamedev.
-/// 
-/// ########### Example #1 ###########
-/// 
-/// Events.Generic.AddListener(EventGeneric.OnKeyboardInput, (args) => 
-/// {
-///     GD.Print(args[0]);
-///     GD.Print(args[1]);
-///     GD.Print(args[2]);
-/// }, "someId");
-/// 
-/// Events.Generic.RemoveListeners(EventGeneric.OnKeyboardInput, "someId");
-/// 
-/// // Listener is never called because it was removed
-/// Events.Generic.Notify(EventGeneric.OnKeyboardInput, 1, 2, 3);
-/// 
-/// ########### Example #2 ###########
-/// Events.Player.AddListener<PlayerSpawnArgs>(EventPlayer.OnPlayerSpawn, (args) => 
-/// {
-///     GD.Print(args.Name);
-///     GD.Print(args.Location);
-///     GD.Print(args.Player);
-/// });
-/// 
-/// Events.Player.Notify(EventPlayer.OnPlayerSpawn, new PlayerSpawnArgs(name, location, player));
-/// </summary>
-/// <typeparam name="TEvent">The event type enum to be used. For example 'EventPlayer' enum.</typeparam>
+// This class was created to attempt to simplify the process of creating C# events for gamedev.
+// 
+// ########### Example #1 ###########
+// 
+// Events.Generic.AddListener(EventGeneric.OnKeyboardInput, (args) => 
+// {
+//     GD.Print(args[0]);
+//     GD.Print(args[1]);
+//     GD.Print(args[2]);
+// }, "someId");
+// 
+// Events.Generic.RemoveListeners(EventGeneric.OnKeyboardInput, "someId");
+// 
+// // Listener is never called because it was removed
+// Events.Generic.Notify(EventGeneric.OnKeyboardInput, 1, 2, 3);
+// 
+// ########### Example #2 ###########
+// Events.Player.AddListener<PlayerSpawnArgs>(EventPlayer.OnPlayerSpawn, (args) => 
+// {
+//     GD.Print(args.Name);
+//     GD.Print(args.Location);
+//     GD.Print(args.Player);
+// });
+// 
+// Events.Player.Notify(EventPlayer.OnPlayerSpawn, new PlayerSpawnArgs(name, location, player));
+// <typeparam name="TEvent">The event type enum to be used. For example 'EventPlayer' enum.</typeparam>
 public class EventManager<TEvent>
 {
     private readonly Dictionary<TEvent, List<object>> _eventListeners = [];
