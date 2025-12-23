@@ -17,7 +17,7 @@ public static class Camera2DExtensions
 
         if (smoothEnabled)
         {
-            GodotTween.Delay(camera, 0.01, () => camera.PositionSmoothingEnabled = true);
+            NodeTween.Delay(camera, 0.01, () => camera.PositionSmoothingEnabled = true);
         }
     }
 }
