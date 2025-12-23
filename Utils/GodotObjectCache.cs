@@ -9,7 +9,7 @@ namespace GodotUtils;
 /// <typeparam name="TValue">The type of Godot object to cache.</typeparam>
 public class GodotObjectCache<TValue> where TValue : GodotObject
 {
-    private Dictionary<ulong, TValue> _cache = [];
+    private readonly Dictionary<ulong, TValue> _cache = [];
 
     /// <summary>
     /// Returns the cached object if it exists; otherwise adds the object to the cache and returns it.
