@@ -6,7 +6,7 @@ namespace GodotUtils;
 /// <summary>
 /// Provides an API for animating a property of a <see cref="Node"/> using Godot’s Tween system.
 /// </summary>
-public sealed class NodeTween(Node node) : BaseTween<NodeTween>(node)
+public class NodeTween(Node node) : BaseTween<NodeTween>(node)
 {
     /// <summary>
     /// Animates the specified <paramref name="property"/> of the bound <see cref="Node"/>.
@@ -36,4 +36,7 @@ public sealed class NodeTween(Node node) : BaseTween<NodeTween>(node)
 
         return this;
     }
+
+    public NodeTween AnimateColor(Color color, double duration) => Animate(CanvasItem.PropertyName.SelfModulate, color, duration);
+    public NodeTween AnimateColorRecursive(Color color, double duration) => Animate(CanvasItem.PropertyName.Modulate, color, duration);
 }
