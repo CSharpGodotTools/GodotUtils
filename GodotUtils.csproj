@@ -25,7 +25,18 @@
 			<HintPath>ENet-CSharp.dll</HintPath>
 		</Reference>
 	</ItemGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="copy /Y &quot;$(TargetDir)GodotUtils.dll&quot; &quot;C:\Users\Valk\Documents\_Godot Projects\Template\addons\GodotUtils.dll&quot;&#xA;copy /Y &quot;$(TargetDir)GodotUtils.xml&quot; &quot;C:\Users\Valk\Documents\_Godot Projects\Template\addons\GodotUtils.xml&quot;&#xA;" />
+
+	<Target Name="PostBuild"
+        AfterTargets="PostBuildEvent"
+        Condition="'$(EnableGodotUtilsPostBuild)' == 'true'">
+
+		<ItemGroup>
+			<GodotTargets Include="$(GodotProject1);$(GodotProject2)" />
+		</ItemGroup>
+
+		<Exec Command="
+			copy /Y &quot;$(TargetDir)GodotUtils.dll&quot; &quot;%(GodotTargets.Identity)\addons\GodotUtils.dll&quot;
+			copy /Y &quot;$(TargetDir)GodotUtils.xml&quot; &quot;%(GodotTargets.Identity)\addons\GodotUtils.xml&quot;
+			" />
 	</Target>
 </Project>
