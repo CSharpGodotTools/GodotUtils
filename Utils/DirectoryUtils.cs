@@ -7,42 +7,64 @@ namespace GodotUtils;
 public static class DirectoryUtils
 {
     /// <summary>
-    /// Recursively traverses all directories and performs a action on each file path. 
+    /// Recursively traverses a directory tree and invokes a callback for each file encountered.
+    /// The callback may control traversal flow (continue, skip directories, or stop traversal).
     /// 
     /// <code>
-    /// Traverse("res://", fullFilePath => GD.Print(fullFilePath))
+    /// Traverse("res://", entry => GD.Print(entry.FullPath));
     /// </code>
     /// </summary>
-    public static bool Traverse(string directory, Func<string, bool> actionFullFilePath)
+    public static TraverseResult Traverse(string directory, Func<TraverseEntry, TraverseResult> visitor)
     {
         directory = NormalizePath(ProjectSettings.GlobalizePath(directory));
+
         using DirAccess dir = DirAccess.Open(directory);
         dir.ListDirBegin();
 
         string nextFileName;
+
         while ((nextFileName = dir.GetNext()) != string.Empty)
         {
-            string fullFilePath = Path.Combine(directory, nextFileName);
+            if (nextFileName.StartsWith('.'))
+                continue;
 
-            if (dir.CurrentIsDir())
+            string fullPath = Path.Combine(directory, nextFileName);
+            bool isDir = dir.CurrentIsDir();
+
+            TraverseResult result = visitor(new TraverseEntry(fullPath, isDir));
+
+            if (result == TraverseResult.Stop)
             {
-                if (!nextFileName.StartsWith('.'))
-                {
-                    if (Traverse(fullFilePath, actionFullFilePath))
-                        return true;
-                }
+                dir.ListDirEnd();
+                return TraverseResult.Stop;
             }
-            else
+
+            if (isDir)
             {
-                if (actionFullFilePath(fullFilePath))
-                    return true;
+                if (result != TraverseResult.SkipDir)
+                {
+                    TraverseResult childResult = Traverse(fullPath, visitor);
+
+                    if (childResult == TraverseResult.Stop)
+                    {
+                        dir.ListDirEnd();
+                        return TraverseResult.Stop;
+                    }
+                }
             }
         }
 
         dir.ListDirEnd();
-        return false;
+        return TraverseResult.Continue;
     }
 
+    public readonly struct TraverseEntry(string fullPath, bool isDirectory)
+    {
+        public string FullPath { get; } = fullPath;
+        public bool IsDirectory { get; } = isDirectory;
+
+        public string FileName => Path.GetFileName(FullPath);
+    }
 
     /// <summary>
     /// Recursively searches for the file name and if found returns the full file path to
@@ -57,15 +79,15 @@ public static class DirectoryUtils
     {
         string foundPath = null;
 
-        Traverse(directory, fullFilePath =>
+        Traverse(directory, entry =>
         {
-            if (Path.GetFileName(fullFilePath) == fileName)
+            if (Path.GetFileName(entry.FullPath) == fileName)
             {
-                foundPath = fullFilePath;
-                return true;
+                foundPath = entry.FullPath;
+                return TraverseResult.Stop;
             }
 
-            return false;
+            return TraverseResult.Continue;
         });
 
         return foundPath;
