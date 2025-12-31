@@ -7,7 +7,9 @@
 		<RootNamespace>GodotUtils</RootNamespace>
 		<OutputPath>$(SolutionDir)bin\</OutputPath>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<NoWarn>CS1591</NoWarn> <!-- Ignore missing XML comment warnings -->
+		<!-- CS1591: Ignore missing XML comment warnings -->
+		<!-- IDE0130: Ignore invalid namespace name warnings -->
+		<NoWarn>CS1591;IDE0130</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
