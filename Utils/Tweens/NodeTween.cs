@@ -36,7 +36,4 @@ public class NodeTween(Node node) : BaseTween<NodeTween>(node)
 
         return this;
     }
-
-    public NodeTween AnimateColor(Color color, double duration) => Animate(CanvasItem.PropertyName.SelfModulate, color, duration);
-    public NodeTween AnimateColorRecursive(Color color, double duration) => Animate(CanvasItem.PropertyName.Modulate, color, duration);
 }
