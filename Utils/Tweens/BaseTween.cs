@@ -62,7 +62,7 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     /// <param name="duration">How long, in seconds, the animation should take.</param>
     /// 
     /// <returns>The current <see cref="NodeTween2D"/> instance for chaining.</returns>
-    public virtual TSelf PropertyTo(string property, Variant finalValue, double duration)
+    public virtual TSelf Property(string property, Variant finalValue, double duration)
     {
         _tweener = _tween
             .TweenProperty(_node, property, finalValue, duration)

@@ -48,7 +48,7 @@ public class ShaderTween : BaseTween<ShaderTween>
     /// <param name="duration">How long, in seconds, the animation should take.</param>
     /// 
     /// <returns>The current <see cref="ShaderTween"/> instance for chaining.</returns>
-    public override ShaderTween PropertyTo(string shaderParam, Variant finalValue, double duration)
+    public override ShaderTween Property(string shaderParam, Variant finalValue, double duration)
     {
         _tweener = _tween
             .TweenProperty(_shaderMaterial, $"shader_parameter/{shaderParam}", finalValue, duration)
