@@ -17,7 +17,7 @@ public static class AnimationTreeExtensions
 
         new NodeTween(tree)
             .Delay(0.1)
-            .Callback(() => tree.SetParam($"conditions/{path}", !value));
+            .Then(() => tree.SetParam($"conditions/{path}", !value));
     }
 
     /// <summary>

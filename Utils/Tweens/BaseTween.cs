@@ -8,11 +8,10 @@ namespace GodotUtils;
 /// <summary>
 /// Base class that implements the API shared by all Godot tween builders.
 /// </summary>
-/// <typeparam name="TSelf">
-/// The concrete subclass type (e.g. <see cref="NodeTween"/> or <see cref="NodeTweenProp"/>).
-/// </typeparam>
 public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
 {
+    protected abstract TSelf Self { get; }
+
     /// <summary>The <see cref="Node"/> that the tween will operate on.</summary>
     protected readonly Node _node;
 
@@ -44,16 +43,32 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>
-    /// A delay in <paramref name="seconds"/> followed by a <paramref name="callback"/>
+    /// Animates the specified <paramref name="property"/> of the bound <see cref="Node"/>.
+    /// The tween uses a <see cref="TransitionType.Sine"/> transition by default.
+    /// 
+    /// <code>
+    /// var tween = new <see cref="NodeTween2D"/>(this);
+    /// tween.Animate(ColorRect.PropertyName.Color, Colors.Transparent, 0.5);
+    /// </code>
+    /// 
     /// </summary>
-    public static NodeTween Delay(Node node, double seconds, Action callback)
+    /// 
+    /// <param name="property">
+    /// The name of the property to animate (e.g. <c>ColorRect.PropertyName.Color</c>).
+    /// </param>
+    /// 
+    /// <param name="finalValue">The value the property should reach.</param>
+    /// 
+    /// <param name="duration">How long, in seconds, the animation should take.</param>
+    /// 
+    /// <returns>The current <see cref="NodeTween2D"/> instance for chaining.</returns>
+    public virtual TSelf PropertyTo(string property, Variant finalValue, double duration)
     {
-        NodeTween tween = new(node);
+        _tweener = _tween
+            .TweenProperty(_node, property, finalValue, duration)
+            .SetTrans(TransitionType.Sine);
 
-        tween.Delay(seconds)
-            .Callback(callback);
-
-        return tween;
+        return Self;
     }
 
     /// <summary>Sets the <see cref="Tween"/> processing mode to the specified <paramref name="mode"/>.</summary>
@@ -110,7 +125,7 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>Registers a callback to be invoked when the tween reaches this point in the chain.</summary>
-    public TSelf Callback(Action callback)
+    public TSelf Then(Action callback)
     {
         _tween.TweenCallback(Callable.From(callback));
         return Self;
@@ -254,7 +269,4 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
         action();
         return Self;
     }
-
-    /// <summary>Provides a strongly‑typed reference to the concrete subclass (used for chaining).</summary>
-    private TSelf Self => (TSelf)this;
 }

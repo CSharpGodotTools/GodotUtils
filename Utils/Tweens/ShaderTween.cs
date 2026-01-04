@@ -10,20 +10,16 @@ namespace GodotUtils;
 /// </summary>
 public class ShaderTween : BaseTween<ShaderTween>
 {
+    protected override ShaderTween Self => this;
+
     private readonly ShaderMaterial _shaderMaterial;
 
     /// <summary>
-    /// Creates a new <see cref="ShaderTween"/> bound to the supplied <paramref name="node"/>.
+    /// Creates a new <see cref="ShaderTween"/> bound to <paramref name="canvasItem"/>.
     /// The node must have a <see cref="ShaderMaterial"/> assigned to its <c>Material</c> property.
     /// </summary>
-    /// <param name="node">The <see cref="Node2D"/> whose shader material will be animated.</param>
-    public ShaderTween(Node node) : base(node)
+    internal ShaderTween(CanvasItem canvasItem) : base(canvasItem)
     {
-        if (node is not CanvasItem canvasItem)
-        {
-            throw new Exception("ShaderTweenProp only supports CanvasItem-derived nodes (Node2D, Control).");
-        }
-
         if (canvasItem.Material is not ShaderMaterial shaderMaterial)
         {
             throw new Exception("Animating shader material has not been set. Ensure the node has a ShaderMaterial assigned.");
@@ -52,7 +48,7 @@ public class ShaderTween : BaseTween<ShaderTween>
     /// <param name="duration">How long, in seconds, the animation should take.</param>
     /// 
     /// <returns>The current <see cref="ShaderTween"/> instance for chaining.</returns>
-    public ShaderTween Animate(string shaderParam, Variant finalValue, double duration)
+    public override ShaderTween PropertyTo(string shaderParam, Variant finalValue, double duration)
     {
         _tweener = _tween
             .TweenProperty(_shaderMaterial, $"shader_parameter/{shaderParam}", finalValue, duration)

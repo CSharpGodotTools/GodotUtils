@@ -12,6 +12,8 @@ namespace GodotUtils;
 /// </summary>
 public sealed class ShaderTweenProp : BaseTween<ShaderTweenProp>
 {
+    protected override ShaderTweenProp Self => this;
+
     private readonly ShaderMaterial _shaderMaterial;
     private readonly string _shaderParam;
 
@@ -29,7 +31,7 @@ public sealed class ShaderTweenProp : BaseTween<ShaderTweenProp>
     /// Thrown when the supplied <paramref name="node"/> does not have a <see cref="ShaderMaterial"/>
     /// assigned to its <c>Material</c> property.
     /// </exception>
-    public ShaderTweenProp(Node node, string shaderParam) : base(node)
+    internal ShaderTweenProp(Node node, string shaderParam) : base(node)
     {
         if (node is not CanvasItem canvasItem)
         {
@@ -60,7 +62,7 @@ public sealed class ShaderTweenProp : BaseTween<ShaderTweenProp>
     /// How long, in seconds, the animation should take.
     /// </param>
     /// <returns>The current <see cref="ShaderTweenProp"/> instance for chaining.</returns>
-    public ShaderTweenProp Animate(Variant finalValue, double duration)
+    public ShaderTweenProp PropertyTo(Variant finalValue, double duration)
     {
         _tweener = _tween
             .TweenProperty(

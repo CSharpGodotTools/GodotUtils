@@ -17,7 +17,7 @@ public static class Camera2DExtensions
 
         if (smoothEnabled)
         {
-            NodeTween.Delay(camera, 0.01, () => camera.PositionSmoothingEnabled = true);
+            Tweens.Delay(camera, 0.01, () => camera.PositionSmoothingEnabled = true);
         }
     }
 }
