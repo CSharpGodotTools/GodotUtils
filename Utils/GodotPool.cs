@@ -7,32 +7,22 @@ namespace GodotUtils;
 
 /// <summary>
 /// Creates a pool of nodes to eliminate expensive queue free calls.
-/// <para>If <typeparamref name="TNode"/> implements <see cref="IPoolAssignable{TNode}"/>, <c>Get()</c> will automatically call <c>AssignPool()</c>.</para>
-/// <para>If <typeparamref name="TNode"/> implements <see cref="IActivatable"/>, <c>Get()</c> and <c>Release()</c> will automatically call <c>SetActive</c>.</para>
 /// </summary>
 /// <typeparam name="TNode">The nodes managed in the pool.</typeparam>
-public class GodotPool<TNode> where TNode : CanvasItem
+public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
 {
     /// <summary>
     /// Nodes currently in use by the pool.
     /// </summary>
     public IEnumerable<TNode> ActiveNodes => _activeNodes;
 
-    // Only evaluate reflection checks once per type, not per pool instance
-    private static readonly bool _TNodeIsActivatable = typeof(IActivatable).IsAssignableFrom(typeof(TNode));
-    private static readonly bool _TNodeIsPoolAssignable = typeof(IPoolAssignable<TNode>).IsAssignableFrom(typeof(TNode));
-
     private readonly Func<TNode> _createNode;
     private readonly Node _parent;
     private readonly Stack<TNode> _inactiveNodes; // The nodes NOT in use
     private readonly HashSet<TNode> _activeNodes; // The nodes in use
-    private readonly Action<TNode, bool> _setActive;
-    private readonly Action<TNode> _assignPool;
 
     /// <summary>
     /// Creates a pool of nodes using <paramref name="createNode"/> and attaches them as children of <paramref name="parent"/> to avoid expensive <c>QueueFree()</c> calls.
-    /// <para>If <typeparamref name="TNode"/> implements <see cref="IPoolAssignable{TNode}"/>, <c>Get()</c> will automatically call <c>AssignPool()</c>.</para>
-    /// <para>If <typeparamref name="TNode"/> implements <see cref="IActivatable"/>, <c>Get()</c> and <c>Release()</c> will automatically call <c>SetActive</c>.</para>
     /// </summary>
     public GodotPool(Node parent, Func<TNode> createNode)
     {
@@ -40,18 +30,6 @@ public class GodotPool<TNode> where TNode : CanvasItem
         _parent = parent ?? throw new ArgumentNullException(nameof(parent));
         _inactiveNodes = [];
         _activeNodes = [];
-
-        // TNode implements IActivatable?
-        if (_TNodeIsActivatable)
-        {
-            _setActive = (node, active) => ((IActivatable)node).SetActive(active);
-        }
-
-        // TNode implements IPoolAssignable?
-        if (_TNodeIsPoolAssignable)
-        {
-            _assignPool = node => ((IPoolAssignable<TNode>)node).AssignPool(this);
-        }
     }
 
     /// <summary>
@@ -71,7 +49,7 @@ public class GodotPool<TNode> where TNode : CanvasItem
         {
             // No inactive nodes found, need to create a new node
             node = _createNode();
-            _assignPool?.Invoke(node);
+            node.AssignPool(this);
             _parent.AddChild(node);
 
 #if DEBUG
@@ -85,7 +63,7 @@ public class GodotPool<TNode> where TNode : CanvasItem
 
         // Activate the node
         node.Show();
-        _setActive?.Invoke(node, true);
+        node.SetActive(true);
 
         return node;
     }
@@ -100,8 +78,7 @@ public class GodotPool<TNode> where TNode : CanvasItem
         _inactiveNodes.Push(node);
 
         // Deactivate the node
-        _setActive?.Invoke(node, false);
-
+        node.SetActive(false);
         node.Hide();
     }
 
