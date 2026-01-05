@@ -33,7 +33,7 @@
         Condition="'$(EnableGodotUtilsPostBuild)' == 'true'">
 
 		<ItemGroup>
-			<GodotTargets Include="$(GodotProject1);$(GodotProject2);$(GodotProject3)" />
+			<GodotTargets Include="$(GodotProject1);$(GodotProject2);$(GodotProject3);$(GodotProject4)" />
 		</ItemGroup>
 
 		<Exec Command="
