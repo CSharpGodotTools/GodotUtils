@@ -73,7 +73,7 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
 
         // Activate the node
         node.Show();
-        node.OnAquire();
+        node.OnAcquire();
 
         return node;
     }

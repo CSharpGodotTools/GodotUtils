@@ -12,7 +12,7 @@ public interface IPoolable<TNode> where TNode : CanvasItem, IPoolable<TNode>
     /// <summary>
     /// Invoked when a <typeparamref name="TNode"/> is aquired with <c><see cref="GodotPool{TNode}"/>.Get()</c>
     /// </summary>
-    void OnAquire();
+    void OnAcquire();
 
     /// <summary>
     /// Invoked when a <typeparamref name="TNode"/> is released from the pool.
