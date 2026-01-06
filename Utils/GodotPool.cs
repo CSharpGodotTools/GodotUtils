@@ -7,6 +7,16 @@ namespace GodotUtils;
 
 /// <summary>
 /// Creates a pool of nodes to eliminate expensive queue free calls.
+/// <code>
+/// // Create the pool
+/// GodotPool pool = new(parentNode, () => projectilePackedScene.Instantiate());
+/// 
+/// // Get a projectile from the pool
+/// Projectile projectile = pool.Get();
+/// 
+/// // Projectile goes off screen or dies
+/// projectile.Release(); // Never use QueueFree()
+/// </code>
 /// </summary>
 /// <typeparam name="TNode">The nodes managed in the pool.</typeparam>
 public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
@@ -16,17 +26,17 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
     /// </summary>
     public IEnumerable<TNode> ActiveNodes => _activeNodes;
 
-    private readonly Func<TNode> _createNode;
+    private readonly Func<TNode> _createNodeFunc;
     private readonly Node _parent;
     private readonly Stack<TNode> _inactiveNodes; // The nodes NOT in use
     private readonly HashSet<TNode> _activeNodes; // The nodes in use
 
     /// <summary>
-    /// Creates a pool of nodes using <paramref name="createNode"/> and attaches them as children of <paramref name="parent"/> to avoid expensive <c>QueueFree()</c> calls.
+    /// Creates a pool of nodes using <paramref name="createNodeFunc"/> and attaches them as children of <paramref name="parent"/> to avoid expensive <c>QueueFree()</c> calls.
     /// </summary>
-    public GodotPool(Node parent, Func<TNode> createNode)
+    public GodotPool(Node parent, Func<TNode> createNodeFunc)
     {
-        _createNode = createNode ?? throw new ArgumentNullException(nameof(createNode));
+        _createNodeFunc = createNodeFunc ?? throw new ArgumentNullException(nameof(createNodeFunc));
         _parent = parent ?? throw new ArgumentNullException(nameof(parent));
         _inactiveNodes = [];
         _activeNodes = [];
@@ -48,8 +58,8 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
         else
         {
             // No inactive nodes found, need to create a new node
-            node = _createNode();
-            node.AssignPool(this);
+            node = _createNodeFunc();
+            node.OnCreate(this);
             _parent.AddChild(node);
 
 #if DEBUG
@@ -63,7 +73,7 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
 
         // Activate the node
         node.Show();
-        node.SetActive(true);
+        node.OnAquire();
 
         return node;
     }
@@ -78,8 +88,8 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
         _inactiveNodes.Push(node);
 
         // Deactivate the node
-        node.SetActive(false);
         node.Hide();
+        node.OnRelease();
     }
 
     /// <summary>
