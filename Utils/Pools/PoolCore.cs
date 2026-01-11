@@ -1,3 +1,4 @@
+#nullable enable
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -5,21 +6,7 @@ using System.Linq;
 
 namespace GodotUtils;
 
-/// <summary>
-/// Creates a pool of nodes to eliminate expensive queue free calls.
-/// <code>
-/// // Create the pool
-/// GodotPool pool = new(parentNode, () => projectilePackedScene.Instantiate());
-/// 
-/// // Get a projectile from the pool
-/// Projectile projectile = pool.Get();
-/// 
-/// // Projectile goes off screen or dies
-/// projectile.Release(); // Never use QueueFree()
-/// </code>
-/// </summary>
-/// <typeparam name="TNode">The nodes managed in the pool.</typeparam>
-public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
+internal sealed class PoolCore<TNode> where TNode : CanvasItem
 {
     /// <summary>
     /// Nodes currently in use by the pool.
@@ -28,24 +15,22 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
 
     private readonly Func<TNode> _createNodeFunc;
     private readonly Node _parent;
-    private readonly Stack<TNode> _inactiveNodes; // The nodes NOT in use
-    private readonly HashSet<TNode> _activeNodes; // The nodes in use
+    private readonly Stack<TNode> _inactiveNodes = []; // The nodes NOT in use
+    private readonly HashSet<TNode> _activeNodes = []; // The nodes in use
 
     /// <summary>
     /// Creates a pool of nodes using <paramref name="createNodeFunc"/> and attaches them as children of <paramref name="parent"/> to avoid expensive <c>QueueFree()</c> calls.
     /// </summary>
-    public GodotPool(Node parent, Func<TNode> createNodeFunc)
+    public PoolCore(Node parent, Func<TNode> createNodeFunc)
     {
         _createNodeFunc = createNodeFunc ?? throw new ArgumentNullException(nameof(createNodeFunc));
         _parent = parent ?? throw new ArgumentNullException(nameof(parent));
-        _inactiveNodes = [];
-        _activeNodes = [];
     }
 
     /// <summary>
     /// Returns an available <typeparamref name="TNode"/> or creates a new one if all are in use.
     /// </summary>
-    public TNode Get()
+    public TNode Acquire(Action<TNode>? onCreate, Action<TNode>? onAcquire)
     {
         TNode node;
 
@@ -59,7 +44,7 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
         {
             // No inactive nodes found, need to create a new node
             node = _createNodeFunc();
-            node.OnCreate(this);
+            onCreate?.Invoke(node);
             _parent.AddChild(node);
 
 #if DEBUG
@@ -73,7 +58,7 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
 
         // Activate the node
         node.Show();
-        node.OnAcquire();
+        onAcquire?.Invoke(node);
 
         return node;
     }
@@ -81,7 +66,7 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
     /// <summary>
     /// Releases the <paramref name="node"/> from the pool.
     /// </summary>
-    public void Release(TNode node)
+    public void Release(TNode node, Action<TNode>? onRelease)
     {
         // Mark the active node as inactive
         _activeNodes.Remove(node);
@@ -89,7 +74,7 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
 
         // Deactivate the node
         node.Hide();
-        node.OnRelease();
+        onRelease?.Invoke(node);
     }
 
     /// <summary>
@@ -99,10 +84,7 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
     {
         // Queue free inactive nodes
         while (_inactiveNodes.Count > 0)
-        {
-            TNode node = _inactiveNodes.Pop();
-            node.QueueFree();
-        }
+            _inactiveNodes.Pop().QueueFree();
 
         // Queue free active nodes
         while (_activeNodes.Count > 0)
@@ -113,3 +95,4 @@ public class GodotPool<TNode> where TNode : CanvasItem, IPoolable<TNode>
         }
     }
 }
+#nullable disable
