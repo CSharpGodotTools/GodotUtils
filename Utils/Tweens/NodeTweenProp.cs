@@ -20,20 +20,15 @@ public sealed class NodeTweenProp : BaseTween<NodeTweenProp>
     /// <summary>
     /// Animates the specified property of the bound <see cref="Node"/>.
     /// The tween uses a <see cref="TransitionType.Sine"/> transition by default.
-    /// 
     /// <code>
-    /// var tween = new <see cref="NodeTweenProp"/>(this, ColorRect.PropertyName.Color);
-    /// tween.Animate(Colors.Red, 0.5);
-    /// tween.Animate(Colors.Green, 0.5);
-    /// tween.Animate(Colors.Blue, 0.5);
+    /// Tweens.Animate(this, ColorRect.PropertyName.Color);
+    /// tween.PropertyTo(Colors.Red, 0.5);
+    /// tween.PropertyTo(Colors.Green, 0.5);
+    /// tween.PropertyTo(Colors.Blue, 0.5);
     /// </code>
-    /// 
     /// </summary>
-    /// 
     /// <param name="finalValue">The value the property should reach.</param>
-    /// 
     /// <param name="duration">How long, in seconds, the animation should take.</param>
-    /// 
     /// <returns>The current <see cref="NodeTweenProp"/> instance for chaining.</returns>
     public NodeTweenProp PropertyTo(Variant finalValue, double duration)
     {
