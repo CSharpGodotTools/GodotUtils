@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace GodotUtils;
 
-public class Component : IDisposable
+public class Component
 {
     protected Node Owner;
     private ComponentManager _componentManager;
@@ -16,13 +16,13 @@ public class Component : IDisposable
         Owner.TreeExited += CleanupOnTreeExit;
     }
 
-    public virtual void Ready() { }
-    public virtual void Deferred() { }
-    public virtual void Process(double delta) { }
-    public virtual void PhysicsProcess(double delta) { }
-    public virtual void ProcessInput(InputEvent @event) { }
-    public virtual void UnhandledInput(InputEvent @event) { }
-    public virtual void Dispose() { }
+    protected internal virtual void Ready() { }
+    protected internal virtual void Deferred() { }
+    protected internal virtual void Process(double delta) { }
+    protected internal virtual void PhysicsProcess(double delta) { }
+    protected internal virtual void ProcessInput(InputEvent @event) { }
+    protected internal virtual void UnhandledInput(InputEvent @event) { }
+    protected internal virtual void Dispose() { }
 
     public void SetActive(bool active)
     {
