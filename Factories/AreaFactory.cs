@@ -2,64 +2,71 @@ using Godot;
 
 namespace GodotUtils;
 
-public class AreaRectBuilder : AreaBuilder
+public static class AreaFactory
 {
-    protected override RectangleShape2D Shape { get; }
+    public static CircleArea CreateCircle(float radius) => new(radius);
+    public static RectArea CreateRect(Vector2 size) => new(size);
+}
 
-    public AreaRectBuilder(Vector2 size, bool transparent = false) : this(size, DefaultColor, transparent) { }
-
-    public AreaRectBuilder(Vector2 size, Color color, bool transparent = false) : base(color, transparent)
+public class RectArea : BaseArea
+{
+    public Vector2 Size
     {
-        Shape = new RectangleShape2D { Size = size };
+        get => _shape.Size;
+        set => _shape.Size = value;
     }
 
-    public void UpdateSize(Vector2 size)
+    private readonly RectangleShape2D _shape;
+
+    internal RectArea(Vector2 size) : base(new RectangleShape2D { Size = size})
     {
-        Shape.Size = size;
+        _shape = (RectangleShape2D)Shape;
     }
 }
 
-public class AreaCircleBuilder : AreaBuilder
+public class CircleArea : BaseArea
 {
-    protected override CircleShape2D Shape { get; }
-
-    public AreaCircleBuilder(float radius, bool transparent = false) : this(radius, DefaultColor, transparent) { }
-
-    public AreaCircleBuilder(float radius, Color color, bool transparent = false) : base(color, transparent)
+    public float Radius
     {
-        Shape = new CircleShape2D { Radius = radius };
+        get => _shape.Radius;
+        set => _shape.Radius = value;
     }
 
-    public void UpdateSize(float radius)
+    private readonly CircleShape2D _shape;
+
+    internal CircleArea(float radius) : base(new CircleShape2D { Radius = radius })
     {
-        Shape.Radius = radius;
+        _shape = (CircleShape2D)Shape;
     }
 }
 
-public abstract class AreaBuilder(Color color, bool transparent)
+public abstract class BaseArea
 {
-    protected static readonly Color DefaultColor = Color.Color8(0, 153, 179, 40); // Semi transparent blue
+    protected Shape2D Shape => _shape;
 
-    protected abstract Shape2D Shape { get; }
+    private readonly Area2D _area;
+    private readonly CollisionShape2D _cShape;
+    private readonly Shape2D _shape;
 
-    protected Color _color = color;
-    protected bool _transparent = transparent;
-
-    public Area2D Build()
+    protected BaseArea(Shape2D shape)
     {
-        if (_transparent)
-            _color.A = 0;
-
-        Area2D area = new();
-
-        CollisionShape2D areaCollision = new()
+        _area = new Area2D();
+        _shape = shape;
+        _cShape = new CollisionShape2D
         {
-            DebugColor = _color,
-            Shape = Shape
+            Shape = _shape
         };
 
-        area.AddChild(areaCollision);
-
-        return area;
+        _area.AddChild(_cShape);
     }
+
+    public void SetColor(Color color, bool transparent = false)
+    {
+        color.A = transparent ? 0 : 255;
+        _cShape.DebugColor = color;
+    }
+
+    public Color GetColor() => _cShape.DebugColor;
+
+    public static implicit operator Area2D(BaseArea area) => area._area;
 }
