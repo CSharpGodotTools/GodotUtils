@@ -2,6 +2,9 @@
 .godot/
 /android/
 
+# Ignoring all uid files because this is a library. Not an actual Godot project.
+*.uid 
+
 # Visual Studio
 .vs/
 bin/
