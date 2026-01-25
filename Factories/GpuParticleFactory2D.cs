@@ -2,7 +2,7 @@ using Godot;
 
 namespace GodotUtils;
 
-public static class GpuParticle2DFactory
+public static class GpuParticleFactory2D
 {
     /// <summary>
     /// Instantiates a GPUParticles2D scene as a one-shot effect, frees it automatically when

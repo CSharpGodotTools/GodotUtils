@@ -1,8 +1,8 @@
-﻿using Godot;
+using Godot;
 
 namespace GodotUtils;
 
-public static class GpuParticle3DFactory
+public static class GpuParticleFactory3D
 {
     public static GpuParticles3D OneShot(Node parent, PackedScene particleScene)
     {
