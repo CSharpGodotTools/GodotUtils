@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace GodotUtils.Framework;
 
-public partial class AutoloadsFramework : Node
+// This must be sealed because if an autoload script in the Godot assembly inherits from a node type in a
+// separate assembly then Godot will fail to load its assemblies everytime the external Godot assembly is built
+// and will require a Godot engine restart everytime. By making this class sealed we entirely prevent this issue
+// and force a component design approach.
+public sealed class AutoloadsFramework
 {
     public event Func<Task> PreQuit;
 
@@ -16,21 +20,25 @@ public partial class AutoloadsFramework : Node
     public MetricsOverlay MetricsOverlay { get; }
     public OptionsManager OptionsManager { get; }
 
-    public AutoloadsFramework(AutoloadsFrameworkConfig config, IHotkeysFactory hotkeysFactory)
+    private readonly Node _autoloadsNode;
+
+    public AutoloadsFramework(Node autoloadsNode, AutoloadsFrameworkConfig config, IHotkeysFactory hotkeysFactory)
     {
+        _autoloadsNode = autoloadsNode;
+
         Instance = this;
         MetricsOverlay = new MetricsOverlay(config.MetricsToggleKeyAction);
         OptionsManager = new OptionsManager(this, config.FullscreenToggleKeyAction, hotkeysFactory);
     }
 
-    public override void _Process(double delta)
+    public void Update()
     {
         MetricsOverlay.Update();
     }
 
     public async Task ExitGame()
     {
-        GetTree().AutoAcceptQuit = false;
+        _autoloadsNode.GetTree().AutoAcceptQuit = false;
 
         // Wait for cleanup
         if (PreQuit != null)
@@ -50,6 +58,6 @@ public partial class AutoloadsFramework : Node
             }
         }
 
-        GetTree().Quit();
+        _autoloadsNode.GetTree().Quit();
     }
 }
