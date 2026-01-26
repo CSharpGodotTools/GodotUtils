@@ -83,6 +83,7 @@ public partial class OptionsManager : IDisposable
     public void Dispose()
     {
         _autoloads.PreQuit -= SaveSettingsOnQuit;
+        GC.SuppressFinalize(this);
     }
 
     public string GetCurrentTab()
@@ -238,7 +239,7 @@ public partial class OptionsManager : IDisposable
 
     // *.tres files store the path to their script in res:// and as a result if that script is moved then the
     // path in *.tres will point to an invalid path and so this function corrects the path again.
-    private void ValdiateResourceFile(string localUserPath, string localResPath)
+    private static void ValdiateResourceFile(string localUserPath, string localResPath)
     {
         string userGlobalPath = ProjectSettings.GlobalizePath(localUserPath);
         string content = File.ReadAllText(userGlobalPath);

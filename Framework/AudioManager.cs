@@ -181,5 +181,6 @@ public class AudioManager : IDisposable
     {
         _musicPlayer.QueueFree();
         _sfxPool.QueueFreeAll();
+        GC.SuppressFinalize(this);
     }
 }
