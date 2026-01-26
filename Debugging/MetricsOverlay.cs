@@ -2,6 +2,7 @@ using Godot;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Monitor = Godot.Performance.Monitor;
 using Vector2 = System.Numerics.Vector2;
 
@@ -72,6 +73,7 @@ public class MetricsOverlay
 #pragma warning restore IDE0008 // Use explicit type
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public void Update()
     {
         if (Input.IsActionJustPressed(_toggleKeyAction))
@@ -87,12 +89,21 @@ public class MetricsOverlay
     }
 
     #region API
+    /// <summary>
+    /// Starts showing a value in the metrics overlay.
+    /// </summary>
+    /// <param name="key">Name shown in the overlay.</param>
+    /// <param name="function">Function that provides the value to display.</param>
     public void StartMonitoring(string key, Func<object> function)
     {
         _visible = true;
         _monitors.Add(key, function);
     }
 
+    /// <summary>
+    /// Stops showing a value in the metrics overlay.
+    /// </summary>
+    /// <param name="key">Name of the value to stop displaying.</param>
     public void StopMonitoring(string key)
     {
         _monitors.Remove(key);
