@@ -2,6 +2,7 @@
 using ENet;
 using System.Collections.Concurrent;
 using System;
+using GodotUtils.Framework;
 
 namespace GodotUtils.Netcode.Client;
 
@@ -30,7 +31,7 @@ public abstract class ENetClient : ENetLow
     /// </summary>
     public override void Log(object message, BBColor color = BBColor.Aqua)
     {
-        Logger.Log($"[Client] {message}", color);
+        GameFramework.Logger.Log($"[Client] {message}", color);
     }
 
     protected override void ConcurrentQueues()

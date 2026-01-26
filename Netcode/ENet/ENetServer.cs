@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System;
 using System.IO;
+using GodotUtils.Framework;
 
 namespace GodotUtils.Netcode.Server;
 
@@ -26,7 +27,7 @@ public abstract class ENetServer : ENetLow
     /// </summary>
     public override void Log(object message, BBColor color = BBColor.Green)
     {
-        Logger.Log($"[Server] {message}", color);
+        GameFramework.Logger.Log($"[Server] {message}", color);
     }
 
     /// <summary>
@@ -237,7 +238,7 @@ public abstract class ENetServer : ENetLow
         return true;
     }
 
-    private bool TryReadPacket(ClientPacket handler, PacketReader reader, out string error)
+    private static bool TryReadPacket(ClientPacket handler, PacketReader reader, out string error)
     {
         error = null;
 

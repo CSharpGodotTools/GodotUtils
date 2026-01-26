@@ -1,6 +1,7 @@
 #if NETCODE_ENABLED
 using System;
 using System.Threading.Tasks;
+using GodotUtils.Framework;
 using GodotUtils.Netcode.Client;
 using GodotUtils.Netcode.Server;
 
@@ -18,9 +19,9 @@ public class Net
 
     private const int ShutdownPollIntervalMs = 50;
 
-    private IGameClientFactory _clientFactory;
-    private IGameServerFactory _serverFactory;
-    private bool _enetInitialized;
+    private readonly IGameClientFactory _clientFactory;
+    private readonly IGameServerFactory _serverFactory;
+    private readonly bool _enetInitialized;
 
     public Net(IGameClientFactory clientFactory, IGameServerFactory serverFactory)
     {
@@ -31,12 +32,12 @@ public class Net
         }
         catch (DllNotFoundException e)
         {
-            Logger.LogErr(e);
+            GameFramework.Logger.LogErr(e);
             _enetInitialized = false;
         }
 
-        Autoloads.Instance.PreQuit += StopThreads;
-        Services.Get<UI.PopupMenu>().MainMenuBtnPressed += async () => await StopThreads();
+        AutoloadsFramework.Instance.PreQuit += StopThreads;
+        // TODO: GameFramework.Services.Get<UI.PopupMenu>().MainMenuBtnPressed += async () => await StopThreads();
 
         _clientFactory = clientFactory;
         _serverFactory = serverFactory;
@@ -124,7 +125,7 @@ public class Net
         }
 
         // Wait for the logger to finish enqueing the remaining logs
-        while (Logger.StillWorking())
+        while (GameFramework.Logger.StillWorking())
         {
             await Task.Delay(ShutdownPollIntervalMs);
         }

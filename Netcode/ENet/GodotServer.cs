@@ -45,7 +45,7 @@ public abstract class GodotServer : ENetServer
         }
         catch (Exception e)
         {
-            Logger.LogErr(e, "Server");
+            GameFramework.Logger.LogErr(e, "Server");
         }
     }
 
@@ -138,7 +138,7 @@ public abstract class GodotServer : ENetServer
         return Options.PrintPacketByteSize ? $"({packet.GetSize()} bytes)" : "";
     }
 
-    private string GetPeerDescription(Peer[] clients)
+    private static string GetPeerDescription(Peer[] clients)
     {
         if (clients.Length == 0)
         {

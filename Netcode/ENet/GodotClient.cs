@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using GodotUtils.Framework;
 
 namespace GodotUtils.Netcode.Client;
 
@@ -55,7 +56,7 @@ public abstract class GodotClient : ENetClient
         }
         catch (Exception e)
         {
-            Logger.LogErr(e, "Client");
+            GameFramework.Logger.LogErr(e, "Client");
         }
     }
 

@@ -22,11 +22,15 @@ public sealed class AutoloadsFramework
     public MetricsOverlay MetricsOverlay { get; private set; }
     public OptionsManager OptionsManager { get; private set; }
     public GameConsoleFramework GameConsole { get; private set; }
+    public Services Services { get; private set; }
+#if NETCODE_ENABLED
     public Logger Logger { get; private set; }
+#endif
 
     private readonly Node _autoloadsNode;
     private readonly AutoloadsFrameworkConfig _config;
     private readonly IHotkeysFactory _hotkeysFactory;
+    private ISceneManager _sceneManager;
 
     public AutoloadsFramework(Node autoloadsNode, AutoloadsFrameworkConfig config, IHotkeysFactory hotkeysFactory)
     {
@@ -36,12 +40,14 @@ public sealed class AutoloadsFramework
         _hotkeysFactory = hotkeysFactory;
     }
 
-    public void EnterTree(Node gameConsole)
+    public void EnterTree(Node gameConsole, ISceneManager sceneManager)
     {
+        _sceneManager = sceneManager;
         GameConsole = new GameConsoleFramework(gameConsole, _config.ConsoleToggleKeyAction, _config.UpKeyAction, _config.DownKeyAction);
         MetricsOverlay = new MetricsOverlay(_config.MetricsToggleKeyAction);
         OptionsManager = new OptionsManager(this, _config.FullscreenToggleKeyAction, _hotkeysFactory);
         AudioManager = new AudioManager(_autoloadsNode);
+        Services = new Services(_sceneManager);
     }
     
     public void Ready()
@@ -53,7 +59,9 @@ public sealed class AutoloadsFramework
     public void Update()
     {
         MetricsOverlay.Update();
+#if NETCODE_ENABLED
         Logger.Update();
+#endif
         GameConsole.Process();
     }
 
@@ -69,7 +77,9 @@ public sealed class AutoloadsFramework
     {
         AudioManager.Dispose();
         OptionsManager.Dispose();
+#if NETCODE_ENABLED
         Logger.Dispose();
+#endif
         GameConsole.ExitTree();
         Instance = null;
     }
