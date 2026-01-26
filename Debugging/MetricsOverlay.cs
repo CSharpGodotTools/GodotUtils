@@ -87,13 +87,13 @@ public class MetricsOverlay
     }
 
     #region API
-    public void StartMonitoringProcess(string key, Func<object> function)
+    public void StartMonitoring(string key, Func<object> function)
     {
         _visible = true;
         _monitors.Add(key, function);
     }
 
-    public void StopMonitoringProcess(string key)
+    public void StopMonitoring(string key)
     {
         _monitors.Remove(key);
     }
@@ -103,9 +103,8 @@ public class MetricsOverlay
     private void RenderProcessMonitors()
     {
         int processMonitors = _monitors.Count;
-        int physicsProcessMonitors = _physicsProcessMonitors.Count;
 
-        if (processMonitors == 0 && physicsProcessMonitors == 0)
+        if (processMonitors == 0)
             return;
 
         if (!ImGui.CollapsingHeader(LabelVariables, ImGuiTreeNodeFlags.DefaultOpen))
@@ -114,14 +113,6 @@ public class MetricsOverlay
         if (processMonitors > 0)
         {
             foreach (KeyValuePair<string, Func<object>> kvp in _monitors)
-            {
-                ImGui.Text($"{kvp.Key}: {kvp.Value()}");
-            }
-        }
-
-        if (physicsProcessMonitors > 0)
-        {
-            foreach (KeyValuePair<string, Func<object>> kvp in _physicsProcessMonitors)
             {
                 ImGui.Text($"{kvp.Key}: {kvp.Value()}");
             }
