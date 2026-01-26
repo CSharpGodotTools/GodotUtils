@@ -43,15 +43,10 @@
 		</ItemGroup>
 
 		<!-- Warn about missing projects -->
-		<Message
-			Condition="@(MissingGodotTargets) != ''"
-			Text="Warning: The following Godot projects were not found: @(MissingGodotTargets, ', ')"
-			Importance="High" />
+		<Message Condition="@(MissingGodotTargets) != ''" Text="Warning: The following Godot projects were not found: @(MissingGodotTargets, ', ')" Importance="High" />
 
 		<!-- Copy files to all valid projects using Exec (works reliably for multiple destinations) -->
-		<Exec Command="
-    @(ValidGodotTargets->'copy /Y &quot;$(TargetDir)GodotUtils.dll&quot; &quot;%(Identity)\addons\GodotUtils.dll&quot;&amp; copy /Y &quot;$(TargetDir)GodotUtils.xml&quot; &quot;%(Identity)\addons\GodotUtils.xml&quot;', ' &amp;&amp; ')
-  " />
+		<Exec Command="&#xA;    @(ValidGodotTargets->'copy /Y &quot;$(TargetDir)GodotUtils.dll&quot; &quot;%(Identity)\addons\GodotUtils.dll&quot;&amp; copy /Y &quot;$(TargetDir)GodotUtils.xml&quot; &quot;%(Identity)\addons\GodotUtils.xml&quot;', ' &amp;&amp; ')&#xA;  " />
 	</Target>
 
 </Project>
