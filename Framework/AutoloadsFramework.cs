@@ -36,9 +36,9 @@ public sealed class AutoloadsFramework
         _hotkeysFactory = hotkeysFactory;
     }
 
-    public void EnterTree(GameConsoleFramework gameConsole)
+    public void EnterTree(Node gameConsole)
     {
-        GameConsole = gameConsole;
+        GameConsole = new GameConsoleFramework(gameConsole, _config.ConsoleToggleKeyAction, _config.UpKeyAction, _config.DownKeyAction);
         MetricsOverlay = new MetricsOverlay(_config.MetricsToggleKeyAction);
         OptionsManager = new OptionsManager(this, _config.FullscreenToggleKeyAction, _hotkeysFactory);
         AudioManager = new AudioManager(_autoloadsNode);
@@ -47,12 +47,14 @@ public sealed class AutoloadsFramework
     public void Ready()
     {
         Logger = new Logger(GameConsole);
+        GameConsole.Ready();
     }
 
     public void Update()
     {
         MetricsOverlay.Update();
         Logger.Update();
+        GameConsole.Process();
     }
 
     public void Notification(int what)
@@ -68,6 +70,7 @@ public sealed class AutoloadsFramework
         AudioManager.Dispose();
         OptionsManager.Dispose();
         Logger.Dispose();
+        GameConsole.ExitTree();
         Instance = null;
     }
 
