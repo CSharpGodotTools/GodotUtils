@@ -1,5 +1,6 @@
 using Godot;
 using GodotUtils.Debugging;
+using GodotUtils.Framework.Debugging;
 using GodotUtils.Framework.UI;
 using GodotUtils.Framework.UI.Console;
 using System;
@@ -26,6 +27,7 @@ public sealed class AutoloadsFramework
 #if NETCODE_ENABLED
     public Logger Logger { get; private set; }
 #endif
+    public Profiler Profiler { get; }
 
     private readonly Node _autoloadsNode;
     private readonly AutoloadsFrameworkConfig _config;
@@ -38,6 +40,7 @@ public sealed class AutoloadsFramework
         _autoloadsNode = autoloadsNode;
         _config = config;
         _hotkeysFactory = hotkeysFactory;
+        Profiler = new Profiler();
     }
 
     public void EnterTree(Node gameConsole, ISceneManager sceneManager)
