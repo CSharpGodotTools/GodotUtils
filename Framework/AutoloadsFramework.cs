@@ -1,6 +1,7 @@
 using Godot;
 using GodotUtils.Debugging;
 using GodotUtils.Framework.UI;
+using GodotUtils.Framework.UI.Console;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,23 +18,57 @@ public sealed class AutoloadsFramework
 
     public static AutoloadsFramework Instance { get; private set; }
 
-    public MetricsOverlay MetricsOverlay { get; }
-    public OptionsManager OptionsManager { get; }
+    public AudioManager AudioManager { get; private set; }
+    public MetricsOverlay MetricsOverlay { get; private set; }
+    public OptionsManager OptionsManager { get; private set; }
+    public GameConsoleFramework GameConsole { get; private set; }
+    public Logger Logger { get; private set; }
 
     private readonly Node _autoloadsNode;
+    private readonly AutoloadsFrameworkConfig _config;
+    private readonly IHotkeysFactory _hotkeysFactory;
 
     public AutoloadsFramework(Node autoloadsNode, AutoloadsFrameworkConfig config, IHotkeysFactory hotkeysFactory)
     {
-        _autoloadsNode = autoloadsNode;
-
         Instance = this;
-        MetricsOverlay = new MetricsOverlay(config.MetricsToggleKeyAction);
-        OptionsManager = new OptionsManager(this, config.FullscreenToggleKeyAction, hotkeysFactory);
+        _autoloadsNode = autoloadsNode;
+        _config = config;
+        _hotkeysFactory = hotkeysFactory;
+    }
+
+    public void EnterTree(GameConsoleFramework gameConsole)
+    {
+        GameConsole = gameConsole;
+        MetricsOverlay = new MetricsOverlay(_config.MetricsToggleKeyAction);
+        OptionsManager = new OptionsManager(this, _config.FullscreenToggleKeyAction, _hotkeysFactory);
+        AudioManager = new AudioManager(_autoloadsNode);
+    }
+    
+    public void Ready()
+    {
+        Logger = new Logger(GameConsole);
     }
 
     public void Update()
     {
         MetricsOverlay.Update();
+        Logger.Update();
+    }
+
+    public void Notification(int what)
+    {
+        if (what == Node.NotificationWMCloseRequest)
+        {
+            ExitGame().FireAndForget();
+        }
+    }
+
+    public void ExitTree()
+    {
+        AudioManager.Dispose();
+        OptionsManager.Dispose();
+        Logger.Dispose();
+        Instance = null;
     }
 
     public async Task ExitGame()
