@@ -332,7 +332,7 @@ public partial class OptionsManager : IDisposable
     private void SetLanguage()
     {
         TranslationServer.SetLocale(
-        _options.Language.ToString().Substring(0, 2).ToLower());
+        _options.Language.ToString()[..2].ToLower());
     }
 
     private void SetAntialiasing()
