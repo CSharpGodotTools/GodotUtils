@@ -31,9 +31,11 @@
 		</Reference>
 	</ItemGroup>
 
+	<!-- Post Build Steps -->
+	<!-- Auto copy project dll to other projects -->
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(EnableGodotUtilsPostBuild)' == 'true'">
 
-		<!-- Create a dynamic list of Godot projects -->
+		<!-- Configure the project list as needed -->
 		<ItemGroup>
 			<GodotTargets Include="$(GodotProject1);$(GodotProject2);$(GodotProject3);$(GodotProject4)" />
 		</ItemGroup>
@@ -47,7 +49,7 @@
 		<!-- Warn about missing projects -->
 		<Message Condition="@(MissingGodotTargets) != ''" Text="Warning: The following Godot projects were not found: @(MissingGodotTargets, ', ')" Importance="High" />
 
-		<!-- Copy files to all valid projects using Exec (works reliably for multiple destinations) -->
+		<!-- Copy files to all valid projects using Exec -->
 		<Exec Command="&#xA;    @(ValidGodotTargets->'copy /Y &quot;$(TargetDir)GodotUtils.dll&quot; &quot;%(Identity)\addons\GodotUtils.dll&quot;&amp; copy /Y &quot;$(TargetDir)GodotUtils.xml&quot; &quot;%(Identity)\addons\GodotUtils.xml&quot;', ' &amp;&amp; ')&#xA;  " />
 	</Target>
 
