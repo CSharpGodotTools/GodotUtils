@@ -24,9 +24,7 @@ public sealed class AutoloadsFramework
     public OptionsManager OptionsManager { get; private set; }
     public GameConsoleFramework GameConsole { get; private set; }
     public Services Services { get; private set; }
-#if NETCODE_ENABLED
     public Logger Logger { get; private set; }
-#endif
     public Profiler Profiler { get; }
 
     private readonly Node _autoloadsNode;
@@ -62,9 +60,7 @@ public sealed class AutoloadsFramework
     public void Update()
     {
         MetricsOverlay.Update();
-#if NETCODE_ENABLED
         Logger.Update();
-#endif
         GameConsole.Process();
     }
 
@@ -80,9 +76,7 @@ public sealed class AutoloadsFramework
     {
         AudioManager.Dispose();
         OptionsManager.Dispose();
-#if NETCODE_ENABLED
         Logger.Dispose();
-#endif
         GameConsole.ExitTree();
         Instance = null;
     }

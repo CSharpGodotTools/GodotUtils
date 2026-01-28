@@ -1,4 +1,3 @@
-#if NETCODE_ENABLED
 using ENet;
 using System.Collections.Concurrent;
 using System;
@@ -178,4 +177,3 @@ public abstract class ENetClient : ENetLow
         return address;
     }
 }
-#endif

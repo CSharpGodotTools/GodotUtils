@@ -1,4 +1,3 @@
-#if NETCODE_ENABLED
 using ENet;
 using System.Linq;
 using System.Threading.Tasks;
@@ -156,4 +155,3 @@ public abstract class GodotServer : ENetServer
         }
     }
 }
-#endif

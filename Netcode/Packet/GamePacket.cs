@@ -1,4 +1,3 @@
-#if NETCODE_ENABLED
 using ENet;
 using System;
 using System.Collections.Generic;
@@ -95,4 +94,3 @@ public abstract class GamePacket
         return enetPacket;
     }
 }
-#endif

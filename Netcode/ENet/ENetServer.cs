@@ -1,4 +1,3 @@
-#if NETCODE_ENABLED
 using ENet;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -283,4 +282,3 @@ public abstract class ENetServer : ENetLow
         }
     }
 }
-#endif

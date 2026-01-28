@@ -1,4 +1,3 @@
-#if NETCODE_ENABLED
 using System;
 
 namespace GodotUtils.Netcode;
@@ -8,4 +7,3 @@ public class NetExcludeAttribute : Attribute
 {
 
 }
-#endif

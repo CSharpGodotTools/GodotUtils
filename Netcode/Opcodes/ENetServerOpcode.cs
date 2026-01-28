@@ -1,4 +1,3 @@
-#if NETCODE_ENABLED
 namespace GodotUtils.Netcode.Server;
 
 public enum ENetServerOpcode
@@ -7,4 +6,3 @@ public enum ENetServerOpcode
     Kick,
     KickAll
 }
-#endif

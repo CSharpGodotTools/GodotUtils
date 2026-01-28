@@ -1,4 +1,3 @@
-#if NETCODE_ENABLED
 using ENet;
 using Godot;
 using GodotUtils.Netcode.Client;
@@ -13,4 +12,3 @@ public partial class GameClient : GodotClient
         Send(new CPacketPlayerInfo { Username = "Valky", Position = new Vector2(100, 100) });
     }
 }
-#endif

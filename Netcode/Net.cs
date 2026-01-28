@@ -1,4 +1,3 @@
-#if NETCODE_ENABLED
 using System;
 using System.Threading.Tasks;
 using GodotUtils.Framework;
@@ -131,4 +130,3 @@ public class Net
         }
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if NETCODE_ENABLED
 using System;
 
 namespace GodotUtils.Netcode.Client;
@@ -9,4 +8,3 @@ public class PacketData
     public PacketReader PacketReader { get; set; }
     public Type         Type         { get; set; }
 }
-#endif

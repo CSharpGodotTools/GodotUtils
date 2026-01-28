@@ -1,4 +1,3 @@
-#if NETCODE_ENABLED
 using Godot;
 using GodotUtils.Netcode.Client;
 using GodotUtils.Netcode.Server;
@@ -129,4 +128,3 @@ public abstract partial class NetControlPanelLow<TGameClient, TGameServer> : Con
         public GodotServer CreateServer() => Creator();
     }
 }
-#endif

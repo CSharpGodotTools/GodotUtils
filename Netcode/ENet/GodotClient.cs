@@ -1,4 +1,3 @@
-#if NETCODE_ENABLED
 using System.Threading.Tasks;
 using System.Threading;
 using System;
@@ -154,4 +153,3 @@ public abstract class GodotClient : ENetClient
         }
     }
 }
-#endif

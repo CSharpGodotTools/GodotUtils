@@ -10,8 +10,8 @@
 		<!-- CS1591: Ignore missing XML comment warnings -->
 		<!-- IDE0130: Ignore invalid namespace name warnings -->
 		<!-- IDE0290: Ignore primary constructor suggestions -->
-		<NoWarn>CS1591;IDE0130;IDE0290</NoWarn>
-		<DefineConstants>$(DefineConstants);NETCODE_ENABLED</DefineConstants>
+		<NoWarn>CS1591;IDE0130;IDE0290;</NoWarn>
+		<!-- <DefineConstants>$(DefineConstants);NETCODE_ENABLED</DefineConstants> -->
 	</PropertyGroup>
 
 	<ItemGroup>
