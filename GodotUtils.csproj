@@ -37,7 +37,7 @@
 
 		<!-- Configure the project list as needed -->
 		<ItemGroup>
-			<GodotTargets Include="$(GodotProject1);$(GodotProject2);$(GodotProject3);$(GodotProject4)" />
+			<GodotTargets Include="$(GodotProject1);" />
 		</ItemGroup>
 
 		<!-- Separate existing and missing projects -->
@@ -50,7 +50,7 @@
 		<Message Condition="@(MissingGodotTargets) != ''" Text="Warning: The following Godot projects were not found: @(MissingGodotTargets, ', ')" Importance="High" />
 
 		<!-- Copy files to all valid projects using Exec -->
-		<Exec Command="&#xA;    @(ValidGodotTargets->'copy /Y &quot;$(TargetDir)GodotUtils.dll&quot; &quot;%(Identity)\addons\GodotUtils.dll&quot;&amp; copy /Y &quot;$(TargetDir)GodotUtils.xml&quot; &quot;%(Identity)\addons\GodotUtils.xml&quot;', ' &amp;&amp; ')&#xA;  " />
+		<Exec Command="&#xA;    @(ValidGodotTargets->'copy /Y &quot;$(TargetDir)GodotUtils.dll&quot; &quot;%(Identity)\Framework\Libraries\GodotUtils.dll&quot;&amp; copy /Y &quot;$(TargetDir)GodotUtils.xml&quot; &quot;%(Identity)\Framework\Libraries\GodotUtils.xml&quot;', ' &amp;&amp; ')&#xA;  " />
 	</Target>
 
 </Project>
