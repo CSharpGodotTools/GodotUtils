@@ -5,7 +5,7 @@ namespace GodotUtils;
 /// <summary>
 /// Factory helpers for margin containers.
 /// </summary>
-public class MarginContainerFactory
+public static class MarginContainerFactory
 {
     /// <summary>
     /// Creates a margin container with uniform padding.

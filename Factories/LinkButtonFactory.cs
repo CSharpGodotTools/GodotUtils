@@ -5,7 +5,7 @@ namespace GodotUtils;
 /// <summary>
 /// Factory helpers for link buttons.
 /// </summary>
-public partial class LinkButtonFactory
+public static class LinkButtonFactory
 {
     /// <summary>
     /// Creates a link button with the provided text and font size.

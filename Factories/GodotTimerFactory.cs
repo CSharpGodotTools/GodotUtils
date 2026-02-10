@@ -6,7 +6,7 @@ namespace GodotUtils;
 /// <summary>
 /// Factory helpers for Godot timers.
 /// </summary>
-public class GodotTimerFactory
+public static class GodotTimerFactory
 {
     /// <summary>
     /// Creates a one-shot scene tree timer that invokes <paramref name="timeout"/>.

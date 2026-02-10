@@ -5,7 +5,7 @@ namespace GodotUtils;
 /// <summary>
 /// Factory helpers for labels.
 /// </summary>
-public class LabelFactory
+public static class LabelFactory
 {
     /// <summary>
     /// Creates a centered label with the provided text and font size.
