@@ -7,7 +7,7 @@ namespace GodotUtils;
 /// <summary>
 /// Base class for lightweight components attached to a node.
 /// </summary>
-public class Component
+public class Component : IDisposable
 {
     protected Node Owner;
     private ComponentManager _componentManager;
@@ -55,7 +55,7 @@ public class Component
     /// <summary>
     /// Called when the owner node exits the tree.
     /// </summary>
-    protected internal virtual void Dispose() { }
+    protected internal virtual void OnDispose() { }
 
     /// <summary>
     /// Enables or disables all processing callbacks for this component.
@@ -122,7 +122,7 @@ public class Component
     {
         _componentManager = ComponentManager.Instance;
         Ready();
-        CallNextFrame(Deferred).FireAndForget();
+        TaskUtils.FireAndForget(() => CallNextFrame(Deferred));
     }
 
     private void CleanupOnTreeExit()
@@ -131,5 +131,13 @@ public class Component
         _componentManager.UnregisterAll(this);
         Owner.Ready -= InitializeComponent;
         Owner.TreeExited -= CleanupOnTreeExit;
+    }
+
+    /// <summary>
+    /// Performs component cleanup.
+    /// </summary>
+    public void Dispose()
+    {
+        OnDispose();
     }
 }
