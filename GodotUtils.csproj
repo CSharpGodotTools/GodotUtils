@@ -29,33 +29,4 @@
 		</Reference>
 	</ItemGroup>
 
-	<!-- Post Build Steps -->
-	<!-- Auto copy project dll to other projects -->
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(EnableGodotUtilsPostBuild)' == 'true'">
-
-		<!-- Configure the project list as needed -->
-		<ItemGroup>
-			<GodotTargets Include="$(GodotProject1)" />
-			<GodotTargets Include="$(GodotProject2)" />
-		</ItemGroup>
-
-		<!-- Separate existing and missing projects -->
-		<ItemGroup>
-			<ValidGodotTargets Include="@(GodotTargets)" Condition="Exists('%(GodotTargets.Identity)')" />
-			<MissingGodotTargets Include="@(GodotTargets)" Condition="!Exists('%(GodotTargets.Identity)')" />
-		</ItemGroup>
-
-		<!-- Warn about missing projects -->
-		<Message Condition="@(MissingGodotTargets) != ''" Text="Warning: The following Godot projects were not found: @(MissingGodotTargets, ', ')" Importance="High" />
-
-		<!-- Copy files to all valid projects -->
-		<ItemGroup>
-			<GodotCopyDirs Include="@(ValidGodotTargets->'%(Identity)\Framework\Libraries')" />
-		</ItemGroup>
-
-		<MakeDir Directories="@(GodotCopyDirs)" />
-		<Copy SourceFiles="$(TargetDir)GodotUtils.dll" DestinationFolder="%(GodotCopyDirs.Identity)" SkipUnchangedFiles="true" />
-		<Copy SourceFiles="$(TargetDir)GodotUtils.xml" DestinationFolder="%(GodotCopyDirs.Identity)" SkipUnchangedFiles="true" />
-	</Target>
-
 </Project>
