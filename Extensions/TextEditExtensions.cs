@@ -4,19 +4,23 @@ using System;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for TextEdit input.
+/// </summary>
 public static class TextEditExtensions
 {
     private static readonly Dictionary<ulong, string> prevTexts = [];
 
+    /// <summary>
+    /// Filters text input by reverting to the last valid value.
+    /// </summary>
     public static string Filter(this TextEdit textEdit, Func<string, bool> filter)
     {
         string text = textEdit.Text;
         ulong id = textEdit.GetInstanceId();
 
         if (string.IsNullOrWhiteSpace(text))
-        {
             return prevTexts.TryGetValue(id, out string value) ? value : null;
-        }
 
         if (!filter(text))
         {

@@ -4,6 +4,9 @@ using System;
 
 namespace GodotUtils.Deprecated;
 
+/// <summary>
+/// Legacy event manager for dispatching events by enum key.
+/// </summary>
 // This class was created to attempt to simplify the process of creating C# events for gamedev.
 // 
 // ########### Example #1 ###########
@@ -32,53 +35,41 @@ namespace GodotUtils.Deprecated;
 // <typeparam name="TEvent">The event type enum to be used. For example 'EventPlayer' enum.</typeparam>
 public class EventManager<TEvent>
 {
-    private readonly Dictionary<TEvent, List<object>> _eventListeners = [];
+    private readonly Dictionary<TEvent, List<Listener>> _eventListeners = [];
 
     /// <summary>
-    /// The event type to be listened to (Action uses object[] params by default)
+    /// Adds a listener that receives raw argument arrays.
     /// </summary>
     public void AddListener(TEvent eventType, Action<object[]> action, string id = "")
     {
-        AddListener<object[]>(eventType, action, id);
-    }
-
-    public void AddListener<T>(TEvent eventType, Action<T> action, string id = "")
-    {
-        if (!_eventListeners.TryGetValue(eventType, out List<object> value))
-        {
-            value = [];
-            _eventListeners.Add(eventType, value);
-        }
-
-        value.Add(new Listener(action, id));
+        AddListenerInternal(eventType, action, id);
     }
 
     /// <summary>
-    /// Remove all listeners of type 'eventType' with 'id'
-    /// For example. If there is a listener of type OnPlayerSpawn with id 1 and another
-    /// with id 1 (same id). Then this function will remove both these listeners.
+    /// Adds a typed listener that receives the first argument as <typeparamref name="T"/>.
+    /// </summary>
+    public void AddListener<T>(TEvent eventType, Action<T> action, string id = "")
+    {
+        AddListenerInternal(eventType, WrapAction(action), id);
+    }
+
+    /// <summary>
+    /// Removes all listeners of type <paramref name="eventType"/> with the provided id.
     /// </summary>
     public void RemoveListeners(TEvent eventType, string id = "")
     {
-        if (!_eventListeners.ContainsKey(eventType))
-        {
+        if (!_eventListeners.TryGetValue(eventType, out List<Listener> listeners))
             throw new InvalidOperationException($"Tried to remove listener of event type '{eventType}' from an event type that has not even been defined yet");
-        }
 
-        foreach (KeyValuePair<TEvent, List<object>> pair in _eventListeners)
+        for (int i = listeners.Count - 1; i >= 0; i--)
         {
-            for (int i = pair.Value.Count - 1; i >= 0; i--)
-            {
-                if (pair.Key.Equals(eventType) && ((Listener)pair.Value[i]).Id == id)
-                {
-                    pair.Value.RemoveAt(i);
-                }
-            }
+            if (listeners[i].Id == id)
+                listeners.RemoveAt(i);
         }
     }
 
     /// <summary>
-    /// Remove ALL listeners from ALL event types
+    /// Removes all listeners from all event types.
     /// </summary>
     public void RemoveAllListeners()
     {
@@ -86,24 +77,56 @@ public class EventManager<TEvent>
     }
 
     /// <summary>
-    /// Notify all listeners
+    /// Notifies all listeners for the provided event type.
     /// </summary>
     public void Notify(TEvent eventType, params object[] args)
     {
-        if (!_eventListeners.TryGetValue(eventType, out List<object> value))
+        if (!_eventListeners.TryGetValue(eventType, out List<Listener> value))
         {
             return;
         }
 
-        foreach (dynamic listener in value.ToList()) // if ToList() is not here then issue #137 will occur
+        foreach (Listener listener in value.ToList()) // if ToList() is not here then issue #137 will occur
         {
-            listener.Action(args);
+            ((Action<object[]>)listener.Action)(args);
         }
+    }
+
+    private void AddListenerInternal(TEvent eventType, Action<object[]> action, string id)
+    {
+        if (!_eventListeners.TryGetValue(eventType, out List<Listener> listeners))
+        {
+            listeners = new List<Listener>();
+            _eventListeners.Add(eventType, listeners);
+        }
+
+        listeners.Add(new Listener(action, id));
+    }
+
+    private static Action<object[]> WrapAction<T>(Action<T> action)
+    {
+        return args =>
+        {
+            if (args == null || args.Length == 0)
+                return;
+
+            action((T)args[0]);
+        };
     }
 }
 
+/// <summary>
+/// Stores a listener delegate and identifier.
+/// </summary>
 public class Listener(dynamic action, string id)
 {
+    /// <summary>
+    /// Gets or sets the listener action.
+    /// </summary>
     public dynamic Action { get; set; } = action;
+
+    /// <summary>
+    /// Gets or sets the listener identifier.
+    /// </summary>
     public string Id { get; set; } = id;
 }

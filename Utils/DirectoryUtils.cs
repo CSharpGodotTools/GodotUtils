@@ -39,17 +39,14 @@ public static class DirectoryUtils
                 return TraverseResult.Stop;
             }
 
-            if (isDir)
+            if (isDir && result != TraverseResult.SkipDir)
             {
-                if (result != TraverseResult.SkipDir)
-                {
-                    TraverseResult childResult = Traverse(fullPath, visitor);
+                TraverseResult childResult = Traverse(fullPath, visitor);
 
-                    if (childResult == TraverseResult.Stop)
-                    {
-                        dir.ListDirEnd();
-                        return TraverseResult.Stop;
-                    }
+                if (childResult == TraverseResult.Stop)
+                {
+                    dir.ListDirEnd();
+                    return TraverseResult.Stop;
                 }
             }
         }
@@ -94,13 +91,8 @@ public static class DirectoryUtils
     }
 
     /// <summary>
-    /// Normalizes the specified path by replacing all forward slashes ('/') and backslashes ('\') with the system's directory separator character.
+    /// Normalizes path separators to the current OS.
     /// </summary>
-    /// <param name="path">The path to normalize.</param>
-    /// <returns>A normalized path where all directory separators are replaced with the system's directory separator character.</returns>
-    /// <remarks>
-    /// This method is useful when dealing with paths that may come from different sources (e.g., URLs, different operating systems) and need to be standardized for the current environment.
-    /// </remarks>
     public static string NormalizePath(string path)
     {
         return path

@@ -8,7 +8,7 @@ namespace GodotUtils;
 /// Creates a pool of nodes to eliminate expensive QueueFree calls.
 /// <code>
 /// // Create the pool
-/// GodotPool pool = new(parentNode, () => projectilePackedScene.Instantiate());
+/// Pool&lt;Projectile&gt; pool = new(parentNode, () => projectilePackedScene.Instantiate());
 /// 
 /// // Get a projectile from the pool
 /// Projectile projectile = pool.Acquire();

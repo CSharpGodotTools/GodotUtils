@@ -2,8 +2,14 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Defines creation callbacks for pooled nodes that use components.
+/// </summary>
 public interface IComponentPoolable<TNode> where TNode : CanvasItem, IComponentPoolable<TNode>
 {
+    /// <summary>
+    /// Gets the component host for the node.
+    /// </summary>
     ComponentHost Components { get; }
 
     /// <summary>

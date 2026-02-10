@@ -2,14 +2,13 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for animation trees.
+/// </summary>
 public static class AnimationTreeExtensions
 {
     /// <summary>
-    /// Set a condition to 'value' then flip 'value' when 0.1 seconds have passed.
-    /// Conditions only need to be set for a short duration otherwise you will find
-    /// yourself trying to set all the conditions you set earlier to false again.
-    /// 
-    /// E.g. SetCondition("reload", true)
+    /// Sets a condition briefly and auto-resets after 0.1 seconds.
     /// </summary>
     public static void SetCondition(this AnimationTree tree, StringName path, bool value)
     {
@@ -21,29 +20,40 @@ public static class AnimationTreeExtensions
     }
 
     /// <summary>
-    /// The name is the name of the BlendSpace1D in the AnimationTree inspector. By default this
-    /// is called "BlendSpace1D".
+    /// Sets the blend position of a BlendSpace1D by name.
     /// </summary>
     public static void SetBlendSpace1DPosition(this AnimationTree tree, StringName name, float value)
     {
         tree.SetParam($"{name}/blend_position", value);
     }
 
+    /// <summary>
+    /// Sets a parameter value on the animation tree.
+    /// </summary>
     public static void SetParam(this AnimationTree tree, StringName path, Variant value)
     {
         tree.Set($"parameters/{path}", value);
     }
 
+    /// <summary>
+    /// Gets a parameter value from the animation tree.
+    /// </summary>
     public static Variant GetParam(this AnimationTree tree, StringName path)
     {
         return tree.Get($"parameters/{path}");
     }
 
+    /// <summary>
+    /// Gets a condition value from the animation tree.
+    /// </summary>
     public static bool GetCondition(this AnimationTree tree, StringName path)
     {
         return (bool)tree.GetParam($"conditions/{path}");
     }
 
+    /// <summary>
+    /// Gets the state machine playback controller.
+    /// </summary>
     public static AnimationNodeStateMachinePlayback GetStateMachine(this AnimationTree tree)
     {
         return tree.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();

@@ -6,9 +6,12 @@ namespace GodotUtils;
 
 public static class TaskUtils
 {
+    /// <summary>
+    /// Logs exceptions from a task without awaiting it.
+    /// </summary>
     public static void FireAndForget(this Task task)
     {
-        _ = task.ContinueWith(t =>
+        _ = task.ContinueWith(static (Task t) =>
         {
             foreach (Exception ex in t.Exception.Flatten().InnerExceptions)
             {
@@ -17,19 +20,21 @@ public static class TaskUtils
         }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
-    // Return type of void was used here intentionally
+    /// <summary>
+    /// Runs a task and logs any errors, intended for fire-and-forget usage.
+    /// </summary>
     public static async void TryRun(this Func<Task> task)
     {
-        if (task != null)
+        if (task == null)
+            return;
+
+        try
         {
-            try
-            {
-                await task();
-            }
-            catch (Exception e)
-            {
-                GD.PrintErr($"Error: {e}");
-            }
+            await task();
+        }
+        catch (Exception e)
+        {
+            GD.PrintErr($"Error: {e}");
         }
     }
 }

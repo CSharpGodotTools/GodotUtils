@@ -2,6 +2,9 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Creates a configured code highlighter instance.
+/// </summary>
 public static class CodeHighlighterFactory
 {
     private const string Pink         = "ffb6ff";
@@ -11,6 +14,9 @@ public static class CodeHighlighterFactory
     private const string DarkGray     = "434048";
     private const string LightLilac   = "a59fff";
 
+    /// <summary>
+    /// Builds a default highlighter with keyword and token colors.
+    /// </summary>
     public static CodeHighlighter Create()
     {
         CodeHighlighter editor = new()

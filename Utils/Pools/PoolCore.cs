@@ -2,7 +2,6 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GodotUtils;
 
@@ -68,8 +67,11 @@ internal sealed class PoolCore<TNode> where TNode : CanvasItem
     /// </summary>
     public void Release(TNode node, Action<TNode>? onRelease)
     {
+        // Only release nodes that are currently active.
+        if (!_activeNodes.Remove(node))
+            return;
+
         // Mark the active node as inactive
-        _activeNodes.Remove(node);
         _inactiveNodes.Push(node);
 
         // Deactivate the node
@@ -89,10 +91,18 @@ internal sealed class PoolCore<TNode> where TNode : CanvasItem
         // Queue free active nodes
         while (_activeNodes.Count > 0)
         {
-            TNode node = _activeNodes.First();
+            TNode node = GetAnyActiveNode(_activeNodes);
             _activeNodes.Remove(node);
             node.QueueFree();
         }
+    }
+
+    private static TNode GetAnyActiveNode(HashSet<TNode> nodes)
+    {
+        foreach (TNode node in nodes)
+            return node;
+
+        throw new InvalidOperationException("Active node set is empty.");
     }
 }
 #nullable disable

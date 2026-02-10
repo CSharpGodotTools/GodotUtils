@@ -2,31 +2,29 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for Sprite2D.
+/// </summary>
 public static class Sprite2DExtensions
 {
     /// <summary>
-    /// The sprite size multiplied by the sprites scale
+    /// Gets the size multiplied by the sprite scale.
     /// </summary>
     public static Vector2 GetScaledSize(this Sprite2D sprite)
     {
         return sprite.GetSize() * sprite.Scale;
     }
 
+    /// <summary>
+    /// Gets the unscaled texture size.
+    /// </summary>
     public static Vector2 GetSize(this Sprite2D sprite)
     {
         return sprite.Texture.GetSize();
     }
 
     /// <summary>
-    /// <para>
-    /// Gets the actual pixel size of the sprite. All rows and columns 
-    /// consisting of transparent pixels are subtracted from the size.
-    /// </para>
-    /// 
-    /// <para>
-    /// This is useful to know if dynamically creating collision
-    /// shapes at runtime.
-    /// </para>
+    /// Gets the visible pixel size after trimming transparent borders.
     /// </summary>
     public static Vector2 GetPixelSize(this Sprite2D sprite)
     {
@@ -34,20 +32,11 @@ public static class Sprite2DExtensions
     }
 
     /// <summary>
-    /// <para>
-    /// Gets the actual pixel width of the sprite. All columns consisting of 
-    /// transparent pixels are subtracted from the width.
-    /// </para>
-    /// 
-    /// <para>
-    /// This is useful to know if dynamically creating collision
-    /// shapes at runtime.
-    /// </para>
+    /// Gets the visible pixel width after trimming transparent columns.
     /// </summary>
     public static int GetPixelWidth(this Sprite2D sprite)
     {
-        Image img = sprite.Texture.GetImage();
-        Vector2I size = img.GetSize();
+        Image img = GetTextureImage(sprite, out Vector2I size);
 
         int transColumnsLeft = ImageUtils.GetTransparentColumnsLeft(img, size);
         int transColumnsRight = ImageUtils.GetTransparentColumnsRight(img, size);
@@ -58,20 +47,11 @@ public static class Sprite2DExtensions
     }
 
     /// <summary>
-    /// <para>
-    /// Gets the actual pixel height of the sprite. All rows consisting of 
-    /// transparent pixels are subtracted from the height.
-    /// </para>
-    /// 
-    /// <para>
-    /// This is useful to know if dynamically creating collision
-    /// shapes at runtime.
-    /// </para>
+    /// Gets the visible pixel height after trimming transparent rows.
     /// </summary>
     public static int GetPixelHeight(this Sprite2D sprite)
     {
-        Image img = sprite.Texture.GetImage();
-        Vector2I size = img.GetSize();
+        Image img = GetTextureImage(sprite, out Vector2I size);
 
         int transRowsTop = ImageUtils.GetTransparentRowsTop(img, size);
         int transRowsBottom = ImageUtils.GetTransparentRowsBottom(img, size);
@@ -81,10 +61,12 @@ public static class Sprite2DExtensions
         return (int)(pixelHeight * sprite.Scale.Y);
     }
 
+    /// <summary>
+    /// Gets the offset from the bottom to the first opaque pixel.
+    /// </summary>
     public static int GetPixelBottomY(this Sprite2D sprite)
     {
-        Image img = sprite.Texture.GetImage();
-        Vector2I size = img.GetSize();
+        Image img = GetTextureImage(sprite, out Vector2I size);
 
         // Might not work with all sprites but works with ninja.
         // The -2 offset that is
@@ -101,5 +83,12 @@ public static class Sprite2DExtensions
         }
 
         return diff;
+    }
+
+    private static Image GetTextureImage(Sprite2D sprite, out Vector2I size)
+    {
+        Image img = sprite.Texture.GetImage();
+        size = img.GetSize();
+        return img;
     }
 }

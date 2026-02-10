@@ -2,6 +2,9 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Defines lifecycle callbacks for pooled nodes.
+/// </summary>
 public interface IPoolable<TNode> where TNode : CanvasItem, IPoolable<TNode>
 {
     /// <summary>
@@ -10,7 +13,7 @@ public interface IPoolable<TNode> where TNode : CanvasItem, IPoolable<TNode>
     void OnCreate(LifecyclePool<TNode> pool);
 
     /// <summary>
-    /// Invoked when a <typeparamref name="TNode"/> is aquired with <c><see cref="PoolCore{TNode}"/>.Get()</c>
+    /// Invoked when a <typeparamref name="TNode"/> is acquired from the pool.
     /// </summary>
     void OnAcquire();
 

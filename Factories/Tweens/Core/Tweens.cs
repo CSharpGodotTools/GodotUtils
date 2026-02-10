@@ -3,6 +3,9 @@ using System;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Factory helpers for tween builders.
+/// </summary>
 public static class Tweens
 {
     /// <summary>

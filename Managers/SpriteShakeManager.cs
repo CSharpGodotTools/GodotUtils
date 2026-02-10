@@ -5,8 +5,7 @@ using System.Collections.Generic;
 namespace GodotUtils;
 
 /// <summary>
-/// Manages the shaking of all child sprites of a given node including the node itself if it is a sprite.
-/// Both Sprite2D and AnimatedSprite2D are supported.
+/// Manages shaking for Sprite2D and AnimatedSprite2D nodes.
 /// </summary>
 public class SpriteShakeManager
 {
@@ -14,6 +13,9 @@ public class SpriteShakeManager
     private readonly List<Sprite2D> _sprites = [];
     private readonly RandomNumberGenerator _rng;
 
+    /// <summary>
+    /// Creates a manager for the provided sprite nodes.
+    /// </summary>
     public SpriteShakeManager(List<Node2D> sprites)
     {
         ArgumentNullException.ThrowIfNull(sprites);
@@ -40,31 +42,34 @@ public class SpriteShakeManager
         _rng.Randomize();
     }
 
+    /// <summary>
+    /// Applies a vertical shake offset with the provided intensity.
+    /// </summary>
     public void Shake(float intensity)
     {
         float randomOffset = _rng.RandfRange(-intensity, intensity);
 
-        foreach (Sprite2D sprite in _sprites)
-        {
-            sprite.Offset = new Vector2(sprite.Offset.X, randomOffset);
-        }
-
-        foreach (AnimatedSprite2D sprite in _animatedSprites)
-        {
-            sprite.Offset = new Vector2(sprite.Offset.X, randomOffset);
-        }
+        SetVerticalOffset(randomOffset);
     }
 
+    /// <summary>
+    /// Resets sprite offsets to zero.
+    /// </summary>
     public void Reset()
+    {
+        SetVerticalOffset(0);
+    }
+
+    private void SetVerticalOffset(float offsetY)
     {
         foreach (Sprite2D sprite in _sprites)
         {
-            sprite.Offset = new Vector2(sprite.Offset.X, 0);
+            sprite.Offset = new Vector2(sprite.Offset.X, offsetY);
         }
 
         foreach (AnimatedSprite2D sprite in _animatedSprites)
         {
-            sprite.Offset = new Vector2(sprite.Offset.X, 0);
+            sprite.Offset = new Vector2(sprite.Offset.X, offsetY);
         }
     }
 }

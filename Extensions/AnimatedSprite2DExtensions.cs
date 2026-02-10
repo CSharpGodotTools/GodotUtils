@@ -2,11 +2,13 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for AnimatedSprite2D.
+/// </summary>
 public static class AnimatedSprite2DExtensions
 {
     /// <summary>
-    /// There may be a small delay when switching between animations. Use this function
-    /// to remove that delay.
+    /// Plays an animation immediately without the usual switch delay.
     /// </summary>
     public static void InstantPlay(this AnimatedSprite2D sprite, string anim)
     {
@@ -15,8 +17,7 @@ public static class AnimatedSprite2DExtensions
     }
 
     /// <summary>
-    /// There may be a small delay when switching between animations. Use this function
-    /// to remove that delay.
+    /// Plays an animation immediately at the provided frame.
     /// </summary>
     public static void InstantPlay(this AnimatedSprite2D sprite, string anim, int frame)
     {
@@ -38,35 +39,29 @@ public static class AnimatedSprite2DExtensions
     }
 
     /// <summary>
-    /// <para>
-    /// Play a animation starting at a random frame
-    /// </para>
-    /// 
-    /// <para>
-    /// This is useful if making for example coin animations play at random frames
-    /// </para>
+    /// Plays an animation starting at a random frame.
     /// </summary>
     public static void PlayRandom(this AnimatedSprite2D sprite, string anim = "")
     {
-        anim = string.IsNullOrWhiteSpace(anim) ? sprite.Animation : anim;
-        sprite.InstantPlay(anim);
-        sprite.Frame = GD.RandRange(0, sprite.SpriteFrames.GetFrameCount(anim));
+        string resolvedAnim = ResolveAnimation(sprite, anim);
+        sprite.InstantPlay(resolvedAnim);
+        sprite.Frame = GD.RandRange(0, sprite.SpriteFrames.GetFrameCount(resolvedAnim));
     }
 
     /// <summary>
-    /// Gets the size of the specified sprite animation.
+    /// Gets the unscaled size of the first frame.
     /// </summary>
     public static Vector2 GetSize(this AnimatedSprite2D sprite, string anim = "")
     {
-        anim = string.IsNullOrWhiteSpace(anim) ? sprite.Animation : anim;
+        string resolvedAnim = ResolveAnimation(sprite, anim);
 
-        Texture2D frameTexture = sprite.SpriteFrames.GetFrameTexture(anim, 0);
+        Texture2D frameTexture = sprite.SpriteFrames.GetFrameTexture(resolvedAnim, 0);
 
         return new Vector2(frameTexture.GetWidth(), frameTexture.GetHeight());
     }
 
     /// <summary>
-    /// Gets the scaled size of the specified sprite animation.
+    /// Gets the scaled size of the first frame.
     /// </summary>
     public static Vector2 GetScaledSize(this AnimatedSprite2D sprite, string anim = "")
     {
@@ -76,40 +71,21 @@ public static class AnimatedSprite2DExtensions
     }
 
     /// <summary>
-    /// <para>
-    /// Gets the actual pixel size of the sprite. All rows and columns 
-    /// consisting of transparent pixels are subtracted from the size.
-    /// </para>
-    /// 
-    /// <para>
-    /// This is useful to know if dynamically creating collision
-    /// shapes at runtime.
-    /// </para>
+    /// Gets the visible pixel size after trimming transparent borders.
     /// </summary>
     public static Vector2 GetPixelSize(this AnimatedSprite2D sprite, string anim = "")
     {
-        anim = string.IsNullOrWhiteSpace(anim) ? sprite.Animation : anim;
-        return new Vector2(GetPixelWidth(sprite, anim), GetPixelHeight(sprite, anim));
+        string resolvedAnim = ResolveAnimation(sprite, anim);
+        return new Vector2(GetPixelWidth(sprite, resolvedAnim), GetPixelHeight(sprite, resolvedAnim));
     }
 
     /// <summary>
-    /// <para>
-    /// Gets the actual pixel width of the sprite. All columns consisting of 
-    /// transparent pixels are subtracted from the width.
-    /// </para>
-    /// 
-    /// <para>
-    /// This is useful to know if dynamically creating collision
-    /// shapes at runtime.
-    /// </para>
+    /// Gets the visible pixel width after trimming transparent columns.
     /// </summary>
     public static int GetPixelWidth(this AnimatedSprite2D sprite, string anim = "")
     {
-        anim = string.IsNullOrWhiteSpace(anim) ? sprite.Animation : anim;
-
-        Texture2D tex = sprite.SpriteFrames.GetFrameTexture(anim, 0);
-        Image img = tex.GetImage();
-        Vector2I size = img.GetSize();
+        string resolvedAnim = ResolveAnimation(sprite, anim);
+        Image img = GetFrameImage(sprite, resolvedAnim, out Vector2I size);
 
         int transColumnsLeft = ImageUtils.GetTransparentColumnsLeft(img, size);
         int transColumnsRight = ImageUtils.GetTransparentColumnsRight(img, size);
@@ -120,23 +96,12 @@ public static class AnimatedSprite2DExtensions
     }
 
     /// <summary>
-    /// <para>
-    /// Gets the actual pixel height of the sprite. All rows consisting of 
-    /// transparent pixels are subtracted from the height.
-    /// </para>
-    /// 
-    /// <para>
-    /// This is useful to know if dynamically creating collision
-    /// shapes at runtime.
-    /// </para>
+    /// Gets the visible pixel height after trimming transparent rows.
     /// </summary>
     public static int GetPixelHeight(this AnimatedSprite2D sprite, string anim = "")
     {
-        anim = string.IsNullOrWhiteSpace(anim) ? sprite.Animation : anim;
-
-        Texture2D tex = sprite.SpriteFrames.GetFrameTexture(anim, 0);
-        Image img = tex.GetImage();
-        Vector2I size = img.GetSize();
+        string resolvedAnim = ResolveAnimation(sprite, anim);
+        Image img = GetFrameImage(sprite, resolvedAnim, out Vector2I size);
 
         int transRowsTop = ImageUtils.GetTransparentRowsTop(img, size);
         int transRowsBottom = ImageUtils.GetTransparentRowsBottom(img, size);
@@ -146,13 +111,13 @@ public static class AnimatedSprite2DExtensions
         return (int)(pixelHeight * sprite.Scale.Y);
     }
 
+    /// <summary>
+    /// Gets the offset from the bottom to the first opaque pixel.
+    /// </summary>
     public static int GetPixelBottomY(this AnimatedSprite2D sprite, string anim = "")
     {
-        anim = string.IsNullOrWhiteSpace(anim) ? sprite.Animation : anim;
-
-        Texture2D tex = sprite.SpriteFrames.GetFrameTexture(anim, 0);
-        Image img = tex.GetImage();
-        Vector2I size = img.GetSize();
+        string resolvedAnim = ResolveAnimation(sprite, anim);
+        Image img = GetFrameImage(sprite, resolvedAnim, out Vector2I size);
 
         // Might not work with all sprites but works with ninja.
         // The -2 offset that is
@@ -169,5 +134,18 @@ public static class AnimatedSprite2DExtensions
         }
 
         return diff;
+    }
+
+    private static string ResolveAnimation(AnimatedSprite2D sprite, string anim)
+    {
+        return string.IsNullOrWhiteSpace(anim) ? sprite.Animation : anim;
+    }
+
+    private static Image GetFrameImage(AnimatedSprite2D sprite, string anim, out Vector2I size)
+    {
+        Texture2D tex = sprite.SpriteFrames.GetFrameTexture(anim, 0);
+        Image img = tex.GetImage();
+        size = img.GetSize();
+        return img;
     }
 }

@@ -6,13 +6,19 @@ namespace GodotUtils.UI;
 [Tool]
 public partial class ToolScriptHelpers : Node
 {
-    [Export] 
+    /// <summary>
+    /// Triggers removal of empty folders when toggled in the editor.
+    /// </summary>
+    [Export]
     public bool RemoveEmptyFolders
     {
         get => false;
         set => DeleteEmptyFolders();
     }
 
+    /// <summary>
+    /// Triggers removal of orphaned .cs.uid files when toggled in the editor.
+    /// </summary>
     [Export]
     public bool RemoveOrphanedCSUIDFiles
     {
@@ -22,7 +28,7 @@ public partial class ToolScriptHelpers : Node
 
     private static void DeleteEmptyFolders()
     {
-        if (!Engine.IsEditorHint()) // Do not trigger on game build
+        if (!IsEditorContext()) // Do not trigger on game build
             return;
 
         DirectoryUtils.DeleteEmptyDirectories("res://");
@@ -32,17 +38,18 @@ public partial class ToolScriptHelpers : Node
 
     private static void DeleteOrphanedCSUIDFiles()
     {
-        if (!Engine.IsEditorHint())
+        if (!IsEditorContext())
             return;
 
         string projectPath = ProjectSettings.GlobalizePath("res://");
-
         int deletedCount = 0;
 
         foreach (string file in Directory.GetFiles(projectPath, "*.cs.uid", SearchOption.AllDirectories))
         {
-            string directory = Path.GetDirectoryName(file);
-            string baseName = Path.GetFileNameWithoutExtension(file).Replace(".cs", ""); // Remove ".cs" from ".cs.uid"
+            string directory = Path.GetDirectoryName(file) ?? string.Empty;
+
+            // Derive the expected .cs file from the .cs.uid filename.
+            string baseName = Path.GetFileNameWithoutExtension(file).Replace(".cs", "");
             string csFile = Path.Combine(directory, baseName + ".cs");
 
             if (!File.Exists(csFile))
@@ -53,5 +60,10 @@ public partial class ToolScriptHelpers : Node
         }
 
         GD.Print($"Deleted {deletedCount} orphaned .cs.uid files.");
+    }
+
+    private static bool IsEditorContext()
+    {
+        return Engine.IsEditorHint();
     }
 }

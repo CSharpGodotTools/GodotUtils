@@ -5,11 +5,13 @@ using GodotUtils.RegEx;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for strings.
+/// </summary>
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Checks if a string is a valid IP address. Entering any kind of IP like 127.0.0.1
-    /// or localhost are valid. This function does not check for domains like play.apex.ca
+    /// Returns true if the string looks like an IP address or "localhost".
     /// </summary>
     public static bool IsAddress(this string v)
     {
@@ -17,7 +19,7 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// This will transform for example "helloWorld" to "hello World"
+    /// Converts "helloWorld" into "hello World".
     /// </summary>
     public static string AddSpaceBeforeEachCapital(this string v)
     {
@@ -25,7 +27,7 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Returns true if the string contains only letters or digits
+    /// Returns true when the string contains only letters or digits.
     /// </summary>
     public static bool IsAlphaNumeric(this string v)
     {
@@ -33,7 +35,7 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Returns true if the string contains only letters
+    /// Returns true when the string contains only letters.
     /// </summary>
     public static bool IsAlphaOnly(this string v)
     {
@@ -41,7 +43,7 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Returns true if the string contains only digits
+    /// Returns true when the string contains only digits.
     /// </summary>
     public static bool IsNumericOnly(this string v)
     {
@@ -49,7 +51,7 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// This will transform for example "hello world" to "Hello World"
+    /// Converts "hello world" into "Hello World".
     /// </summary>
     public static string ToTitleCase(this string v)
     {
@@ -57,9 +59,7 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// If max length is set to 2 then all words smaller than or equal to 2
-    /// characters will be transformed to uppercase. For example "The ip is 127.0.0.1"
-    /// would be transformed to "The IP is 127.0.0.1"
+    /// Uppercases words with length less than or equal to <paramref name="maxLength"/>.
     /// </summary>
     public static string SmallWordsToUpper(this string v, int maxLength = 2, Func<string, bool> filter = null)
     {
@@ -77,16 +77,14 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Converts the first character in a string to be Uppercase
+    /// Uppercases the first character in the string.
     /// </summary>
     public static string FirstCharToUpper(this string input)
     {
         ArgumentNullException.ThrowIfNull(input);
 
         if (input is "")
-        {
             return input;
-        }
 
         return string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1));
     }
