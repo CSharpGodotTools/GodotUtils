@@ -4,12 +4,12 @@ namespace GodotUtils;
 
 public class State(string name = "")
 {
-    private static readonly Action Noop = static () => { };
-    private static readonly Action<double> NoopUpdate = static _ => { };
+    private static readonly Action _noop = static () => { };
+    private static readonly Action<double> _noopUpdate = static _ => { };
 
-    public Action Enter { get; set; } = Noop;
-    public Action<double> Update { get; set; } = NoopUpdate;
-    public Action Exit { get; set; } = Noop;
+    public Action Enter { get; set; } = _noop;
+    public Action<double> Update { get; set; } = _noopUpdate;
+    public Action Exit { get; set; } = _noop;
 
     private readonly string _name = name;
     

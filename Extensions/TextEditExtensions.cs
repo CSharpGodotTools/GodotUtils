@@ -9,7 +9,7 @@ namespace GodotUtils;
 /// </summary>
 public static class TextEditExtensions
 {
-    private static readonly Dictionary<ulong, string> prevTexts = [];
+    private static readonly Dictionary<ulong, string> _prevTexts = [];
 
     /// <summary>
     /// Filters text input by reverting to the last valid value.
@@ -20,11 +20,11 @@ public static class TextEditExtensions
         ulong id = textEdit.GetInstanceId();
 
         if (string.IsNullOrWhiteSpace(text))
-            return prevTexts.TryGetValue(id, out string value) ? value : null;
+            return _prevTexts.TryGetValue(id, out string value) ? value : null;
 
         if (!filter(text))
         {
-            if (!prevTexts.TryGetValue(id, out string value))
+            if (!_prevTexts.TryGetValue(id, out string value))
             {
                 textEdit.ChangeTextEditText("");
                 return null;
@@ -34,7 +34,7 @@ public static class TextEditExtensions
             return value;
         }
 
-        prevTexts[id] = text;
+        _prevTexts[id] = text;
         return text;
     }
 

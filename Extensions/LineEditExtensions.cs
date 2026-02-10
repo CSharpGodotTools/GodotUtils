@@ -9,7 +9,7 @@ namespace GodotUtils;
 /// </summary>
 public static class LineEditExtensions
 {
-    private static readonly Dictionary<ulong, string> prevTexts = [];
+    private static readonly Dictionary<ulong, string> _prevTexts = [];
 
     /// <summary>
     /// Filters text input by reverting to the last valid value.
@@ -20,13 +20,13 @@ public static class LineEditExtensions
 
         if (!filter(lineEdit.Text))
         {
-            string previousText = prevTexts.TryGetValue(id, out string value) ? value : "";
+            string previousText = _prevTexts.TryGetValue(id, out string value) ? value : "";
             lineEdit.Text = previousText;
             lineEdit.CaretColumn = previousText.Length;
             return previousText;
         }
 
-        prevTexts[id] = lineEdit.Text;
+        _prevTexts[id] = lineEdit.Text;
 
         return lineEdit.Text;
     }

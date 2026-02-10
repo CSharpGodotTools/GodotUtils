@@ -13,7 +13,7 @@ public static class TypeExtensions
     /// </summary>
     public static bool IsNumericType(this Type @type)
     {
-        return NumericTypes.Contains(@type);
+        return _numericTypes.Contains(@type);
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public static class TypeExtensions
             type == typeof(ushort);
     }
 
-    private static readonly HashSet<Type> NumericTypes = new HashSet<Type>
+    private static readonly HashSet<Type> _numericTypes = new HashSet<Type>
     {
         typeof(int),
         typeof(float),
