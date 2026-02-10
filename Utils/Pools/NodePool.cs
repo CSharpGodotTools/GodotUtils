@@ -8,7 +8,7 @@ namespace GodotUtils;
 /// Creates a pool of nodes to eliminate expensive QueueFree calls.
 /// <code>
 /// // Create the pool
-/// LifecyclePool&lt;Projectile&gt; pool = new(parentNode, () => projectilePackedScene.Instantiate());
+/// NodePool&lt;Projectile&gt; pool = new(parentNode, () => projectilePackedScene.Instantiate());
 /// 
 /// // Get a projectile from the pool
 /// Projectile projectile = pool.Acquire();
@@ -18,7 +18,7 @@ namespace GodotUtils;
 /// </code>
 /// </summary>
 /// <typeparam name="TNode">The nodes managed in the pool.</typeparam>
-public sealed class LifecyclePool<TNode> where TNode : CanvasItem, IPoolable<TNode>
+public class NodePool<TNode> where TNode : CanvasItem
 {
     /// <summary>
     /// Nodes currently in use by the pool.
@@ -26,36 +26,27 @@ public sealed class LifecyclePool<TNode> where TNode : CanvasItem, IPoolable<TNo
     public IEnumerable<TNode> ActiveNodes => _core.ActiveNodes;
 
     private readonly PoolCore<TNode> _core;
-    private readonly Action<TNode> _onCreate;
-    private static readonly Action<TNode> OnAcquire = static node => node.OnAcquire();
-    private static readonly Action<TNode> OnRelease = static node => node.OnRelease();
 
     /// <summary>
     /// Creates a pool of nodes using <paramref name="createNodeFunc"/> and attaches them as children of <paramref name="parent"/> to avoid expensive <c>QueueFree()</c> calls.
     /// </summary>
-    public LifecyclePool(Node parent, Func<TNode> createNodeFunc)
+    public NodePool(Node parent, Func<TNode> createNodeFunc)
     {
         _core = new PoolCore<TNode>(parent, createNodeFunc);
-        _onCreate = OnCreate;
     }
 
     /// <summary>
     /// Returns an available <typeparamref name="TNode"/> or creates a new one if all are in use.
     /// </summary>
-    public TNode Acquire() => _core.Acquire(_onCreate, OnAcquire);
+    public TNode Acquire() => _core.Acquire(null, null);
 
     /// <summary>
     /// Releases the <paramref name="node"/> from the pool.
     /// </summary>
-    public void Release(TNode node) => _core.Release(node, OnRelease);
+    public void Release(TNode node) => _core.Release(node, null);
 
     /// <summary>
     /// Queue frees all inactive and active nodes in the pool.
     /// </summary>
     public void QueueFreeAll() => _core.QueueFreeAll();
-
-    private void OnCreate(TNode node)
-    {
-        node.OnCreate(this);
-    }
 }

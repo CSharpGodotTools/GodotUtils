@@ -27,8 +27,8 @@ public sealed class ComponentPool<TNode> where TNode : CanvasItem, IComponentPoo
 
     private readonly PoolCore<TNode> _core;
     private readonly Action<TNode> _onCreate;
-    private static readonly Action<TNode> OnAcquire = static node => node.Components.SetActive(true);
-    private static readonly Action<TNode> OnRelease = static node => node.Components.SetActive(false);
+    private static readonly Action<TNode> _onAcquire = static node => node.Components.SetActive(true);
+    private static readonly Action<TNode> _onRelease = static node => node.Components.SetActive(false);
 
     /// <summary>
     /// Creates a pool of nodes using <paramref name="createNodeFunc"/> and attaches them as children of <paramref name="parent"/> to avoid expensive <c>QueueFree()</c> calls.
@@ -42,12 +42,12 @@ public sealed class ComponentPool<TNode> where TNode : CanvasItem, IComponentPoo
     /// <summary>
     /// Returns an available <typeparamref name="TNode"/> or creates a new one if all are in use.
     /// </summary>
-    public TNode Acquire() => _core.Acquire(_onCreate, OnAcquire);
+    public TNode Acquire() => _core.Acquire(_onCreate, _onAcquire);
 
     /// <summary>
     /// Releases the <paramref name="node"/> from the pool.
     /// </summary>
-    public void Release(TNode node) => _core.Release(node, OnRelease);
+    public void Release(TNode node) => _core.Release(node, _onRelease);
 
     /// <summary>
     /// Queue frees all inactive and active nodes in the pool.

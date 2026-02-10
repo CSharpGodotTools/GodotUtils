@@ -10,7 +10,7 @@ public interface IPoolable<TNode> where TNode : CanvasItem, IPoolable<TNode>
     /// <summary>
     /// Invoked when a new <typeparamref name="TNode"/> is created.
     /// </summary>
-    void OnCreate(LifecyclePool<TNode> pool);
+    void OnCreate(IPoolContext<TNode> pool);
 
     /// <summary>
     /// Invoked when a <typeparamref name="TNode"/> is acquired from the pool.
