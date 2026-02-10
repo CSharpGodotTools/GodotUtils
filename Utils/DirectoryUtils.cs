@@ -8,13 +8,13 @@ public static class DirectoryUtils
 {
     /// <summary>
     /// Recursively traverses a directory tree and invokes a callback for each file encountered.
-    /// The callback may control traversal flow (continue, skip directories, or stop traversal).
+    /// The callback may control traversal flow (continue, skip children, or stop traversal).
     /// 
     /// <code>
     /// Traverse("res://", entry => GD.Print(entry.FullPath));
     /// </code>
     /// </summary>
-    public static TraverseResult Traverse(string directory, Func<TraverseEntry, TraverseResult> visitor)
+    public static TraverseDecision Traverse(string directory, Func<TraverseEntry, TraverseDecision> visitor)
     {
         directory = NormalizePath(ProjectSettings.GlobalizePath(directory));
 
@@ -31,28 +31,28 @@ public static class DirectoryUtils
             string fullPath = Path.Combine(directory, nextFileName);
             bool isDir = dir.CurrentIsDir();
 
-            TraverseResult result = visitor(new TraverseEntry(fullPath, isDir));
+            TraverseDecision result = visitor(new TraverseEntry(fullPath, isDir));
 
-            if (result == TraverseResult.Stop)
+            if (result == TraverseDecision.Stop)
             {
                 dir.ListDirEnd();
-                return TraverseResult.Stop;
+                return TraverseDecision.Stop;
             }
 
-            if (isDir && result != TraverseResult.SkipDir)
+            if (isDir && result != TraverseDecision.SkipChildren)
             {
-                TraverseResult childResult = Traverse(fullPath, visitor);
+                TraverseDecision childResult = Traverse(fullPath, visitor);
 
-                if (childResult == TraverseResult.Stop)
+                if (childResult == TraverseDecision.Stop)
                 {
                     dir.ListDirEnd();
-                    return TraverseResult.Stop;
+                    return TraverseDecision.Stop;
                 }
             }
         }
 
         dir.ListDirEnd();
-        return TraverseResult.Continue;
+        return TraverseDecision.Continue;
     }
 
     public readonly struct TraverseEntry(string fullPath, bool isDirectory)
@@ -81,10 +81,10 @@ public static class DirectoryUtils
             if (Path.GetFileName(entry.FullPath) == fileName)
             {
                 foundPath = entry.FullPath;
-                return TraverseResult.Stop;
+                return TraverseDecision.Stop;
             }
 
-            return TraverseResult.Continue;
+            return TraverseDecision.Continue;
         });
 
         return foundPath;
