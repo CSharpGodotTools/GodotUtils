@@ -4,24 +4,15 @@ using System;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for LineEdit input.
+/// </summary>
 public static class LineEditExtensions
 {
-    private static readonly Dictionary<ulong, string> prevTexts = [];
+    private static readonly Dictionary<ulong, string> _prevTexts = [];
 
     /// <summary>
-    /// <para>
-    /// Prevents certain characters from being inputted onto the LineEdit.
-    /// The following example makes it so only alphanumeric characters are allowed
-    /// to be inputted.
-    /// </para>
-    /// 
-    /// <code>
-    /// LineEdit.TextChanged += text =>
-    /// {
-    ///     string username = LineEdit.Filter(text => text.IsAlphaNumeric());
-    ///     GD.Print(username);
-    /// };
-    /// </code>
+    /// Filters text input by reverting to the last valid value.
     /// </summary>
     public static string Filter(this LineEdit lineEdit, Func<string, bool> filter)
     {
@@ -29,16 +20,20 @@ public static class LineEditExtensions
 
         if (!filter(lineEdit.Text))
         {
-            lineEdit.Text = prevTexts[id];
-            lineEdit.CaretColumn = prevTexts[id].Length;
-            return prevTexts.TryGetValue(id, out string value) ? value : "";
+            string previousText = _prevTexts.TryGetValue(id, out string value) ? value : "";
+            lineEdit.Text = previousText;
+            lineEdit.CaretColumn = previousText.Length;
+            return previousText;
         }
 
-        prevTexts[id] = lineEdit.Text;
+        _prevTexts[id] = lineEdit.Text;
 
         return lineEdit.Text;
     }
 
+    /// <summary>
+    /// Validates numeric input and clamps it between <paramref name="min"/> and <paramref name="max"/>.
+    /// </summary>
     public static void ValidateNumber(this string value, LineEdit input, int min, int max, ref int prevNum)
     {
         // do NOT use text.Clear() as it will trigger _on_NumAttempts_text_changed and cause infinite loop -> stack overflow

@@ -4,23 +4,27 @@ namespace GodotUtils;
 
 public static class InputUtils
 {
-    public static bool IsMovingLeft()
+    /// <summary>
+    /// Returns a normalized movement vector from arrow or WASD input.
+    /// </summary>
+    public static Vector2 GetMoveVector()
     {
-        return Input.IsKeyPressed(Key.Left) || Input.IsKeyPressed(Key.A);
-    }
+        float x = 0f;
+        float y = 0f;
 
-    public static bool IsMovingRight()
-    {
-        return Input.IsKeyPressed(Key.Right) || Input.IsKeyPressed(Key.D);
-    }
+        if (Input.IsKeyPressed(Key.Left) || Input.IsKeyPressed(Key.A))
+            x -= 1f;
 
-    public static bool IsMovingUp()
-    {
-        return Input.IsKeyPressed(Key.Up) || Input.IsKeyPressed(Key.W);
-    }
+        if (Input.IsKeyPressed(Key.Right) || Input.IsKeyPressed(Key.D))
+            x += 1f;
 
-    public static bool IsMovingDown()
-    {
-        return Input.IsKeyPressed(Key.Down) || Input.IsKeyPressed(Key.S);
+        if (Input.IsKeyPressed(Key.Up) || Input.IsKeyPressed(Key.W))
+            y -= 1f;
+
+        if (Input.IsKeyPressed(Key.Down) || Input.IsKeyPressed(Key.S))
+            y += 1f;
+
+        Vector2 vector = new Vector2(x, y);
+        return vector.LengthSquared() > 1f ? vector.Normalized() : vector;
     }
 }

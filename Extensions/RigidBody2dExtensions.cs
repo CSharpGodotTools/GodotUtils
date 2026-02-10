@@ -2,16 +2,14 @@
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for RigidBody2D.
+/// </summary>
 public static class RigidBody2dExtensions
 {
     /// <summary>
-    /// Smoothly rotates a RigidBody2D towards a target position.
+    /// Smoothly rotates a rigid body toward a target position.
     /// </summary>
-    /// <param name="rigidBody">The rigid body to rotate.</param>
-    /// <param name="targetPosition">The world position to face.</param>
-    /// <param name="rotationSpeed">How fast to rotate towards the target in radians.</param>
-    /// <param name="maxAngularSpeed">Maximum rotational speed to rotate towards the target in radians.</param>
-    /// <param name="smoothness">Smoothness factor.</param>
     public static void RotateTowards(this RigidBody2D rigidBody, Vector2 targetPosition, float rotationSpeed, float maxAngularSpeed, float smoothness = 0.1f)
     {
         // Compute direction and target angle

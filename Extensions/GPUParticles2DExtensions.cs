@@ -2,13 +2,14 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for 2D GPU particles.
+/// </summary>
 public static class GPUParticles2DExtensions
 {
     /// <summary>
-    /// Returns the ParticleProcessMaterial assigned to the given GPUParticles2D.
+    /// Gets the ParticleProcessMaterial assigned to the particle node.
     /// </summary>
-    /// <param name="particles">The GPUParticles2D instance to read the process material from.</param>
-    /// <returns>The ParticleProcessMaterial used by the particles.</returns>
     public static ParticleProcessMaterial GetParticleProcessMaterial(this GpuParticles2D particles)
     {
         return (ParticleProcessMaterial)particles.ProcessMaterial;

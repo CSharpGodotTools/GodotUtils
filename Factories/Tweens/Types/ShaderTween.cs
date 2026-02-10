@@ -5,8 +5,7 @@ using System;
 namespace GodotUtils;
 
 /// <summary>
-/// Provides an API for animating shader parameters of a <see cref="ShaderMaterial"/>
-/// attached to a <see cref="Node2D"/> using Godot’s Tween system.
+/// Fluent API for animating shader parameters on a CanvasItem.
 /// </summary>
 public class ShaderTween : BaseTween<ShaderTween>
 {
@@ -15,8 +14,7 @@ public class ShaderTween : BaseTween<ShaderTween>
     private readonly ShaderMaterial _shaderMaterial;
 
     /// <summary>
-    /// Creates a new <see cref="ShaderTween"/> bound to <paramref name="canvasItem"/>.
-    /// The node must have a <see cref="ShaderMaterial"/> assigned to its <c>Material</c> property.
+    /// Creates a shader tween bound to the provided canvas item.
     /// </summary>
     internal ShaderTween(CanvasItem canvasItem) : base(canvasItem)
     {
@@ -29,25 +27,8 @@ public class ShaderTween : BaseTween<ShaderTween>
     }
 
     /// <summary>
-    /// Animates the shader parameter identified by <paramref name="shaderParam"/>.
-    /// The tween uses a <see cref="TransitionType.Sine"/> transition by default.
-    /// 
-    /// <code>
-    /// var tween = new <see cref="ShaderTween"/>(this);
-    /// tween.Animate("blend_intensity", 1.0f, 2.0);
-    /// </code>
-    /// 
+    /// Tweens a shader parameter to the target value over the given duration.
     /// </summary>
-    /// 
-    /// <param name="shaderParam">
-    /// The name of the shader uniform to animate (e.g. <c>"blend_intensity"</c>).
-    /// </param>
-    /// 
-    /// <param name="finalValue">The value the shader parameter should reach.</param>
-    /// 
-    /// <param name="duration">How long, in seconds, the animation should take.</param>
-    /// 
-    /// <returns>The current <see cref="ShaderTween"/> instance for chaining.</returns>
     public override ShaderTween Property(string shaderParam, Variant finalValue, double duration)
     {
         _tweener = _tween

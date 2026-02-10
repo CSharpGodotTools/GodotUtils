@@ -6,62 +6,45 @@ using static Godot.Tween;
 namespace GodotUtils;
 
 /// <summary>
-/// Base class that implements the API shared by all Godot tween builders.
+/// Base class for tween builders.
 /// </summary>
 public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
 {
     protected abstract TSelf Self { get; }
 
-    /// <summary>The <see cref="Node"/> that the tween will operate on.</summary>
+    /// <summary>
+    /// The node the tween operates on.
+    /// </summary>
     protected readonly Node _node;
 
-    /// <summary>The underlying <see cref="Tween"/> instance used for all tween operations.</summary>
+    /// <summary>
+    /// The underlying tween instance.
+    /// </summary>
     protected Tween _tween;
 
     /// <summary>
-    /// The currently active <see cref="PropertyTweener"/> that allows configuration of
-    /// transition and ease types. It is created when <c>Animate(...)</c> is called.
+    /// The active property tweener used for transition and ease settings.
     /// </summary>
     protected PropertyTweener _tweener;
 
     /// <summary>
-    /// Creates a new tween builder bound to the specified <paramref name="node"/>.
-    /// The internal <see cref="Tween"/> is freshly instantiated and set to
-    /// <see cref="TweenProcessMode.Physics"/> to keep physics‑driven objects (e.g. cameras) in sync.
+    /// Creates a tween bound to the provided node.
     /// </summary>
-    /// <param name="node">The node that will be animated.</param>
     public BaseTween(Node node)
     {
         _node = node;
 
-        // Ensure the Tween is fresh when re-creating it
+        // Ensure the Tween is fresh when re-creating it.
         Kill();
         _tween = node.CreateTween();
 
-        // This helps to prevent the camera from lagging behind the players movement
+        // Keep physics-driven objects in sync.
         _tween.SetProcessMode(TweenProcessMode.Physics);
     }
 
     /// <summary>
-    /// Animates the specified <paramref name="property"/> of the bound <see cref="Node"/>.
-    /// The tween uses a <see cref="TransitionType.Sine"/> transition by default.
-    /// 
-    /// <code>
-    /// var tween = new <see cref="NodeTween2D"/>(this);
-    /// tween.Animate(ColorRect.PropertyName.Color, Colors.Transparent, 0.5);
-    /// </code>
-    /// 
+    /// Tweens a property to the target value over the given duration.
     /// </summary>
-    /// 
-    /// <param name="property">
-    /// The name of the property to animate (e.g. <c>ColorRect.PropertyName.Color</c>).
-    /// </param>
-    /// 
-    /// <param name="finalValue">The value the property should reach.</param>
-    /// 
-    /// <param name="duration">How long, in seconds, the animation should take.</param>
-    /// 
-    /// <returns>The current <see cref="NodeTween2D"/> instance for chaining.</returns>
     public virtual TSelf Property(string property, Variant finalValue, double duration)
     {
         _tweener = _tween
@@ -71,7 +54,9 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
         return Self;
     }
 
-    /// <summary>Sets the <see cref="Tween"/> processing mode to the specified <paramref name="mode"/>.</summary>
+    /// <summary>
+    /// Sets the tween processing mode.
+    /// </summary>
     public TSelf SetProcessMode(TweenProcessMode mode)
     {
         _tween = _tween.SetProcessMode(mode);
@@ -79,7 +64,7 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>
-    /// Sets the animation to repeat
+    /// Sets the tween to loop the specified number of times.
     /// </summary>
     public TSelf Loop(int loops = 0)
     {
@@ -87,22 +72,16 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
         return Self;
     }
 
+    /// <summary>
+    /// Awaits the tween finish signal.
+    /// </summary>
     public async Task FinishedAsync()
     {
         await _node.ToSignal(_tween, Tween.SignalName.Finished);
     }
 
     /// <summary>
-    /// <para>Makes the next <see cref="Tweener"/> run parallelly to the previous one.</para>
-    /// <para><b>Example:</b></para>
-    /// <para><code>
-    /// GTween tween = new(...);
-    /// tween.Animate(...);
-    /// tween.Parallel().Animate(...);
-    /// tween.Parallel().Animate(...);
-    /// </code></para>
-    /// <para>All <see cref="Tweener"/>s in the example will run at the same time.</para>
-    /// <para>You can make the <see cref="Tween"/> parallel by default by using <see cref="Tween.SetParallel(bool)"/>.</para>
+    /// Makes the next tweener run in parallel with the previous one.
     /// </summary>
     public TSelf Parallel()
     {
@@ -111,12 +90,7 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>
-    /// <para>If <paramref name="parallel"/> is <see langword="true"/>, the <see cref="Tweener"/>s appended after this method will by default run simultaneously, as opposed to sequentially.</para>
-    /// <para><code>
-    /// tween.SetParallel()
-    /// tween.Animate(...)
-    /// tween.Animate(...)
-    /// </code></para>
+    /// Sets whether appended tweeners run in parallel.
     /// </summary>
     public TSelf SetParallel(bool parallel = true)
     {
@@ -124,14 +98,18 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
         return Self;
     }
 
-    /// <summary>Registers a callback to be invoked when the tween reaches this point in the chain.</summary>
+    /// <summary>
+    /// Registers a callback when the tween reaches this point.
+    /// </summary>
     public TSelf Then(Action callback)
     {
         _tween.TweenCallback(Callable.From(callback));
         return Self;
     }
 
-    /// <summary>Inserts a delay in <paramref name="seconds"/> before the next tween step.</summary>
+    /// <summary>
+    /// Inserts a delay before the next tween step.
+    /// </summary>
     public TSelf Delay(double seconds)
     {
         _tween.TweenCallback(Callable.From(() => { /* Empty Action */ })).SetDelay(seconds);
@@ -139,7 +117,7 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>
-    /// A <paramref name="callback"/> is executed when the tween has finished
+    /// Registers a callback when the tween finishes.
     /// </summary>
     public TSelf Finished(Action callback)
     {
@@ -148,7 +126,7 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>
-    /// If the tween is looping, this can be used to stop it
+    /// Stops the tween if it is looping.
     /// </summary>
     public TSelf Stop()
     {
@@ -157,7 +135,7 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>
-    /// Pause the tween
+    /// Pauses the tween.
     /// </summary>
     public TSelf Pause()
     {
@@ -166,7 +144,7 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>
-    /// If the tween was paused with Pause(), resume it with Resume()
+    /// Resumes a paused tween.
     /// </summary>
     public TSelf Resume()
     {
@@ -175,7 +153,7 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>
-    /// Sets the transition type of the current <see cref="PropertyTweener"/> to the specified <paramref name="transType"/>.
+    /// Sets the transition type for the current property tweener.
     /// </summary>
     public TSelf SetTrans(TransitionType transType)
     {
@@ -183,63 +161,95 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>
-    /// Sets the ease type of the current <see cref="PropertyTweener"/> to the specified <paramref name="easeType"/>.
+    /// Sets the ease type for the current property tweener.
     /// </summary>
     public TSelf SetEase(EaseType easeType)
     {
         return UpdateTweener(nameof(SetEase), () => _tweener.SetEase(easeType));
     }
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Linear"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Linear.
+    /// </summary>
     public TSelf TransLinear() => SetTrans(TransitionType.Linear);
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Back"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Back.
+    /// </summary>
     public TSelf TransBack() => SetTrans(TransitionType.Back);
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Sine"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Sine.
+    /// </summary>
     public TSelf TransSine() => SetTrans(TransitionType.Sine);
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Bounce"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Bounce.
+    /// </summary>
     public TSelf TransBounce() => SetTrans(TransitionType.Bounce);
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Circ"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Circ.
+    /// </summary>
     public TSelf TransCirc() => SetTrans(TransitionType.Circ);
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Cubic"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Cubic.
+    /// </summary>
     public TSelf TransCubic() => SetTrans(TransitionType.Cubic);
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Elastic"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Elastic.
+    /// </summary>
     public TSelf TransElastic() => SetTrans(TransitionType.Elastic);
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Expo"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Expo.
+    /// </summary>
     public TSelf TransExpo() => SetTrans(TransitionType.Expo);
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Quad"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Quad.
+    /// </summary>
     public TSelf TransQuad() => SetTrans(TransitionType.Quad);
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Quart"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Quart.
+    /// </summary>
     public TSelf TransQuart() => SetTrans(TransitionType.Quart);
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Quint"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Quint.
+    /// </summary>
     public TSelf TransQuint() => SetTrans(TransitionType.Quint);
 
-    /// <summary>Sets the transition type to <see cref="TransitionType.Spring"/>.</summary>
+    /// <summary>
+    /// Sets the transition type to Spring.
+    /// </summary>
     public TSelf TransSpring() => SetTrans(TransitionType.Spring);
 
-    /// <summary>Sets the ease type to <see cref="EaseType.In"/>.</summary>
+    /// <summary>
+    /// Sets the ease type to In.
+    /// </summary>
     public TSelf EaseIn() => SetEase(EaseType.In);
 
-    /// <summary>Sets the ease type to <see cref="EaseType.Out"/>.</summary>
+    /// <summary>
+    /// Sets the ease type to Out.
+    /// </summary>
     public TSelf EaseOut() => SetEase(EaseType.Out);
 
-    /// <summary>Sets the ease type to <see cref="EaseType.InOut"/>.</summary>
+    /// <summary>
+    /// Sets the ease type to InOut.
+    /// </summary>
     public TSelf EaseInOut() => SetEase(EaseType.InOut);
 
-    /// <summary>Sets the ease type to <see cref="EaseType.OutIn"/>.</summary>
+    /// <summary>
+    /// Sets the ease type to OutIn.
+    /// </summary>
     public TSelf EaseOutIn() => SetEase(EaseType.OutIn);
 
     /// <summary>
-    /// Checks if the tween is still playing
+    /// Returns true if the tween is running.
     /// </summary>
     public bool IsRunning()
     {
@@ -247,7 +257,7 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>
-    /// Kill the tween
+    /// Kills the tween.
     /// </summary>
     public TSelf Kill()
     {
@@ -256,8 +266,7 @@ public abstract class BaseTween<TSelf> where TSelf : BaseTween<TSelf>
     }
 
     /// <summary>
-    /// Executes the supplied <paramref name="action"/> on the current <see cref="PropertyTweener"/>.
-    /// Throws an exception if no tweener has been created (i.e., <c>Animate(...)</c> has not been called yet).
+    /// Executes an action on the current tweener.
     /// </summary>
     private TSelf UpdateTweener(string methodName, Action action)
     {

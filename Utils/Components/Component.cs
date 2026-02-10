@@ -4,11 +4,17 @@ using System.Threading.Tasks;
 
 namespace GodotUtils;
 
-public class Component
+/// <summary>
+/// Base class for lightweight components attached to a node.
+/// </summary>
+public class Component : IDisposable
 {
     protected Node Owner;
     private ComponentManager _componentManager;
 
+    /// <summary>
+    /// Creates a component attached to the provided owner node.
+    /// </summary>
     public Component(Node owner)
     {
         Owner = owner;
@@ -16,14 +22,44 @@ public class Component
         Owner.TreeExited += CleanupOnTreeExit;
     }
 
+    /// <summary>
+    /// Called when the owner node is ready.
+    /// </summary>
     protected internal virtual void Ready() { }
-    protected internal virtual void Deferred() { }
-    protected internal virtual void Process(double delta) { }
-    protected internal virtual void PhysicsProcess(double delta) { }
-    protected internal virtual void ProcessInput(InputEvent @event) { }
-    protected internal virtual void UnhandledInput(InputEvent @event) { }
-    protected internal virtual void Dispose() { }
 
+    /// <summary>
+    /// Called one frame after <see cref="Ready"/>.
+    /// </summary>
+    protected internal virtual void Deferred() { }
+
+    /// <summary>
+    /// Called every frame while processing is enabled.
+    /// </summary>
+    protected internal virtual void Process(double delta) { }
+
+    /// <summary>
+    /// Called every physics frame while physics processing is enabled.
+    /// </summary>
+    protected internal virtual void PhysicsProcess(double delta) { }
+
+    /// <summary>
+    /// Called when an input event is received while input is enabled.
+    /// </summary>
+    protected internal virtual void ProcessInput(InputEvent @event) { }
+
+    /// <summary>
+    /// Called when an unhandled input event is received while input is enabled.
+    /// </summary>
+    protected internal virtual void UnhandledInput(InputEvent @event) { }
+
+    /// <summary>
+    /// Called when the owner node exits the tree.
+    /// </summary>
+    protected internal virtual void OnDispose() { }
+
+    /// <summary>
+    /// Enables or disables all processing callbacks for this component.
+    /// </summary>
     public void SetActive(bool active)
     {
         SetProcess(active);
@@ -32,6 +68,9 @@ public class Component
         SetUnhandledInput(active);
     }
 
+    /// <summary>
+    /// Enables or disables per-frame processing.
+    /// </summary>
     protected void SetProcess(bool enabled)
     {
         if (enabled)
@@ -40,6 +79,9 @@ public class Component
             _componentManager.UnregisterProcess(this);
     }
 
+    /// <summary>
+    /// Enables or disables physics processing.
+    /// </summary>
     protected void SetPhysicsProcess(bool enabled)
     {
         if (enabled)
@@ -48,6 +90,9 @@ public class Component
             _componentManager.UnregisterPhysicsProcess(this);
     }
 
+    /// <summary>
+    /// Enables or disables input processing.
+    /// </summary>
     protected void SetInput(bool enabled)
     {
         if (enabled)
@@ -56,6 +101,9 @@ public class Component
             _componentManager.UnregisterInput(this);
     }
 
+    /// <summary>
+    /// Enables or disables unhandled input processing.
+    /// </summary>
     protected void SetUnhandledInput(bool enabled)
     {
         if (enabled)
@@ -74,7 +122,7 @@ public class Component
     {
         _componentManager = ComponentManager.Instance;
         Ready();
-        CallNextFrame(Deferred).FireAndForget();
+        TaskUtils.FireAndForget(() => CallNextFrame(Deferred));
     }
 
     private void CleanupOnTreeExit()
@@ -83,5 +131,13 @@ public class Component
         _componentManager.UnregisterAll(this);
         Owner.Ready -= InitializeComponent;
         Owner.TreeExited -= CleanupOnTreeExit;
+    }
+
+    /// <summary>
+    /// Performs component cleanup.
+    /// </summary>
+    public void Dispose()
+    {
+        OnDispose();
     }
 }

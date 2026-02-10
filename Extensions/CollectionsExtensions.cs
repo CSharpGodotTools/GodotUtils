@@ -4,11 +4,13 @@ using System;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for collections.
+/// </summary>
 public static class ExtensionsCollection
 {
     /// <summary>
-    /// A convience method for a foreach loop at the the sacrafice of debugging support and is
-    /// slightly slower for performance than a regular foreach loop.
+    /// Iterates over the sequence and invokes <paramref name="action"/> for each element.
     /// </summary>
     public static void ForEach<T>(this IEnumerable<T> value, Action<T> action)
     {
@@ -19,7 +21,7 @@ public static class ExtensionsCollection
     }
 
     /// <summary>
-    /// Returns true if a dictionary has a duplicate key and warns the coder
+    /// Returns true when the dictionary already contains the key.
     /// </summary>
     public static bool Duplicate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key,
         [CallerLineNumber] int lineNumber = 0,
@@ -35,7 +37,7 @@ public static class ExtensionsCollection
     }
 
     /// <summary>
-    /// Returns true if a dictionary has a non-existent key and warns the coder
+    /// Returns true when the dictionary does not contain the key.
     /// </summary>
     public static bool DoesNotHave<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key,
         [CallerLineNumber] int lineNumber = 0,

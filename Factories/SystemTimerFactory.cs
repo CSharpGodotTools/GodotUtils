@@ -5,8 +5,14 @@ using Timer = System.Timers.Timer;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Factory helpers for system timers.
+/// </summary>
 public static class SystemTimerFactory
 {
+    /// <summary>
+    /// Creates and configures a system timer.
+    /// </summary>
     public static Timer Create(double delayMs, Action action, bool enabled = true, bool autoreset = true)
     {
         Timer timer = new(delayMs)

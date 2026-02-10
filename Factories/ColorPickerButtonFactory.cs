@@ -2,11 +2,17 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Factory helpers for color picker buttons.
+/// </summary>
 public static class ColorPickerButtonFactory
 {
+    /// <summary>
+    /// Creates a color picker button with a preset initial color.
+    /// </summary>
     public static ColorPickerButton Create(Color initialColor)
     {
-        ColorPickerButton button = new()
+        ColorPickerButton button = new ColorPickerButton()
         {
             CustomMinimumSize = Vector2.One * 30
         };

@@ -6,8 +6,14 @@ using System.Text.Json;
 
 namespace GodotUtils.Debugging;
 
+/// <summary>
+/// Formats JSON parsing errors with nearby context lines.
+/// </summary>
 public class JsonExceptionHandler
 {
+    /// <summary>
+    /// Prints a formatted JSON parsing error with context.
+    /// </summary>
     public static void Handle(JsonException ex, string jsonText, string path)
     {
         // Extract relevant information from the exception
@@ -19,14 +25,16 @@ public class JsonExceptionHandler
             string[] lines = jsonText.Split('\n');
 
             // Get the problematic line
-            string problematicLine = lines[lineNumber.Value - 1];
+            int lineIndex = (int)lineNumber.Value;
+            lineIndex = Math.Clamp(lineIndex, 0, Math.Max(0, lines.Length - 1));
+            string problematicLine = lines[lineIndex];
 
             // Determine the range of lines to display
-            int startLine = Math.Max(0, (int)lineNumber.Value - 7);
-            int endLine = Math.Min(lines.Length, (int)lineNumber.Value + 7);
+            int startLine = Math.Max(0, lineIndex - 7);
+            int endLine = Math.Min(lines.Length, lineIndex + 8);
 
             // Create the error message
-            StringBuilder errorMessage = new();
+            StringBuilder errorMessage = new StringBuilder();
 
             errorMessage.AppendLine($"ERROR: Failed to parse {Path.GetFileName(path)}");
             errorMessage.AppendLine();
@@ -34,7 +42,7 @@ public class JsonExceptionHandler
             errorMessage.AppendLine();
 
             // Add the lines before the problematic line
-            for (int i = startLine; i < lineNumber.Value - 1; i++)
+            for (int i = startLine; i < lineIndex; i++)
             {
                 errorMessage.AppendLine(lines[i]);
             }
@@ -43,7 +51,7 @@ public class JsonExceptionHandler
             errorMessage.AppendLine($"{problematicLine} <--- Syntax error could be on this line or the next line");
 
             // Add the lines after the problematic line
-            for (int i = (int)lineNumber.Value; i < endLine; i++)
+            for (int i = lineIndex + 1; i < endLine; i++)
             {
                 errorMessage.AppendLine(lines[i]);
             }

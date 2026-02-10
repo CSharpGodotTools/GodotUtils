@@ -2,14 +2,13 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Color helper functions.
+/// </summary>
 public class ColorUtils
 {
     /// <summary>
-    /// <para>Create a color from HSV (Hue, Saturation, Value)</para>
-    /// <para>'hue' - values range from 0 to 359</para>
-    /// <para>'saturation' - values range from 0 to 100</para>
-    /// <para>'value' - values range from 0 to 100</para>
-    /// <para>'alpha' - values range from 0 to 255</para>
+    /// Creates a color from HSV values using 0-359 hue, 0-100 saturation/value, and 0-255 alpha.
     /// </summary>
     public static Color FromHSV(int hue, int saturation = 100, int value = 100, int alpha = 255)
     {
@@ -17,13 +16,13 @@ public class ColorUtils
     }
 
     /// <summary>
-    /// Generate a random color
+    /// Generates a random color.
     /// </summary>
     public static Color Random(int alpha = 255)
     {
-        float r = MathUtils.RandRange(0.0, 1.0);
-        float g = MathUtils.RandRange(0.0, 1.0);
-        float b = MathUtils.RandRange(0.0, 1.0);
+        float r = MathUtils.RandomRange(0.0, 1.0);
+        float g = MathUtils.RandomRange(0.0, 1.0);
+        float b = MathUtils.RandomRange(0.0, 1.0);
 
         return new Color(r, g, b, alpha / 255f);
     }

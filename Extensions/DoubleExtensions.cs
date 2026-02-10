@@ -3,12 +3,7 @@ namespace GodotUtils;
 public static class DoubleExtensions
 {
     /// <summary>
-    /// Checks to see if <paramref name="value"/> is an integer.
-    /// 
-    /// <para>
-    /// Since double.IsInteger(double d) is only in .NET 7, this extension 
-    /// will act as a helper for .NET 6 users.
-    /// </para>
+    /// Returns true when the value has no fractional part.
     /// </summary>
     public static bool IsInteger(this double value)
     {

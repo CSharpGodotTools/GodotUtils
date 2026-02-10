@@ -3,10 +3,13 @@ using System;
 
 namespace GodotUtils;
 
-public class GodotTimerFactory
+/// <summary>
+/// Factory helpers for Godot timers.
+/// </summary>
+public static class GodotTimerFactory
 {
     /// <summary>
-    /// Creates a oneshot timer not bound to any node that removes itself on <paramref name="timeout"/> after <paramref name="seconds"/>.
+    /// Creates a one-shot scene tree timer that invokes <paramref name="timeout"/>.
     /// </summary>
     public static void OneShot(SceneTree tree, double seconds, Action timeout)
     {
@@ -15,7 +18,7 @@ public class GodotTimerFactory
     }
 
     /// <summary>
-    /// Creates a oneshot timer bound to <paramref name="node"/> that removes itself on <paramref name="timeout"/> after <paramref name="seconds"/>. Since the timer is bound to the node, it will get removed if the node is removed.
+    /// Creates a one-shot timer as a child of <paramref name="node"/>.
     /// </summary>
     public static Timer OneShot(Node node, double seconds, Action timeout)
     {
@@ -23,7 +26,7 @@ public class GodotTimerFactory
     }
 
     /// <summary>
-    /// Creates a looping timer bound to <paramref name="node"/> that invokes <paramref name="timeout"/> after <paramref name="seconds"/>. Since the timer is bound to the node, it will get removed if the node is removed.
+    /// Creates a looping timer as a child of <paramref name="node"/>.
     /// </summary>
     public static Timer Looping(Node node, double seconds, Action timeout)
     {
@@ -31,7 +34,7 @@ public class GodotTimerFactory
     }
 
     /// <summary>
-    /// Creates a timer bound to <paramref name="node"/> that invokes <paramref name="timeout"/> after <paramref name="seconds"/> and removes itself if <paramref name="oneShot"/> is true. Since the timer is bound to the node, it will get removed if the node is removed.
+    /// Creates and configures a timer with optional one-shot behavior.
     /// </summary>
     private static Timer Create(Node node, double seconds, bool oneShot, Action timeout)
     {

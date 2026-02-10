@@ -2,15 +2,18 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Defines lifecycle callbacks for pooled nodes.
+/// </summary>
 public interface IPoolable<TNode> where TNode : CanvasItem, IPoolable<TNode>
 {
     /// <summary>
     /// Invoked when a new <typeparamref name="TNode"/> is created.
     /// </summary>
-    void OnCreate(LifecyclePool<TNode> pool);
+    void OnCreate(IPoolContext<TNode> pool);
 
     /// <summary>
-    /// Invoked when a <typeparamref name="TNode"/> is aquired with <c><see cref="PoolCore{TNode}"/>.Get()</c>
+    /// Invoked when a <typeparamref name="TNode"/> is acquired from the pool.
     /// </summary>
     void OnAcquire();
 

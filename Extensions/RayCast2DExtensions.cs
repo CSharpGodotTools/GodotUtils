@@ -2,29 +2,18 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for RayCast2D.
+/// </summary>
 public static class RayCast2DExtensions
 {
     /// <summary>
-    /// <para>
-    /// Get the tile from a tilemap that a raycast is colliding with.
-    /// Use tileData.Equals(default(Variant)) to check if no tile data exists
-    /// here.
-    /// </para>
-    /// 
-    /// <para>
-    /// Useful if trying to detect what tile the player is standing on
-    /// </para>
-    /// 
-    /// <para>
-    /// To get the tile the player is currently in see TileMap.GetTileData(...)
-    /// </para>
+    /// Gets custom tile data from the tilemap layer the raycast hits.
     /// </summary>
     public static Variant GetTileData(this RayCast2D raycast, string layerName)
     {
         if (!raycast.IsColliding() || raycast.GetCollider() is not TileMapLayer tileMap)
-        {
             return default;
-        }
 
         Vector2 collisionPos = raycast.GetCollisionPoint();
         Vector2I tilePos = tileMap.LocalToMap(tileMap.ToLocal(collisionPos));
@@ -32,15 +21,13 @@ public static class RayCast2DExtensions
         TileData tileData = tileMap.GetCellTileData(tilePos);
 
         if (tileData == null)
-        {
             return default;
-        }
 
         return tileData.GetCustomData(layerName);
     }
 
     /// <summary>
-    /// Set the provided mask values to true. Everything else will be set to be false.
+    /// Sets only the provided collision mask values to true.
     /// </summary>
     public static void SetCollisionMask(this RayCast2D node, params int[] values)
     {
@@ -54,54 +41,42 @@ public static class RayCast2DExtensions
     }
 
     /// <summary>
-    /// A convience function to tell the raycast to exlude all parents that
-    /// are of type CollisionObject2D (for example a ground raycast should
-    /// only check for the ground, not the player itself)
+    /// Excludes all parent CollisionObject2D nodes from the raycast.
     /// </summary>
     public static void ExcludeRaycastParents(this RayCast2D raycast, Node parent)
     {
-        if (parent != null)
-        {
-            if (parent is CollisionObject2D collision)
-            {
-                raycast.AddException(collision);
-            }
+        if (parent == null)
+            return;
 
-            ExcludeRaycastParents(raycast, parent.GetParentOrNull<Node>());
-        }
+        if (parent is CollisionObject2D collision)
+            raycast.AddException(collision);
+
+        ExcludeRaycastParents(raycast, parent.GetParentOrNull<Node>());
     }
 
     /// <summary>
-    /// Checks if any raycasts in a collection is colliding
+    /// Returns true if any raycast in the collection is colliding.
     /// </summary>
-    /// <param name="raycasts">Collection of raycasts to check</param>
-    /// <returns>True if any ray cast is colliding, else false</returns>
     public static bool IsAnyRayCastColliding(this RayCast2D[] raycasts)
     {
         foreach (RayCast2D raycast in raycasts)
         {
             if (raycast.IsColliding())
-            {
                 return true;
-            }
         }
 
         return false;
     }
 
     /// <summary>
-    /// Returns the first raycasts in a collection which is colliding
+    /// Returns the first colliding raycast in the collection.
     /// </summary>
-    /// <param name="raycasts">Collection of raycasts to check</param>
-    /// <returns>Raycast which is colliding, else default</returns>
     public static RayCast2D GetAnyRayCastCollider(this RayCast2D[] raycasts)
     {
         foreach (RayCast2D raycast in raycasts)
         {
             if (raycast.IsColliding())
-            {
                 return raycast;
-            }
         }
 
         return default;

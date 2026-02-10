@@ -8,13 +8,13 @@ public static class DirectoryUtils
 {
     /// <summary>
     /// Recursively traverses a directory tree and invokes a callback for each file encountered.
-    /// The callback may control traversal flow (continue, skip directories, or stop traversal).
+    /// The callback may control traversal flow (continue, skip children, or stop traversal).
     /// 
     /// <code>
     /// Traverse("res://", entry => GD.Print(entry.FullPath));
     /// </code>
     /// </summary>
-    public static TraverseResult Traverse(string directory, Func<TraverseEntry, TraverseResult> visitor)
+    public static TraverseDecision Traverse(string directory, Func<TraverseEntry, TraverseDecision> visitor)
     {
         directory = NormalizePath(ProjectSettings.GlobalizePath(directory));
 
@@ -31,31 +31,28 @@ public static class DirectoryUtils
             string fullPath = Path.Combine(directory, nextFileName);
             bool isDir = dir.CurrentIsDir();
 
-            TraverseResult result = visitor(new TraverseEntry(fullPath, isDir));
+            TraverseDecision result = visitor(new TraverseEntry(fullPath, isDir));
 
-            if (result == TraverseResult.Stop)
+            if (result == TraverseDecision.Stop)
             {
                 dir.ListDirEnd();
-                return TraverseResult.Stop;
+                return TraverseDecision.Stop;
             }
 
-            if (isDir)
+            if (isDir && result != TraverseDecision.SkipChildren)
             {
-                if (result != TraverseResult.SkipDir)
-                {
-                    TraverseResult childResult = Traverse(fullPath, visitor);
+                TraverseDecision childResult = Traverse(fullPath, visitor);
 
-                    if (childResult == TraverseResult.Stop)
-                    {
-                        dir.ListDirEnd();
-                        return TraverseResult.Stop;
-                    }
+                if (childResult == TraverseDecision.Stop)
+                {
+                    dir.ListDirEnd();
+                    return TraverseDecision.Stop;
                 }
             }
         }
 
         dir.ListDirEnd();
-        return TraverseResult.Continue;
+        return TraverseDecision.Continue;
     }
 
     public readonly struct TraverseEntry(string fullPath, bool isDirectory)
@@ -84,23 +81,18 @@ public static class DirectoryUtils
             if (Path.GetFileName(entry.FullPath) == fileName)
             {
                 foundPath = entry.FullPath;
-                return TraverseResult.Stop;
+                return TraverseDecision.Stop;
             }
 
-            return TraverseResult.Continue;
+            return TraverseDecision.Continue;
         });
 
         return foundPath;
     }
 
     /// <summary>
-    /// Normalizes the specified path by replacing all forward slashes ('/') and backslashes ('\') with the system's directory separator character.
+    /// Normalizes path separators to the current OS.
     /// </summary>
-    /// <param name="path">The path to normalize.</param>
-    /// <returns>A normalized path where all directory separators are replaced with the system's directory separator character.</returns>
-    /// <remarks>
-    /// This method is useful when dealing with paths that may come from different sources (e.g., URLs, different operating systems) and need to be standardized for the current environment.
-    /// </remarks>
     public static string NormalizePath(string path)
     {
         return path

@@ -2,6 +2,9 @@ using Godot;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for Node2D.
+/// </summary>
 public static class Node2DExtensions
 {
     /// <summary>

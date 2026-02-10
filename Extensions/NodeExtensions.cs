@@ -5,6 +5,9 @@ using System;
 
 namespace GodotUtils;
 
+/// <summary>
+/// Extension helpers for nodes.
+/// </summary>
 public static class NodeExtensions
 {
     /// <summary>
@@ -12,59 +15,61 @@ public static class NodeExtensions
     /// <code>Global global = someNode.GetAutoload&lt;Global&gt;("Global");</code>
     /// </summary>
     /// <typeparam name="T">Type of the autoload node, must inherit from Node.</typeparam>
-    /// <param name="node">Any node in the scene tree to call this extension on.</param>
-    /// <param name="autoload">The name of the autoload as registered in Project Settings -> AutoLoad.</param>
-    /// <returns>The autoload instance of type T.</returns>
     public static T GetAutoload<T>(this Node node, string autoload) where T : Node
     {
         return node.GetNode<T>($"/root/{autoload}");
     }
 
+    /// <summary>
+    /// Adds a child to the current scene using a deferred call.
+    /// </summary>
     public static void AddToCurrentSceneDeferred(this Node node, Node child)
     {
         GetCurrentScene(node).CallDeferred(Node.MethodName.AddChild, child);
     }
 
+    /// <summary>
+    /// Adds a child to the current scene immediately.
+    /// </summary>
     public static void AddToCurrentScene(this Node node, Node child)
     {
         GetCurrentScene(node).AddChild(child);
     }
 
+    /// <summary>
+    /// Gets a node at <paramref name="path"/> from the current scene.
+    /// </summary>
     public static Node GetNodeInCurrentScene(this Node node, string path)
     {
         return GetCurrentScene(node).GetNode(path);
     }
 
+    /// <summary>
+    /// Gets the current scene from the tree.
+    /// </summary>
     public static Node GetCurrentScene(this Node node)
     {
         return node.GetTree().CurrentScene;
     }
 
     /// <summary>
-    /// Retrieves a node of type <typeparamref name="T"/> from the current scene at the specified path.
+    /// Gets a node of type <typeparamref name="T"/> from the current scene by path.
     /// </summary>
-    /// <typeparam name="T">The type of the node to retrieve.</typeparam>
-    /// <param name="node">The node from which to start the operation.</param>
-    /// <param name="path">The path to the node in the scene tree.</param>
-    /// <returns>The node at the specified path, cast to type <typeparamref name="T"/>.</returns>
     public static T GetSceneNode<T>(this Node node, string path) where T : Node
     {
         return node.GetTree().CurrentScene.GetNode<T>(path);
     }
 
     /// <summary>
-    /// Retrieves a node of type <typeparamref name="T"/> from the current scene.
+    /// Gets a node of type <typeparamref name="T"/> from the current scene.
     /// </summary>
-    /// <typeparam name="T">The type of the node to retrieve.</typeparam>
-    /// <param name="node">The node from which to start the operation.</param>
-    /// <returns>The node of type <typeparamref name="T"/>, if found.</returns>
     public static T GetSceneNode<T>(this Node node) where T : Node
     {
         return node.GetTree().CurrentScene.GetNode<T>(recursive: false);
     }
 
     /// <summary>
-    /// Recursively searches for all nodes of <paramref name="type"/>
+    /// Recursively searches for all nodes of a specific type.
     /// </summary>
     public static List<Node> GetNodes(this Node node, Type type)
     {
@@ -76,9 +81,7 @@ public static class NodeExtensions
     private static void RecursiveTypeMatchSearch(Node node, Type type, List<Node> nodes)
     {
         if (node.GetType() == type)
-        {
             nodes.Add(node);
-        }
 
         foreach (Node child in node.GetChildren())
         {
@@ -87,7 +90,7 @@ public static class NodeExtensions
     }
 
     /// <summary>
-    /// Attempt to find a child node of type T
+    /// Attempts to find a child node of type <typeparamref name="T"/>.
     /// </summary>
     public static bool TryGetNode<T>(this Node node, out T foundNode, bool recursive = true) where T : Node
     {
@@ -96,7 +99,7 @@ public static class NodeExtensions
     }
 
     /// <summary>
-    /// Check if a child node of type T exists
+    /// Returns true when a child node of type <typeparamref name="T"/> exists.
     /// </summary>
     public static bool HasNode<T>(this Node node, bool recursive = true) where T : Node
     {
@@ -104,7 +107,7 @@ public static class NodeExtensions
     }
 
     /// <summary>
-    /// Find a child node of type T
+    /// Finds a child node of type <typeparamref name="T"/>.
     /// </summary>
     public static T GetComponent<T>(this Node node, bool recursive = true) where T : Node
     {
@@ -112,7 +115,7 @@ public static class NodeExtensions
     }
 
     /// <summary>
-    /// Find a child node of type T
+    /// Finds a child node of type <typeparamref name="T"/>.
     /// </summary>
     public static T GetNode<T>(this Node node, bool recursive = true) where T : Node
     {
@@ -124,18 +127,14 @@ public static class NodeExtensions
         foreach (Node child in children)
         {
             if (child is T type)
-            {
                 return type;
-            }
 
             if (recursive)
             {
                 T val = FindNode<T>(child.GetChildren());
 
                 if (val is not null)
-                {
                     return val;
-                }
             }
         }
 
@@ -143,22 +142,25 @@ public static class NodeExtensions
     }
 
     /// <summary>
-    /// Asynchronously waits for one procress frame.
+    /// Asynchronously waits for one process frame.
     /// </summary>
-    public async static Task WaitOneFrame(this Node parent)
+    public static async Task WaitOneFrame(this Node parent)
     {
         await parent.ToSignal(
             source: parent.GetTree(),
             signal: SceneTree.SignalName.ProcessFrame);
     }
 
+    /// <summary>
+    /// Adds a child using a deferred call.
+    /// </summary>
     public static void AddChildDeferred(this Node node, Node child)
     {
         node.CallDeferred(Node.MethodName.AddChild, child);
     }
 
     /// <summary>
-    /// Recursively retrieves all nodes of type <typeparamref name="T"/> from <paramref name="node"/>
+    /// Recursively retrieves all nodes of type <typeparamref name="T"/>.
     /// </summary>
     public static List<T> GetChildren<T>(this Node node, bool recursive = true) where T : Node
     {
@@ -172,9 +174,7 @@ public static class NodeExtensions
         foreach (Node child in node.GetChildren())
         {
             if (child is T typedChild)
-            {
                 children.Add(typedChild);
-            }
 
             if (recursive)
             {
@@ -184,7 +184,7 @@ public static class NodeExtensions
     }
 
     /// <summary>
-    /// QueueFree all the children attached to this node.
+    /// Queue frees all children attached to this node.
     /// </summary>
     public static void QueueFreeChildren(this Node parentNode)
     {
@@ -195,7 +195,7 @@ public static class NodeExtensions
     }
 
     /// <summary>
-    /// Remove all groups this node is attached to.
+    /// Removes all groups this node is attached to.
     /// </summary>
     public static void RemoveAllGroups(this Node node)
     {
@@ -208,10 +208,8 @@ public static class NodeExtensions
     }
 
     /// <summary>
-    /// Recursively traverse the tree, executing <paramref name="code"/> for this <paramref name="node"/> and all its children.
+    /// Recursively traverses the tree and executes <paramref name="code"/> for each node.
     /// </summary>
-    /// <param name="node">The starting node for traversal.</param>
-    /// <param name="code">Action to execute for each node.</param>
     public static void TraverseNodes(this Node node, Action<Node> code)
     {
         // Execute the action on the current node

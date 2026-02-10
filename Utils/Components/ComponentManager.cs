@@ -4,11 +4,13 @@ using System.Collections.Generic;
 namespace GodotUtils;
 
 /// <summary>
-/// Using any kind of Godot functions from C# is expensive, so we try to minimize this with centralized logic.
-/// See <see href="https://www.reddit.com/r/godot/comments/1me7669/a_follow_up_to_my_first_c_stress_test/">stress test results</see>.
+/// Centralized component dispatch to reduce per-node callbacks.
 /// </summary>
 public class ComponentManager
 {
+    /// <summary>
+    /// Gets the active component manager instance.
+    /// </summary>
     public static ComponentManager Instance { get; private set; }
 
     private readonly List<Component> _process = [];
@@ -18,12 +20,18 @@ public class ComponentManager
 
     private readonly Node _managerNode;
 
+    /// <summary>
+    /// Creates a manager tied to the provided node.
+    /// </summary>
     public ComponentManager(Node managerNode)
     {
         _managerNode = managerNode;
     }
 
     // Disable overrides on startup for performance
+    /// <summary>
+    /// Disables processing callbacks until components register.
+    /// </summary>
     public void EnterTree()
     {
         //_managerNode.SetProcess(false); // Assume there will always be at least one process
@@ -32,12 +40,18 @@ public class ComponentManager
         _managerNode.SetProcessUnhandledInput(false);
     }
 
+    /// <summary>
+    /// Marks this instance as the active manager.
+    /// </summary>
     public void Ready()
     {
         Instance = this;
     }
 
     // Handle Godot overrides
+    /// <summary>
+    /// Dispatches per-frame processing to registered components.
+    /// </summary>
     public void Process(double delta)
     {
         for (int i = _process.Count - 1; i >= 0; i--)
@@ -46,6 +60,9 @@ public class ComponentManager
         }
     }
 
+    /// <summary>
+    /// Dispatches physics processing to registered components.
+    /// </summary>
     public void PhysicsProcess(double delta)
     {
         for (int i = _physicsProcess.Count - 1; i >= 0; i--)
@@ -54,6 +71,9 @@ public class ComponentManager
         }
     }
 
+    /// <summary>
+    /// Dispatches input events to registered components.
+    /// </summary>
     public void Input(InputEvent @event)
     {
         for (int i = _input.Count - 1; i >= 0; i--)
@@ -62,6 +82,9 @@ public class ComponentManager
         }
     }
 
+    /// <summary>
+    /// Dispatches unhandled input events to registered components.
+    /// </summary>
     public void UnhandledInput(InputEvent @event)
     {
         for (int i = _unhandledInput.Count - 1; i >= 0; i--)
@@ -71,6 +94,9 @@ public class ComponentManager
     }
 
     // Exposed register functions
+    /// <summary>
+    /// Registers a component for per-frame processing.
+    /// </summary>
     public void RegisterProcess(Component component)
     {
         if (_process.Contains(component))
@@ -83,6 +109,9 @@ public class ComponentManager
         //    SetProcess(true);
     }
 
+    /// <summary>
+    /// Unregisters a component from per-frame processing.
+    /// </summary>
     public void UnregisterProcess(Component component)
     {
         _process.Remove(component);
@@ -92,6 +121,9 @@ public class ComponentManager
         //    SetProcess(false);
     }
 
+    /// <summary>
+    /// Registers a component for physics processing.
+    /// </summary>
     public void RegisterPhysicsProcess(Component component)
     {
         if (_physicsProcess.Contains(component))
@@ -104,6 +136,9 @@ public class ComponentManager
         //    SetPhysicsProcess(true);
     }
 
+    /// <summary>
+    /// Unregisters a component from physics processing.
+    /// </summary>
     public void UnregisterPhysicsProcess(Component component)
     {
         _physicsProcess.Remove(component);
@@ -113,6 +148,9 @@ public class ComponentManager
         //    SetPhysicsProcess(false);
     }
 
+    /// <summary>
+    /// Registers a component for input processing.
+    /// </summary>
     public void RegisterInput(Component component)
     {
         if (_input.Contains(component))
@@ -124,6 +162,9 @@ public class ComponentManager
             _managerNode.SetProcessInput(true);
     }
 
+    /// <summary>
+    /// Unregisters a component from input processing.
+    /// </summary>
     public void UnregisterInput(Component component)
     {
         _input.Remove(component);
@@ -132,6 +173,9 @@ public class ComponentManager
             _managerNode.SetProcessInput(false);
     }
 
+    /// <summary>
+    /// Registers a component for unhandled input processing.
+    /// </summary>
     public void RegisterUnhandledInput(Component component)
     {
         if (_unhandledInput.Contains(component))
@@ -143,6 +187,9 @@ public class ComponentManager
             _managerNode.SetProcessUnhandledInput(true);
     }
 
+    /// <summary>
+    /// Unregisters a component from unhandled input processing.
+    /// </summary>
     public void UnregisterUnhandledInput(Component component)
     {
         _unhandledInput.Remove(component);
@@ -151,6 +198,9 @@ public class ComponentManager
             _managerNode.SetProcessUnhandledInput(false);
     }
 
+    /// <summary>
+    /// Unregisters a component from all processing types.
+    /// </summary>
     public void UnregisterAll(Component component)
     {
         UnregisterProcess(component);
