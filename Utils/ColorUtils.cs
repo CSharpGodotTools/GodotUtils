@@ -20,9 +20,9 @@ public class ColorUtils
     /// </summary>
     public static Color Random(int alpha = 255)
     {
-        float r = MathUtils.RandRange(0.0, 1.0);
-        float g = MathUtils.RandRange(0.0, 1.0);
-        float b = MathUtils.RandRange(0.0, 1.0);
+        float r = MathUtils.RandomRange(0.0, 1.0);
+        float g = MathUtils.RandomRange(0.0, 1.0);
+        float b = MathUtils.RandomRange(0.0, 1.0);
 
         return new Color(r, g, b, alpha / 255f);
     }

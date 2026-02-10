@@ -5,39 +5,26 @@ namespace GodotUtils;
 public static class InputUtils
 {
     /// <summary>
-    /// Returns true when moving left based on arrow or WASD input.
+    /// Returns a normalized movement vector from arrow or WASD input.
     /// </summary>
-    public static bool IsMovingLeft()
+    public static Vector2 GetMoveVector()
     {
-        return IsPressed(Key.Left, Key.A);
-    }
+        float x = 0f;
+        float y = 0f;
 
-    /// <summary>
-    /// Returns true when moving right based on arrow or WASD input.
-    /// </summary>
-    public static bool IsMovingRight()
-    {
-        return IsPressed(Key.Right, Key.D);
-    }
+        if (Input.IsKeyPressed(Key.Left) || Input.IsKeyPressed(Key.A))
+            x -= 1f;
 
-    /// <summary>
-    /// Returns true when moving up based on arrow or WASD input.
-    /// </summary>
-    public static bool IsMovingUp()
-    {
-        return IsPressed(Key.Up, Key.W);
-    }
+        if (Input.IsKeyPressed(Key.Right) || Input.IsKeyPressed(Key.D))
+            x += 1f;
 
-    /// <summary>
-    /// Returns true when moving down based on arrow or WASD input.
-    /// </summary>
-    public static bool IsMovingDown()
-    {
-        return IsPressed(Key.Down, Key.S);
-    }
+        if (Input.IsKeyPressed(Key.Up) || Input.IsKeyPressed(Key.W))
+            y -= 1f;
 
-    private static bool IsPressed(Key primary, Key alternate)
-    {
-        return Input.IsKeyPressed(primary) || Input.IsKeyPressed(alternate);
+        if (Input.IsKeyPressed(Key.Down) || Input.IsKeyPressed(Key.S))
+            y += 1f;
+
+        Vector2 vector = new Vector2(x, y);
+        return vector.LengthSquared() > 1f ? vector.Normalized() : vector;
     }
 }

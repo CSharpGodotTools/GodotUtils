@@ -61,7 +61,7 @@ public static class MathUtils
     /// <summary>
     /// Returns a random float within the range [<paramref name="min"/>, <paramref name="max"/>].
     /// </summary>
-    public static float RandRange(double min, double max)
+    public static float RandomRange(double min, double max)
     {
         return (float)GD.RandRange(min, max);
     }
@@ -69,7 +69,7 @@ public static class MathUtils
     /// <summary>
     /// Returns a random integer within the range [<paramref name="min"/>, <paramref name="max"/>].
     /// </summary>
-    public static int RandRange(int min, int max)
+    public static int RandomRangeInt(int min, int max)
     {
         return GD.RandRange(min, max);
     }
@@ -88,7 +88,7 @@ public static class MathUtils
     /// </summary>
     public static float RandAngle()
     {
-        return RandRange(0, Mathf.Pi * 2);
+        return RandomRange(0, Mathf.Pi * 2);
     }
 
     /// <summary>
