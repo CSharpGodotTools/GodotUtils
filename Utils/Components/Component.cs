@@ -11,6 +11,7 @@ public class Component : IDisposable
 {
     protected Node Owner;
     private ComponentManager _componentManager;
+    private bool _disposed;
 
     /// <summary>
     /// Creates a component attached to the provided owner node.
@@ -128,9 +129,6 @@ public class Component : IDisposable
     private void CleanupOnTreeExit()
     {
         Dispose();
-        _componentManager.UnregisterAll(this);
-        Owner.Ready -= InitializeComponent;
-        Owner.TreeExited -= CleanupOnTreeExit;
     }
 
     /// <summary>
@@ -138,6 +136,24 @@ public class Component : IDisposable
     /// </summary>
     public void Dispose()
     {
-        OnDispose();
+        if (_disposed)
+            return;
+
+        _disposed = true;
+
+        try
+        {
+            OnDispose();
+        }
+        finally
+        {
+            _componentManager?.UnregisterAll(this);
+
+            if (Owner != null)
+            {
+                Owner.Ready -= InitializeComponent;
+                Owner.TreeExited -= CleanupOnTreeExit;
+            }
+        }
     }
 }
