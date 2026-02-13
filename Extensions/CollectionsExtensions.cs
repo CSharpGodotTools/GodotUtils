@@ -19,36 +19,4 @@ public static class ExtensionsCollection
             action(element);
         }
     }
-
-    /// <summary>
-    /// Returns true when the dictionary already contains the key.
-    /// </summary>
-    public static bool Duplicate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key,
-        [CallerLineNumber] int lineNumber = 0,
-        [CallerMemberName] string caller = null,
-        [CallerFilePath] string path = null)
-    {
-        if (!dict.ContainsKey(key))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Returns true when the dictionary does not contain the key.
-    /// </summary>
-    public static bool DoesNotHave<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key,
-        [CallerLineNumber] int lineNumber = 0,
-        [CallerMemberName] string caller = null,
-        [CallerFilePath] string path = null)
-    {
-        if (dict.ContainsKey(key))
-        {
-            return false;
-        }
-
-        return true;
-    }
 }
