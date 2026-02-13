@@ -19,10 +19,22 @@ public static class ControlExtensions
         }
         else
         {
-            control.Ready += () => control.SetAnchorsAndOffsetsPreset(layout);
+            control.Ready += OnReady;
+            control.TreeExited += OnExitedTree;
         }
 
         return control;
+
+        void OnReady()
+        {
+            control.SetAnchorsAndOffsetsPreset(layout);
+        }
+
+        void OnExitedTree()
+        {
+            control.Ready -= OnReady;
+            control.TreeExited -= OnExitedTree;
+        }
     }
 
     /// <summary>
