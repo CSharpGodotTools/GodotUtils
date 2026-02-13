@@ -44,10 +44,12 @@ public static class CursorUtils
         where TNode : Node
     {
         // Create a shape query parameters object
-        PhysicsPointQueryParameters2D queryParams = new();
-        queryParams.Position = position;
-        queryParams.CollideWithAreas = collideWithAreas;
-        queryParams.CollideWithBodies = collideWithBodies;
+        PhysicsPointQueryParameters2D queryParams = new()
+        {
+            Position = position,
+            CollideWithAreas = collideWithAreas,
+            CollideWithBodies = collideWithBodies
+        };
 
         // Exclude the node itself and its children from the query
         if (excludeSelf)
@@ -62,7 +64,7 @@ public static class CursorUtils
                 }
             }
 
-            queryParams.Exclude = new Godot.Collections.Array<Rid>(rids);
+            queryParams.Exclude = [.. rids];
         }
 
         // Perform the query
