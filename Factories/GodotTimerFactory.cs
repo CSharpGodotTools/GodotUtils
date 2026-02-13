@@ -45,18 +45,27 @@ public static class GodotTimerFactory
             OneShot = oneShot,
         };
 
-        timer.Timeout += () =>
-        {
-            timeout();
-
-            if (oneShot)
-                timer.QueueFree();
-        };
+        timer.Timeout += OnTimeout;
+        timer.TreeExited += OnExitedTree;
 
         node.AddChild(timer);
 
         timer.Start();
 
         return timer;
+
+        void OnTimeout()
+        {
+            timeout();
+
+            if (oneShot)
+                timer.QueueFree();
+        }
+
+        void OnExitedTree()
+        {
+            timer.Timeout -= OnTimeout;
+            timer.TreeExited -= OnExitedTree;
+        }
     }
 }
