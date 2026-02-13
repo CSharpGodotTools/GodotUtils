@@ -14,8 +14,20 @@ public static class GpuParticleFactory3D
     {
         GpuParticles3D particles = particleScene.Instantiate<GpuParticles3D>();
         particles.OneShot = true;
-        particles.Finished += particles.QueueFree;
+        particles.Finished += OnFinished;
+        particles.TreeExited += OnExitedTree;
         parent.AddChild(particles);
         return particles;
+
+        void OnFinished()
+        {
+            particles.QueueFree();
+        }
+
+        void OnExitedTree()
+        {
+            particles.Finished -= OnFinished;
+            particles.TreeExited -= OnExitedTree;
+        }
     }
 }
