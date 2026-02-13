@@ -20,7 +20,7 @@ public static class MarginContainerFactory
     /// </summary>
     public static MarginContainer Create(int left, int right, int top, int bottom)
     {
-        MarginContainer container = new MarginContainer();
+        MarginContainer container = new();
         container.SetMarginLeft(left);
         container.SetMarginRight(right);
         container.SetMarginTop(top);

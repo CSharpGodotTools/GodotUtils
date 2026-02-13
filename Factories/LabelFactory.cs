@@ -12,7 +12,7 @@ public static class LabelFactory
     /// </summary>
     public static Label Create(string text = "", int fontSize = 16)
     {
-        Label label = new Label()
+        Label label = new()
         {
             Text = text,
             HorizontalAlignment = HorizontalAlignment.Center,

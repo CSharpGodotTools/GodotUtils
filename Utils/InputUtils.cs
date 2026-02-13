@@ -24,7 +24,7 @@ public static class InputUtils
         if (Input.IsKeyPressed(Key.Down) || Input.IsKeyPressed(Key.S))
             y += 1f;
 
-        Vector2 vector = new Vector2(x, y);
+        Vector2 vector = new(x, y);
         return vector.LengthSquared() > 1f ? vector.Normalized() : vector;
     }
 }

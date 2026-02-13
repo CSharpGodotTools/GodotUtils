@@ -32,7 +32,7 @@ public static class TypeExtensions
             type == typeof(ushort);
     }
 
-    private static readonly HashSet<Type> _numericTypes = new HashSet<Type>
+    private static readonly HashSet<Type> _numericTypes = new()
     {
         typeof(int),
         typeof(float),

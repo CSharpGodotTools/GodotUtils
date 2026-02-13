@@ -12,7 +12,7 @@ public static class LinkButtonFactory
     /// </summary>
     public static LinkButton Create(string text, int fontSize = 16)
     {
-        LinkButton button = new LinkButton()
+        LinkButton button = new()
         {
             SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
             Text = text,

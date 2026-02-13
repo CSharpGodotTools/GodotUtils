@@ -9,7 +9,7 @@ public static class VectorUtils
     /// </summary>
     public static Vector2 RandomDirection2D()
     {
-        Vector2 vector = new Vector2(MathUtils.RandomRange(-1.0, 1.0), MathUtils.RandomRange(-1.0, 1.0));
+        Vector2 vector = new(MathUtils.RandomRange(-1.0, 1.0), MathUtils.RandomRange(-1.0, 1.0));
         return vector.Normalized();
     }
 }

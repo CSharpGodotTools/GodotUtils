@@ -44,7 +44,7 @@ public static class CursorUtils
         where TNode : Node
     {
         // Create a shape query parameters object
-        PhysicsPointQueryParameters2D queryParams = new PhysicsPointQueryParameters2D();
+        PhysicsPointQueryParameters2D queryParams = new();
         queryParams.Position = position;
         queryParams.CollideWithAreas = collideWithAreas;
         queryParams.CollideWithBodies = collideWithBodies;
@@ -52,7 +52,7 @@ public static class CursorUtils
         // Exclude the node itself and its children from the query
         if (excludeSelf)
         {
-            List<Rid> rids = new List<Rid>();
+            List<Rid> rids = new();
 
             foreach (Node child in node.GetChildren<Node>())
             {
@@ -71,7 +71,7 @@ public static class CursorUtils
         Godot.Collections.Array<Godot.Collections.Dictionary> results = spaceState.IntersectPoint(queryParams, maxResults);
 
         int resultCount = results.Count;
-        List<TNode> nodes = new List<TNode>(resultCount);
+        List<TNode> nodes = new(resultCount);
 
         foreach (Godot.Collections.Dictionary result in results)
         {

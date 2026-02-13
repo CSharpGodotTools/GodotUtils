@@ -34,7 +34,7 @@ public class JsonExceptionHandler
             int endLine = Math.Min(lines.Length, lineIndex + 8);
 
             // Create the error message
-            StringBuilder errorMessage = new StringBuilder();
+            StringBuilder errorMessage = new();
 
             errorMessage.AppendLine($"ERROR: Failed to parse {Path.GetFileName(path)}");
             errorMessage.AppendLine();
