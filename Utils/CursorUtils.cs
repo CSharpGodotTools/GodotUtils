@@ -52,7 +52,7 @@ public static class CursorUtils
         // Exclude the node itself and its children from the query
         if (excludeSelf)
         {
-            List<Rid> rids = new();
+            List<Rid> rids = [];
 
             foreach (Node child in node.GetChildren<Node>())
             {

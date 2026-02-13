@@ -32,8 +32,8 @@ public static class TypeExtensions
             type == typeof(ushort);
     }
 
-    private static readonly HashSet<Type> _numericTypes = new()
-    {
+    private static readonly HashSet<Type> _numericTypes =
+    [
         typeof(int),
         typeof(float),
         typeof(double),
@@ -45,5 +45,5 @@ public static class TypeExtensions
         typeof(decimal),
         typeof(byte),
         typeof(sbyte)
-    };
+    ];
 }

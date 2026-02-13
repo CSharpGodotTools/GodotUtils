@@ -10,6 +10,7 @@ public partial class ToolScriptHelpers : Node
     /// Triggers removal of empty folders when toggled in the editor.
     /// </summary>
     [Export]
+#pragma warning disable CA1822 // Mark members as static
     public bool RemoveEmptyFolders
     {
         get => false;
@@ -25,6 +26,7 @@ public partial class ToolScriptHelpers : Node
         get => false;
         set => DeleteOrphanedCSUIDFiles();
     }
+#pragma warning restore CA1822 // Mark members as static
 
     private static void DeleteEmptyFolders()
     {

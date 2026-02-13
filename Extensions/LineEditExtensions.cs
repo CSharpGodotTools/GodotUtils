@@ -52,7 +52,7 @@ public static class LineEditExtensions
 
         if (value.Length > max.ToString().Length && num <= max)
         {
-            string spliced = value.Remove(value.Length - 1);
+            string spliced = value[..^1];
             prevNum = int.Parse(spliced);
             EditInputText(input, spliced);
             return;

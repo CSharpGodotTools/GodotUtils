@@ -96,7 +96,7 @@ public class EventManager<TEvent>
     {
         if (!_eventListeners.TryGetValue(eventType, out List<Listener> listeners))
         {
-            listeners = new List<Listener>();
+            listeners = [];
             _eventListeners.Add(eventType, listeners);
         }
 
