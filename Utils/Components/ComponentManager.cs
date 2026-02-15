@@ -13,12 +13,20 @@ public class ComponentManager
     /// </summary>
     public static ComponentManager Instance { get; private set; }
 
-    private readonly List<Component> _process = [];
-    private readonly List<Component> _physicsProcess = [];
-    private readonly List<Component> _unhandledInput = [];
-    private readonly List<Component> _input = [];
+    private readonly ComponentGroup _process = new();
+    private readonly ComponentGroup _processPaused = new();
+
+    private readonly ComponentGroup _physicsProcess = new();
+    private readonly ComponentGroup _physicsProcessPaused = new();
+
+    private readonly ComponentGroup _input = new();
+    private readonly ComponentGroup _inputPaused = new();
+
+    private readonly ComponentGroup _unhandledInput = new();
+    private readonly ComponentGroup _unhandledInputPaused = new();
 
     private readonly Node _managerNode;
+    private readonly SceneTree _sceneTree;
 
     /// <summary>
     /// Creates a manager tied to the provided node.
@@ -26,87 +34,58 @@ public class ComponentManager
     public ComponentManager(Node managerNode)
     {
         _managerNode = managerNode;
+        _sceneTree = managerNode.GetTree();
     }
 
-    // Disable overrides on startup for performance
-    /// <summary>
-    /// Disables processing callbacks until components register.
-    /// </summary>
     public void EnterTree()
     {
-        //_managerNode.SetProcess(false); // Assume there will always be at least one process
-        //_managerNode.SetPhysicsProcess(false); // Assume there will always be at least one physics process
         _managerNode.SetProcessInput(false);
         _managerNode.SetProcessUnhandledInput(false);
     }
 
-    /// <summary>
-    /// Marks this instance as the active manager.
-    /// </summary>
     public void Ready()
     {
         Instance = this;
     }
 
-    // Handle Godot overrides
-    /// <summary>
-    /// Dispatches per-frame processing to registered components.
-    /// </summary>
     public void Process(double delta)
     {
-        for (int i = _process.Count - 1; i >= 0; i--)
-        {
-            _process[i].Process(delta);
-        }
+        List<Component> processList = _sceneTree.Paused ? _processPaused.Items : _process.Items;
+
+        for (int i = processList.Count - 1; i >= 0; i--)
+            processList[i].Process(delta);
     }
 
-    /// <summary>
-    /// Dispatches physics processing to registered components.
-    /// </summary>
     public void PhysicsProcess(double delta)
     {
-        for (int i = _physicsProcess.Count - 1; i >= 0; i--)
-        {
-            _physicsProcess[i].PhysicsProcess(delta);
-        }
+        List<Component> physicsProcessList = _sceneTree.Paused ? _physicsProcessPaused.Items : _physicsProcess.Items;
+
+        for (int i = physicsProcessList.Count - 1; i >= 0; i--)
+            physicsProcessList[i].PhysicsProcess(delta);
     }
 
-    /// <summary>
-    /// Dispatches input events to registered components.
-    /// </summary>
     public void Input(InputEvent @event)
     {
-        for (int i = _input.Count - 1; i >= 0; i--)
-        {
-            _input[i].ProcessInput(@event);
-        }
+        List<Component> inputList = _sceneTree.Paused ? _inputPaused.Items : _input.Items;
+
+        for (int i = inputList.Count - 1; i >= 0; i--)
+            inputList[i].ProcessInput(@event);
     }
 
-    /// <summary>
-    /// Dispatches unhandled input events to registered components.
-    /// </summary>
     public void UnhandledInput(InputEvent @event)
     {
-        for (int i = _unhandledInput.Count - 1; i >= 0; i--)
-        {
-            _unhandledInput[i].UnhandledInput(@event);
-        }
+        List<Component> unhandledInputList = _sceneTree.Paused ? _unhandledInputPaused.Items : _unhandledInput.Items;
+
+        for (int i = unhandledInputList.Count - 1; i >= 0; i--)
+            unhandledInputList[i].UnhandledInput(@event);
     }
 
-    // Exposed register functions
     /// <summary>
     /// Registers a component for per-frame processing.
     /// </summary>
     public void RegisterProcess(Component component)
     {
-        if (_process.Contains(component))
-            return;
-
-        _process.Add(component);
-
-        // Assume there will always be at least one process
-        //if (_process.Count == 1)
-        //    SetProcess(true);
+        Register(component, _process, _processPaused);
     }
 
     /// <summary>
@@ -114,11 +93,7 @@ public class ComponentManager
     /// </summary>
     public void UnregisterProcess(Component component)
     {
-        _process.Remove(component);
-
-        // Assume there will always be at least one process
-        //if (_process.Count == 0)
-        //    SetProcess(false);
+        Unregister(component, _process, _processPaused);
     }
 
     /// <summary>
@@ -126,14 +101,7 @@ public class ComponentManager
     /// </summary>
     public void RegisterPhysicsProcess(Component component)
     {
-        if (_physicsProcess.Contains(component))
-            return;
-
-        _physicsProcess.Add(component);
-
-        // Assume there will always be at least one physics process
-        //if (_physicsProcess.Count == 1)
-        //    SetPhysicsProcess(true);
+        Register(component, _physicsProcess, _physicsProcessPaused);
     }
 
     /// <summary>
@@ -141,11 +109,7 @@ public class ComponentManager
     /// </summary>
     public void UnregisterPhysicsProcess(Component component)
     {
-        _physicsProcess.Remove(component);
-
-        // Assume there will always be at least one physics process
-        //if (_physicsProcess.Count == 0)
-        //    SetPhysicsProcess(false);
+        Unregister(component, _physicsProcess, _physicsProcessPaused);
     }
 
     /// <summary>
@@ -153,10 +117,7 @@ public class ComponentManager
     /// </summary>
     public void RegisterInput(Component component)
     {
-        if (_input.Contains(component))
-            return;
-
-        _input.Add(component);
+        Register(component, _input, _inputPaused);
 
         if (_input.Count == 1)
             _managerNode.SetProcessInput(true);
@@ -167,7 +128,7 @@ public class ComponentManager
     /// </summary>
     public void UnregisterInput(Component component)
     {
-        _input.Remove(component);
+        Unregister(component, _input, _inputPaused);
 
         if (_input.Count == 0)
             _managerNode.SetProcessInput(false);
@@ -178,10 +139,7 @@ public class ComponentManager
     /// </summary>
     public void RegisterUnhandledInput(Component component)
     {
-        if (_unhandledInput.Contains(component))
-            return;
-
-        _unhandledInput.Add(component);
+        Register(component, _unhandledInput, _unhandledInputPaused);
 
         if (_unhandledInput.Count == 1)
             _managerNode.SetProcessUnhandledInput(true);
@@ -192,10 +150,18 @@ public class ComponentManager
     /// </summary>
     public void UnregisterUnhandledInput(Component component)
     {
-        _unhandledInput.Remove(component);
+        Unregister(component, _unhandledInput, _unhandledInputPaused);
 
         if (_unhandledInput.Count == 0)
             _managerNode.SetProcessUnhandledInput(false);
+    }
+
+    internal void OnPausableChanged(Component component)
+    {
+        SyncPausedGroup(component, _process, _processPaused);
+        SyncPausedGroup(component, _physicsProcess, _physicsProcessPaused);
+        SyncPausedGroup(component, _input, _inputPaused);
+        SyncPausedGroup(component, _unhandledInput, _unhandledInputPaused);
     }
 
     /// <summary>
@@ -207,5 +173,60 @@ public class ComponentManager
         UnregisterPhysicsProcess(component);
         UnregisterInput(component);
         UnregisterUnhandledInput(component);
+    }
+
+    private static void Register(Component component, ComponentGroup mainGroup, ComponentGroup pausedGroup)
+    {
+        if (!mainGroup.Add(component))
+            return;
+
+        if (!component.IsPausable)
+            pausedGroup.Add(component);
+    }
+
+    private static void Unregister(Component component, ComponentGroup mainGroup, ComponentGroup pausedGroup)
+    {
+        mainGroup.Remove(component);
+        pausedGroup.Remove(component);
+    }
+
+    private static void SyncPausedGroup(Component component, ComponentGroup mainGroup, ComponentGroup pausedGroup)
+    {
+        if (!mainGroup.Contains(component))
+            return;
+
+        if (component.IsPausable)
+            pausedGroup.Remove(component);
+        else
+            pausedGroup.Add(component);
+    }
+
+    private sealed class ComponentGroup
+    {
+        private readonly List<Component> _items = [];
+        private readonly HashSet<Component> _lookup = [];
+
+        public List<Component> Items => _items;
+        public int Count => _items.Count;
+
+        public bool Contains(Component component) => _lookup.Contains(component);
+
+        public bool Add(Component component)
+        {
+            if (!_lookup.Add(component))
+                return false;
+
+            _items.Add(component);
+            return true;
+        }
+
+        public bool Remove(Component component)
+        {
+            if (!_lookup.Remove(component))
+                return false;
+
+            _items.Remove(component);
+            return true;
+        }
     }
 }

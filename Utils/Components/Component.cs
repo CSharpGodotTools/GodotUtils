@@ -14,6 +14,11 @@ public class Component : IDisposable
     private bool _disposed;
 
     /// <summary>
+    /// Gets whether this component is blocked while the tree is paused.
+    /// </summary>
+    public bool IsPausable { get; private set; } = true;
+
+    /// <summary>
     /// Creates a component attached to the provided owner node.
     /// </summary>
     public Component(Node owner)
@@ -67,6 +72,15 @@ public class Component : IDisposable
         SetPhysicsProcess(active);
         SetInput(active);
         SetUnhandledInput(active);
+    }
+
+    /// <summary>
+    /// Sets whether this component is blocked while the tree is paused.
+    /// </summary>
+    protected void SetPausable(bool enabled = true)
+    {
+        IsPausable = enabled;
+        _componentManager?.OnPausableChanged(this);
     }
 
     /// <summary>
